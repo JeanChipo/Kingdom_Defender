@@ -1,16 +1,3 @@
 # Kingdom_Defender
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-if u read dis u r stoupid
+*à completer à la fin*
