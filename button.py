@@ -1,7 +1,7 @@
 import pygame
 from typing import Callable, Tuple, Optional
 
-class But:
+class Button:
     def __init__(self,
                  normal_color: str | Tuple[int, int, int],
                  hover_color: str | Tuple[int, int, int],
@@ -11,6 +11,7 @@ class But:
                  font: Optional[str],
                  font_size: int,
                  button_size: Tuple[int, int],
+                 Button_coords: tuple[int, int],
                  screen_size: Tuple[int, int],
                  function_to_call: Callable,
                  screen_to_print_on: pygame.Surface
@@ -27,8 +28,7 @@ class But:
         self.screen_to_print_on = screen_to_print_on
         self.screen_width, self.screen_height = screen_size
         self.button_width, self.button_height = button_size
-        self.coord_x = (self.screen_width - self.button_width) // 2
-        self.coord_y = (self.screen_height - self.button_height) // 2
+        self.coord_x, self.coord_y = Button_coords  
 
     def is_pressed(self, mouse: Tuple[int, int]) -> bool:
         return (self.coord_x <= mouse[0] <= self.coord_x + self.button_width and
@@ -45,4 +45,12 @@ class But:
 
     def handle_click(self, mouse: Tuple[int, int]) -> None:
         if self.is_pressed(mouse):
+            pygame.draw.rect(self.screen_to_print_on, self.hover_color,
+                            [self.coord_x, self.coord_y, self.button_width, self.button_height])
             self.function_to_call()
+
+def menu(screen_to_print_on:pygame.Surface, 
+         bg_color: str | Tuple[int, int, int], 
+         dimmensions: Tuple[int, int, int, int], # (left, top, width, height)
+         ) -> pygame.Rect:
+    return pygame.draw.rect(screen_to_print_on, bg_color, pygame.Rect(dimmensions))
