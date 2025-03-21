@@ -51,6 +51,7 @@ while RUNNING:
 
     texte_fps = POLICE.render(f"{int(CLOCK.get_fps())} FPS", True, "Black")
     SCREEN.blit(texte_fps, (10, 10))
+    CLOCK.tick(NB_FPS)
 
     pygame.display.flip()
 
