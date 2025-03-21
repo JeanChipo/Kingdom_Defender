@@ -24,6 +24,8 @@ turrets = Turret_Gestion()
 PAUSE = False
 RUNNING = True
 while RUNNING:
+    self.window.blit(background, (0,0))
+    self.window.blit(tower, (-150,150))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             RUNNING = False
