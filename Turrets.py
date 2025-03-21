@@ -37,7 +37,7 @@ class Turret:
             self.bullet.append(Bullet(self.x + self.width, self.y + self.height // 4, self.damage))
 
     def draw(self, screen, dist):
-        pygame.draw.rect(screen, (0, 0, 0), self.turret)
+        screen.blit(pygame.transform.rotate(turret_model,-40.0), (25, 180))
         for elm in self.bullet:
             elm.update()
             elm.draw(screen)
