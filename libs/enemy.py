@@ -45,16 +45,17 @@ def create_wave(wave_number):
     return enemies, all_sprites
 
 
-def run_enemy(SCREEN,all_sprites,enemies,wave_number):
+def run_enemy(SCREEN,all_sprites,enemies,wave_number,list_turret):
     all_sprites.update()
 
-    #for enemy in enemies:
-    #    for t in list_turret:
-    #        if enemy.rect.colliderect(t.rect):
-    #            enemy.hitbox(t.rect)
-    #    if enemy.est_mort():
-    #        all_sprites.remove(enemy)
-    #        enemies.remove(enemy)
+    if list_turret != []:
+    for enemy in enemies:
+        for t in list_turret:
+            if enemy.rect.colliderect(t):
+                enemy.hitbox(t)
+        if enemy.est_mort():
+            all_sprites.remove(enemy)
+            enemies.remove(enemy)
 
     if not enemies:
         wave_number += 1
