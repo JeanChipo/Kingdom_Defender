@@ -2,6 +2,7 @@ import pygame
 from libs.button import Button, menu
 from libs.Turrets import Turret_Gestion
 from libs.models import *
+from libs.enemy import run_enemy, create_wave
 
 pygame.init()
 WIDTH, HEIGHT = 800, 600
@@ -19,6 +20,9 @@ LONG_BANDEAU = 12.5
 button1 = Button((230,230,230), (175, 175, 175), (150, 150, 150), (0, 0, 0), "im a button", "kristenitc", 16, 
                  (100+LONG_BANDEAU, 40), (SCREEN.get_width()-150+LONG_BANDEAU, 100+LONG_BANDEAU), SCREEN.get_size(), lambda: print("x"), SCREEN)
 turrets = Turret_Gestion()
+
+wave_number = 1
+enemies, all_sprites = create_wave(wave_number)
 
 # pygame.key.set_repeat(100) # a held key will be counted every 100 milliseconds
 
@@ -55,6 +59,8 @@ while RUNNING:
     texte_fps = POLICE.render(f"{int(CLOCK.get_fps())} FPS", True, "Black")
     SCREEN.blit(texte_fps, (10, 10))
     CLOCK.tick(NB_FPS)
+
+    run_enemy(SCREEN, all_sprites, enemies, wave_number)
 
     pygame.display.flip()
 
