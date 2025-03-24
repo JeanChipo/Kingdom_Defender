@@ -28,7 +28,7 @@ class Turret:
         self.damage = 10
         self.upgrade = []
         self.level = 1
-        self.fire_rate = 100
+        self.fire_rate = 10
         self.time = 0
 
     def update(self):
