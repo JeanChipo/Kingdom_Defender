@@ -1,5 +1,5 @@
 import pygame
-from models import*
+from libs.models import*
 
 
 class Turret_Gestion:
