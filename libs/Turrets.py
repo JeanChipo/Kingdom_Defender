@@ -1,10 +1,13 @@
-import pygame
 from libs.models import*
 
 
 class Turret_Gestion:
     def __init__(self):
         self.turrets = []
+        self.turrets.append(Turret())
+
+
+    def add_turret(self):
         self.turrets.append(Turret())
 
     def run(self, window, WIDTH):
@@ -16,7 +19,7 @@ class Turret_Gestion:
 class Turret:
     def __init__(self):
         self.x = 40
-        self.y = 40
+        self.y = 160
         self.name = "Basic"
         self.width = 50
         self.height = 25
@@ -25,19 +28,22 @@ class Turret:
         self.damage = 10
         self.upgrade = []
         self.level = 1
-        self.fire_rate = 10
+        self.fire_rate = 100
         self.time = 0
 
     def update(self):
         self.time += 1
         self.firing()
 
+    def get_bullet(self):
+        return [elm.bullet for elm in self.bullet]
+
     def firing(self):
         if self.time % self.fire_rate == 0:
-            self.bullet.append(Bullet(self.x + self.width, self.y + self.height // 4, self.damage))
+            self.bullet.append(Bullet(self.x + self.width + 60, self.y + self.height + 120// 2, self.damage))
 
     def draw(self, screen, dist):
-        screen.blit(pygame.transform.rotate(turret_model,-40.0), (25, 180))
+        screen.blit(pygame.transform.rotate(turret_model,-40.0), (self.x, self.y))
         for elm in self.bullet:
             elm.update()
             elm.draw(screen)
