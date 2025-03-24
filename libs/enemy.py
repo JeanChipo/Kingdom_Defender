@@ -1,4 +1,5 @@
 import pygame
+import random
 
 pygame.init()
 SCREEN_X, SCREEN_Y = 800, 600
@@ -21,8 +22,7 @@ class Enemy(pygame.sprite.Sprite):
             self.rect.x -= self.speed
 
     def hitbox(self, canon):
-        if self.rect.colliderect(canon):
-            self.health -= 100
+        self.health -= 100
 
     def est_mort(self):
         return self.health <= 0
@@ -31,43 +31,34 @@ class Enemy(pygame.sprite.Sprite):
         pygame.draw.rect(surface, (255, 0, 0), self.rect)
 
 
-# creation enemy
-enemy_moyen = Enemy((30, 50), 10000, 2, 5)
-enemy_grand = Enemy((50, 70), 30000, 1, 10)
-enemy_petit = Enemy((10, 30), 1000, 3, 3)
+def create_wave(wave_number):
+    enemies = []
+    for i in range(wave_number + 2):
+        size = (random.randint(20, 50), random.randint(30, 70))
+        health = 500 * wave_number
+        speed = random.randint(1, 5) + wave_number // 2
+        power = random.randint(3, 10)
+        enemy = Enemy(size, health, speed, power)
+        enemies.append(enemy)
 
-enemies = [enemy_moyen, enemy_grand, enemy_petit]
+    all_sprites = pygame.sprite.Group(enemies)
+    return enemies, all_sprites
 
-all_sprites = pygame.sprite.Group(enemies)
 
-
-canon = pygame.Rect((50, SCREEN_Y - 110), (20, 20))
-
-running = True
-clock = pygame.time.Clock()
-
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
+def run_enemy(SCREEN,all_sprites,enemies,wave_number):
     all_sprites.update()
 
+    #for enemy in enemies:
+    #    for t in list_turret:
+    #        if enemy.rect.colliderect(t.rect):
+    #            enemy.hitbox(t.rect)
+    #    if enemy.est_mort():
+    #        all_sprites.remove(enemy)
+    #        enemies.remove(enemy)
+
+    if not enemies:
+        wave_number += 1
+        enemies, all_sprites = create_wave(wave_number)
 
     for enemy in enemies:
-        enemy.hitbox(canon)
-        if enemy.est_mort():
-            all_sprites.remove(enemy)
-            enemies.remove(enemy)
-
-    screen.fill((255, 255, 255))
-
-    for enemy in enemies:
-        enemy.draw(screen)
-
-    pygame.draw.rect(screen, (0, 255, 0), canon)
-
-    pygame.display.flip()
-    clock.tick(60)
-
-pygame.quit()
+        enemy.draw(SCREEN)
