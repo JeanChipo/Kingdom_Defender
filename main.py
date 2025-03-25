@@ -1,13 +1,17 @@
-import pygame
-from libs.button import Button, menu
-from libs.Turrets import Turret_Gestion
-from libs.models import *
-from libs.enemy import run_enemy, create_wave
+try :
+    import pygame
+    from libs.button import Button, menu
+    from libs.Turrets import Turret_Gestion
+    from libs.models import *
+    from libs.enemy import run_enemy, create_wave
+except ImportError:
+    print("Erreur lors de l'importation des modules.")
+    exit()
 
 pygame.init()
-WIDTH, HEIGHT = 800, 600
+WIDTH, HEIGHT = 800,600 # full screen
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption('Testin\' shit ᓚᘏᗢ')
+pygame.display.set_caption("Kingdom defender ⊹ ࣪ ﹏𓊝﹏𓂁﹏⊹ ࣪ ˖")
 
 # Affichage du texte pour les FPS
 POLICE = pygame.font.Font(None, 24)
@@ -17,8 +21,12 @@ NB_FPS = 60
 
 LONG_BANDEAU = 12.5
 # menu_surface = pygame.Surface((WIDTH, HEIGHT))
-button1 = Button((230,230,230), (175, 175, 175), (150, 150, 150), (0, 0, 0), "im a button", "kristenitc", 16, 
+B_upg_tower = Button((230,230,230), (175, 175, 175), (150, 150, 150), (0, 0, 0), "upgrade tower", "kristenitc", 16, 
                  (100+LONG_BANDEAU, 40), (SCREEN.get_width()-150+LONG_BANDEAU, 100+LONG_BANDEAU), SCREEN.get_size(), lambda: print("x"), SCREEN)
+B_upg_turret = Button((230,230,230), (175, 175, 175), (150, 150, 150), (0, 0, 0), "upgrade turret", "kristenitc", 16, 
+                 (100+LONG_BANDEAU, 40), (SCREEN.get_width()-150+LONG_BANDEAU, 150+LONG_BANDEAU), SCREEN.get_size(), lambda: print("x"), SCREEN)
+BUTTON_LIST = [B_upg_tower, B_upg_turret]
+
 turrets = Turret_Gestion()
 
 wave_number = 1
@@ -34,7 +42,8 @@ while RUNNING:
         if event.type == pygame.QUIT:
             RUNNING = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            button1.handle_click(pygame.mouse.get_pos())
+            for but in BUTTON_LIST:
+                but.handle_click(pygame.mouse.get_pos())
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_p :
                 if not PAUSE : PAUSE = True
@@ -49,10 +58,11 @@ while RUNNING:
 
     if PAUSE :
         SCREEN.blit(pygame.font.Font(None, 48).render("PAUSED", True, "Black"),   (WIDTH//2 - 6*12, 10)) # 6 is the lenght of "PAUSED", 12 is the width of each character
-
+        pygame.time.wait(1000)
 
     menu(SCREEN, (240,240,240), (SCREEN.get_width()-150, 100, 150-12.5, 300))
-    button1.render(pygame.mouse.get_pos())
+    for but in BUTTON_LIST:
+        but.render(pygame.mouse.get_pos())
     turrets.run(SCREEN, WIDTH)
 
     texte_fps = POLICE.render(f"{int(CLOCK.get_fps())} FPS", True, "Black")

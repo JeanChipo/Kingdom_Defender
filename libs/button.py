@@ -41,13 +41,14 @@ class Button:
         else:
             pygame.draw.rect(self.screen_to_print_on, self.normal_color,
                             [self.coord_x, self.coord_y, self.button_width, self.button_height])
-        self.screen_to_print_on.blit(self.text_surface, (self.coord_x + 10 , self.coord_y + self.button_height//4))
+        self.screen_to_print_on.blit(self.text_surface, (self.coord_x , self.coord_y + self.button_height//4))
 
     def handle_click(self, mouse: Tuple[int, int]) -> None:
         if self.is_pressed(mouse):
             pygame.draw.rect(self.screen_to_print_on, self.hover_color,
                             [self.coord_x, self.coord_y, self.button_width, self.button_height])
             self.function_to_call()
+            pygame.display.update([self.coord_x, self.coord_y, self.button_width, self.button_height])
 
 def menu(screen_to_print_on:pygame.Surface, 
          bg_color: str | Tuple[int, int, int], 
