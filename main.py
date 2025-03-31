@@ -60,7 +60,7 @@ while RUNNING:
     SCREEN.blit(texte_fps, (10, 10))
     CLOCK.tick(NB_FPS)
 
-    run_enemy(SCREEN, all_sprites, enemies, wave_number)
+    enemies, all_sprites,  wave_number = run_enemy(SCREEN, all_sprites, enemies, wave_number,turrets.turrets[0].get_bullet())
 
     pygame.display.flip()
 
