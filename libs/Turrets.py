@@ -3,18 +3,22 @@ from libs.models import*
 
 class Turret_Gestion:
     def __init__(self):
-        self.turrets = []
-        self.turrets.append(Turret())
-
+        self.turrets = [Turret()]
 
     def add_turret(self):
         self.turrets.append(Turret())
 
-    def run(self, window, WIDTH):
-        for elm in self.turrets:
-            elm.update()
-            elm.draw(window, WIDTH)
+    def update(self):
+        for turret in self.turrets:
+            turret.update()
 
+    def draw(self, window, WIDTH):
+        for turret in self.turrets:
+            turret.draw(window, WIDTH)
+
+    def run(self, window, WIDTH):
+        self.update()
+        self.draw(window, WIDTH)
 
 class Turret:
     def __init__(self):
@@ -34,20 +38,21 @@ class Turret:
     def update(self):
         self.time += 1
         self.firing()
-
-    def get_bullet(self):
-        return [elm.bullet for elm in self.bullet]
+        for b in self.bullet:
+            b.update()
+        self.bullet = [b for b in self.bullet if b.x <= 800]  # 800 = screen width, TO REPLACE
 
     def firing(self):
         if self.time % self.fire_rate == 0:
-            self.bullet.append(Bullet(self.x + self.width + 60, self.y + self.height + 120// 2, self.damage))
+            self.bullet.append(Bullet(self.x + self.width + 60, self.y + self.height + 120 // 2, self.damage))
 
     def draw(self, screen, dist):
-        screen.blit(pygame.transform.rotate(turret_model,-40.0), (self.x, self.y))
-        for elm in self.bullet:
-            elm.update()
-            elm.draw(screen)
-        self.bullet = [elm for elm in self.bullet if elm.x <= dist]
+        screen.blit(pygame.transform.rotate(turret_model, -40.0), (self.x, self.y))
+        for b in self.bullet:
+            b.draw(screen)
+
+    def get_bullet(self):
+        return [b.bullet for b in self.bullet]
 
 
 class Bullet:

@@ -52,6 +52,12 @@ class Button:
 
 def menu(screen_to_print_on:pygame.Surface, 
          bg_color: str | Tuple[int, int, int], 
-         dimmensions: Tuple[int, int, int, int], # (left, top, width, height)
+         initial_dimensions: Tuple[int, int, int, int], # (left, top, width, height)
+         resize_ratio: Tuple[float, float],
          ) -> pygame.Rect:
-    return pygame.draw.rect(screen_to_print_on, bg_color, pygame.Rect(dimmensions))
+    left, top, width, height = initial_dimensions
+    scaled_width = int(width * resize_ratio[0])
+    scaled_height = int(height * resize_ratio[1])
+    scaled_rect = pygame.Rect(left, top, scaled_width, scaled_height)
+    return pygame.draw.rect(screen_to_print_on, bg_color, scaled_rect)
+
