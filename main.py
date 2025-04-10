@@ -70,7 +70,7 @@ while RUNNING:
     CLOCK.tick(NB_FPS)
     DT = NB_FPS / 10
 
-    run_enemy(SCREEN, all_sprites, enemies, wave_number)
+    enemies, all_sprites,  wave_number = run_enemy(SCREEN, all_sprites, enemies, wave_number,turrets.turrets[0].get_bullet())
 
     pygame.display.flip()
 
