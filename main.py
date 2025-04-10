@@ -46,8 +46,7 @@ while RUNNING:
                 but.handle_click(pygame.mouse.get_pos())
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_p :
-                if not PAUSE : PAUSE = True
-                else : PAUSE = False
+                PAUSE = not PAUSE
             if event.key == pygame.K_a :
                 NB_FPS /= 2
             if event.key == pygame.K_q :
@@ -57,7 +56,7 @@ while RUNNING:
     SCREEN.blit(tower, (-150,150))
 
     if PAUSE :
-        SCREEN.blit(pygame.font.Font(None, 48).render("PAUSED", True, "Black"),   (WIDTH//2 - 6*12, 10)) # 6 is the lenght of "PAUSED", 12 is the width of each character
+        SCREEN.blit(pygame.font.Font(None, 48).render("PAUSED", True, "Black"),   (WIDTH//2 - 6*12, 10)) # 6 is the length of "PAUSED", 12 is the width of each character
         pygame.time.wait(1000)
 
     menu(SCREEN, (240,240,240), (SCREEN.get_width()-150, 100, 150-12.5, 300))
