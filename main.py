@@ -9,8 +9,8 @@ except ImportError:
     exit()
 
 pygame.init()
-WIDTH, HEIGHT = 800,600 # full screen
-SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
+WIDTH, HEIGHT = 800,600
+SCREEN = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
 pygame.display.set_caption("Kingdom defender ⊹ ࣪ ﹏𓊝﹏𓂁﹏⊹ ࣪ ˖")
 
 # Affichage du texte pour les FPS
