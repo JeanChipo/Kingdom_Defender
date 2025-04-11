@@ -4,6 +4,7 @@ try :
     from libs.Turrets import Turret_Gestion
     from libs.models import *
     from libs.enemy import run_enemy, create_wave
+    from libs.Display import *
 except ImportError:
     print("Erreur lors de l'importation des modules.")
     exit()
@@ -30,7 +31,7 @@ BUTTON_LIST = [B_upg_tower, B_upg_turret]
 turrets = Turret_Gestion()
 
 wave_number = 1
-enemies, all_sprites = create_wave(wave_number)
+enemies, all_sprites = create_wave(wave_number,SCREEN.get_width(),420 * height_ratio() )
 
 # pygame.key.set_repeat(100) # a held key will be counted every 100 milliseconds
 
@@ -52,8 +53,11 @@ while RUNNING:
             if event.key == pygame.K_q :
                 NB_FPS *= 2
 
-    SCREEN.blit(background, (0,0))
-    SCREEN.blit(tower, (-150,150))
+    SCREEN.fill('white')
+    SCREEN.blit(resize_background(background), (0, 0))
+    SCREEN.blit(resize_tower(tower_1), (-100 * width_ratio() / 1.2,
+                                        SCREEN.get_height() - 450 * height_ratio()))  # "colle" la tour en bas à gauche de la fenètre
+    turrets.turrets[0].update()
 
     if PAUSE :
         SCREEN.blit(pygame.font.Font(None, 48).render("PAUSED", True, "Black"),   (WIDTH//2 - 6*12, 10)) # 6 is the length of "PAUSED", 12 is the width of each character

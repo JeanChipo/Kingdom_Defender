@@ -1,6 +1,6 @@
 import pygame
 import random
-
+from libs.Display import*
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, size, health, speed, power, pos, WIDTH, HEIGHT):
@@ -22,7 +22,7 @@ class Enemy(pygame.sprite.Sprite):
     def update(self,WIDTH, HEIGHT):# deplacement de l'ennemi
 
         # déplacement en x
-        if self.rect.x > 100 :
+        if self.rect.x > 170*width_ratio() :
             self.ratio -= self.speed # calcule du déplacement sur un axe de 10000
             self.rect.x = (WIDTH*self.ratio)/10000 # produit en crois pour apliquer la position de l'axe 10000 a la taille de l'écran
 
@@ -71,11 +71,11 @@ def create_wave(wave_number, WIDTH, HEIGHT): # créateur d'énnemies
     return enemies, all_sprites
 
 
-def run_enemy(SCREEN,all_sprites,enemies,wave_number,list_turret): # foction d'exécution du scripte enemy.py
+def run_enemy(SCREEN,all_sprites,enemies,wave_number,list_turret): # fonction d'exécution du scripte enemy.py
     # déplacement des ennemies
-    all_sprites.update(SCREEN.get_width(),SCREEN.get_height())
+    all_sprites.update(SCREEN.get_width(),600 * height_ratio())
 
-    # vérification si les ennemies sont toucher  par une tourelle et si il meurt
+    # vérification si les ennemies sont touchés  par une tourelle et s'il meurt
     if list_turret != []:
         for enemy in enemies:
             for t in list_turret:

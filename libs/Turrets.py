@@ -1,5 +1,5 @@
 from libs.models import*
-
+from libs.Display import *
 
 class Turret_Gestion:
     def __init__(self):
@@ -19,7 +19,7 @@ class Turret_Gestion:
 class Turret:
     def __init__(self):
         self.x = 40
-        self.y = 160
+        self.y = 30
         self.name = "Basic"
         self.width = 50
         self.height = 25
@@ -32,7 +32,9 @@ class Turret:
         self.time = 0
 
     def update(self):
-        self.time += 1
+        self.time += 0.5
+        self.x = 40 * width_ratio()
+        self.y = 420 * height_ratio()
         self.firing()
 
     def get_bullet(self):
@@ -43,7 +45,7 @@ class Turret:
             self.bullet.append(Bullet(self.x + self.width + 60, self.y + self.height + 120// 2, self.damage))
 
     def draw(self, screen, dist):
-        screen.blit(pygame.transform.rotate(turret_model,-40.0), (self.x, self.y))
+        screen.blit(turret_model, (self.x, self.y))
         for elm in self.bullet:
             elm.update()
             elm.draw(screen)
@@ -53,7 +55,7 @@ class Turret:
 class Bullet:
     def __init__(self, x, y, damage):
         self.x = x
-        self.y = y
+        self.y = y-40
         self.damage = damage
         self.speed = 10
         self.width = 10
@@ -66,4 +68,4 @@ class Bullet:
 
 
     def draw(self, screen):
-        pygame.draw.rect(screen, (0, 0, 0), self.bullet)
+        screen.blit((resize_cannonball(resized_cannonball)), (self.x, self.y))
