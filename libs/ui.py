@@ -1,4 +1,5 @@
 import pygame
+from libs.transitions import fade_to
 
 class MainMenu:
     def __init__(self, screen:pygame.Surface):
@@ -21,6 +22,7 @@ class MainMenu:
 
     def start_new_game(self):
         self.game_state = "running"
+        fade_to(self.screen, (0,0,0), 2000)
 
     def quit_game(self):
         self.game_state = "ended"
@@ -85,14 +87,16 @@ class Button:
             self.function_to_call()
             pygame.display.update([self.coord_x, self.coord_y, self.button_width, self.button_height])
 
-def menu_but(screen_to_print_on:pygame.Surface, 
-         bg_color: str | tuple[int, int, int], 
-         initial_dimensions: tuple[int, int, int, int], # (left, top, width, height)
-         resize_ratio: tuple[float, float],
-         ) -> pygame.Rect:
+def menu_but(screen_to_print_on: pygame.Surface, 
+             bg_color: str | tuple[int,int,int] | tuple[int,int,int,int], 
+             initial_dimensions: tuple[int, int, int, int], # (left, top, width, height)
+             resize_ratio: tuple[float, float]) -> pygame.Rect:
+    
     left, top, width, height = initial_dimensions
     scaled_width = int(width * resize_ratio[0])
     scaled_height = int(height * resize_ratio[1])
-    scaled_rect = pygame.Rect(left, top, scaled_width, scaled_height)
-    return pygame.draw.rect(screen_to_print_on, bg_color, scaled_rect)
+    transparent_surface = pygame.Surface((scaled_width, scaled_height), pygame.SRCALPHA)
+    transparent_surface.fill(bg_color)
+    screen_to_print_on.blit(transparent_surface, (left, top))
+    return pygame.Rect(left, top, scaled_width, scaled_height)
 

@@ -21,10 +21,10 @@ NB_FPS = 120
 
 LONG_BANDEAU = 12.5
 # menu_surface = pygame.Surface((WIDTH, HEIGHT))
-B_upg_tower = Button((230,230,230), (175, 175, 175), (150, 150, 150), (0, 0, 0), "upgrade tower", "kristenitc", 16, 
-                 (100+LONG_BANDEAU, 40), (SCREEN.get_width()-150+LONG_BANDEAU, 100+LONG_BANDEAU), SCREEN.get_size(), lambda: print("x"), SCREEN)
-B_upg_turret = Button((230,230,230), (175, 175, 175), (150, 150, 150), (0, 0, 0), "upgrade turret", "kristenitc", 16, 
-                 (100+LONG_BANDEAU, 40), (SCREEN.get_width()-150+LONG_BANDEAU, 150+LONG_BANDEAU), SCREEN.get_size(), lambda: print("x"), SCREEN)
+B_upg_tower = Button((255,255,255), (200,200,200), (150, 150, 150), (0, 0, 0), "upgrade tower", "kristenitc", 16, 
+                 (120+LONG_BANDEAU, 40), (SCREEN.get_width()-165+LONG_BANDEAU, 100+LONG_BANDEAU), SCREEN.get_size(), lambda: print("x"), SCREEN)
+B_upg_turret = Button((255,255,255), (200,200,200), (150, 150, 150), (0, 0, 0), "upgrade turret", "kristenitc", 16, 
+                 (120+LONG_BANDEAU, 40), (SCREEN.get_width()-165+LONG_BANDEAU, 150+LONG_BANDEAU), SCREEN.get_size(), lambda: print("x"), SCREEN)
 BUTTON_LIST = [B_upg_tower, B_upg_turret]
 
 RATIO_W = float(WIDTH  / 800)
@@ -39,7 +39,7 @@ enemies, all_sprites = create_wave(wave_number)
 
 # pygame.key.set_repeat(100) # a held key will be counted every 100 milliseconds
 
-PAUSE = False       # Pause works by stop calling update() but still calling draw() functions
+PAUSE = False       # Pause works by stop calling update but still calling draw functions
 RUNNING = True
 while RUNNING:
     for event in pygame.event.get():
@@ -67,7 +67,7 @@ while RUNNING:
 
     SCREEN.fill("white")
     print(f"<game_state : {main_menu.game_state}>{' '*50}", end="\r")
-
+    main_menu.game_state = "running"
     match main_menu.game_state:
         case "menu":
             SCREEN.fill((230,230,230))
@@ -79,7 +79,7 @@ while RUNNING:
             SCREEN.blit(background, (0, 0))
             SCREEN.blit(tower, (-150, 150))
 
-            menu_but(SCREEN, (240, 240, 240), (SCREEN.get_width() - 150, 100, 150 - 12.5, 300), (RATIO_W, RATIO_W))
+            menu_but(SCREEN, (0,0,0, 128), (SCREEN.get_width() - 160, 100, 160 - 12.5, 300), (RATIO_W, RATIO_W))
             for but in BUTTON_LIST:
                 but.render(pygame.mouse.get_pos())
             turrets.draw(SCREEN, WIDTH)
