@@ -1,10 +1,15 @@
+from pygame.time import Clock
+
 try :
     import pygame
+    from math import *
     from libs.button import Button, menu
     from libs.Turrets import Turret_Gestion
     from libs.models import *
     from libs.enemy import run_enemy, create_wave
     from libs.Display import *
+    from libs.Fleche import Fleche
+
 except ImportError:
     print("Erreur lors de l'importation des modules.")
     exit()
@@ -19,6 +24,7 @@ POLICE = pygame.font.Font(None, 24)
 CLOCK = pygame.time.Clock()
 
 NB_FPS = 60
+Ensemble_fleche = []
 
 LONG_BANDEAU = 12.5
 turrets = Turret_Gestion()
@@ -40,12 +46,15 @@ PAUSE = False
 RUNNING = True
 while RUNNING:
     SCREEN.fill('white')
+    time = pygame.time.get_ticks()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             RUNNING = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
             for but in BUTTON_LIST:
                 but.handle_click(pygame.mouse.get_pos())
+            mouse_pos = pygame.mouse.get_pos()
+            Ensemble_fleche.append(Fleche(WIDTH, HEIGHT, mouse_pos, time, SCREEN))
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_p :
                 PAUSE = not PAUSE
@@ -75,6 +84,14 @@ while RUNNING:
 
     enemies, all_sprites,  wave_number = run_enemy(SCREEN, all_sprites, enemies, wave_number,turrets.turrets[0].get_bullet())
 
+    # Gérer les flèches existantes
+    for fleche in Ensemble_fleche[:]:
+        if not fleche.position(time):
+            # Dessiner la flèche
+            pygame.draw.circle(SCREEN, (0, 0, 255), (int(fleche.x), int(fleche.y)), 5)
+        else:
+            # Supprimer la flèche qui sort de l'écran
+            Ensemble_fleche.remove(fleche)
 
     pygame.display.flip()
 
