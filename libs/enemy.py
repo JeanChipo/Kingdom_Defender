@@ -94,3 +94,10 @@ def run_enemy(SCREEN,all_sprites,enemies,wave_number,list_turret): # fonction d'
         enemy.draw(SCREEN)
 
     return enemies, all_sprites,  wave_number
+
+def futur(posx,speed):
+    ratio = posx * 10000 / WIDTH
+    ratio -= speed * 120
+    posx = (WIDTH * ratio) / 10000
+    return posx
+
