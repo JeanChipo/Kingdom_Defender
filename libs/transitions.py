@@ -8,14 +8,14 @@ def fade_to(screen: pygame.Surface, color: tuple[int,int,int], duration: int = 1
     delay = duration // (steps * 2)
     r,g,b = color
 
-    # for alpha in range(256):
-    #     pygame.event.pump()
-    #     overlay.fill((r,g,b,alpha))
-    #     screen.blit(overlay, (0, 0))
-    #     pygame.display.flip()
-    #     clock.tick(1000 // delay)
+    for alpha in range(256):
+        pygame.event.pump()
+        overlay.fill((r,g,b,alpha))
+        screen.blit(overlay, (0, 0))
+        pygame.display.flip()
+        clock.tick(1000 // delay)
 
-    # pygame.time.delay(delay)
+    pygame.time.delay(delay)
 
     for alpha in range(255, -1, -1):
         pygame.event.pump()

@@ -40,17 +40,17 @@ class MainMenu:
 
 class Button:
     def __init__(self,
-                 normal_color: str | tuple[int, int, int],
-                 hover_color: str | tuple[int, int, int],
+                 normal_color:  str | tuple[int, int, int],
+                 hover_color:   str | tuple[int, int, int],
                  pressed_color: str | tuple[int, int, int],
-                 text_color: str | tuple[int, int, int],
-                 text: str,
-                 font: str,
-                 font_size: int,
-                 button_size: tuple[int, int],
+                 text_color:    str | tuple[int, int, int],
+                 text:          str,
+                 font:          str,
+                 font_size:     int,
+                 button_size:   tuple[int, int],
                  Button_coords: tuple[int, int],
-                 screen_size: tuple[int, int],
-                 function_to_call: callable,
+                 screen_size:   tuple[int, int],
+                 function_to_call:   callable,
                  screen_to_print_on: pygame.Surface
                  ) -> None:
 
@@ -58,41 +58,63 @@ class Button:
         self.hover_color = pygame.Color(hover_color)
         self.pressed_color = pygame.Color(pressed_color)
         self.text_color = pygame.Color(text_color)
+        self.original_text_color = self.text_color
         self.text = text
         self.font = pygame.font.SysFont(font, font_size)
-        self.text_surface = self.font.render(text, True, self.text_color)
         self.function_to_call = function_to_call
         self.screen_to_print_on = screen_to_print_on
         self.screen_width, self.screen_height = screen_size
         self.button_width, self.button_height = button_size
-        self.coord_x, self.coord_y = Button_coords  
+        self.coord_x, self.coord_y = Button_coords
+        self.rel_x = Button_coords[0] / screen_size[0]
+        self.rel_y = Button_coords[1] / screen_size[1]
+        self.is_being_pressed = False
 
-    def is_pressed(self, mouse: tuple[int, int]) -> bool:
+    def update_pos(self, screen_size: tuple[int, int]):
+        self.screen_width, self.screen_height = screen_size
+        self.coord_x = int(self.rel_x * self.screen_width)
+        self.coord_y = int(self.rel_y * self.screen_height)
+
+    def is_hovered(self, mouse: tuple[int, int]) -> bool:
         return (self.coord_x <= mouse[0] <= self.coord_x + self.button_width and
                 self.coord_y <= mouse[1] <= self.coord_y + self.button_height)
 
-    def render(self, mouse: tuple[int, int]) -> None:
-        if self.is_pressed(mouse):
-            pygame.draw.rect(self.screen_to_print_on, self.hover_color, 
-                            [self.coord_x, self.coord_y, self.button_width, self.button_height])
-        else:
-            pygame.draw.rect(self.screen_to_print_on, self.normal_color,
-                            [self.coord_x, self.coord_y, self.button_width, self.button_height])
-        self.screen_to_print_on.blit(self.text_surface, (self.coord_x + 10 , self.coord_y + self.button_height//4))
+    def render(self, mouse: tuple[int, int], border_radius:int=0) -> None:
+        color_to_use = self.normal_color
+        text_color = self.text_color
+        offset = 0
+
+        if self.is_being_pressed:
+            color_to_use = self.pressed_color
+            offset = 2  # slight y offset when pressed
+        elif self.is_hovered(mouse):
+            color_to_use = self.hover_color
+            text_color = self.normal_color  # invert colors on hover
+
+        pygame.draw.rect(self.screen_to_print_on, color_to_use,
+            [self.coord_x, self.coord_y, self.button_width, self.button_height])
+
+        text_surface = self.font.render(self.text, True, text_color)
+        text_x = self.coord_x + (self.button_width - text_surface.get_width()) // 2
+        text_y = self.coord_y + (self.button_height - text_surface.get_height()) // 2 + offset
+        self.screen_to_print_on.blit(text_surface, (text_x, text_y))
 
     def handle_click(self, mouse: tuple[int, int]) -> None:
-        if self.is_pressed(mouse):
-            pygame.draw.rect(self.screen_to_print_on, self.hover_color,
-                            [self.coord_x, self.coord_y, self.button_width, self.button_height])
-            self.function_to_call()
+        if self.is_hovered(mouse):
+            self.is_being_pressed = True
+            self.render(mouse)
             pygame.display.update([self.coord_x, self.coord_y, self.button_width, self.button_height])
+            pygame.time.delay(100)  # short delay to show press
+            self.function_to_call()
+            self.is_being_pressed = False
+
 
 def menu_but(screen_to_print_on: pygame.Surface, 
              bg_color: str | tuple[int,int,int] | tuple[int,int,int,int], 
-             initial_dimensions: tuple[int, int, int, int], # (left, top, width, height)
+             initial_coords: tuple[int, int, int, int], # (left, top, width, height)
              resize_ratio: tuple[float, float]) -> pygame.Rect:
     
-    left, top, width, height = initial_dimensions
+    left, top, width, height = initial_coords
     scaled_width = int(width * resize_ratio[0])
     scaled_height = int(height * resize_ratio[1])
     transparent_surface = pygame.Surface((scaled_width, scaled_height), pygame.SRCALPHA)
