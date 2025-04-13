@@ -1,10 +1,15 @@
+from pygame.time import Clock
+
 try :
     import pygame
+    from math import *
     from libs.button import Button, menu
     from libs.Turrets import Turret_Gestion
     from libs.models import *
     from libs.enemy import run_enemy, create_wave
     from libs.Display import *
+    from libs.fleche import *
+
 except ImportError:
     print("Erreur lors de l'importation des modules.")
     exit()
@@ -19,13 +24,14 @@ POLICE = pygame.font.Font(None, 24)
 CLOCK = pygame.time.Clock()
 
 NB_FPS = 60
+Ensemble_fleche = []
 
 LONG_BANDEAU = 12.5
 turrets = Turret_Gestion()
 # menu_surface = pygame.Surface((WIDTH, HEIGHT))
-B_upg_tower = Button((230,230,230), (175, 175, 175), (150, 150, 150), (0, 0, 0), "upgrade tower", "kristenitc", 16, 
+B_upg_tower = Button((230,230,230), (175, 175, 175), (150, 150, 150), (0, 0, 0), "upgrade tower", "kristenitc", 16,
                  (100+LONG_BANDEAU, 40), (SCREEN.get_width()-150+LONG_BANDEAU, 100+LONG_BANDEAU), SCREEN.get_size(), lambda: print("x"), SCREEN)
-B_upg_turret = Button((230,230,230), (175, 175, 175), (150, 150, 150), (0, 0, 0), "upgrade turret", "kristenitc", 16, 
+B_upg_turret = Button((230,230,230), (175, 175, 175), (150, 150, 150), (0, 0, 0), "upgrade turret", "kristenitc", 16,
                  (100+LONG_BANDEAU, 40), (SCREEN.get_width()-150+LONG_BANDEAU, 150+LONG_BANDEAU), SCREEN.get_size(), turrets.turrets[0].upgrade, SCREEN)
 BUTTON_LIST = [B_upg_tower, B_upg_turret]
 
@@ -40,12 +46,15 @@ PAUSE = False
 RUNNING = True
 while RUNNING:
     SCREEN.fill('white')
+    time = pygame.time.get_ticks()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             RUNNING = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
             for but in BUTTON_LIST:
                 but.handle_click(pygame.mouse.get_pos())
+            mouse_pos = pygame.mouse.get_pos()
+            Ensemble_fleche.append(Fleche(WIDTH, HEIGHT, mouse_pos, time, SCREEN))
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_p :
                 PAUSE = not PAUSE
@@ -75,6 +84,8 @@ while RUNNING:
 
     enemies, all_sprites,  wave_number = run_enemy(SCREEN, all_sprites, enemies, wave_number,turrets.turrets[0].get_bullet())
 
+    dead_fleche(enemies,Ensemble_fleche)
+    draw(SCREEN, time, Ensemble_fleche)
 
     pygame.display.flip()
 
