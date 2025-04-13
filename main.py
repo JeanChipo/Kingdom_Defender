@@ -79,7 +79,7 @@ while RUNNING:
         case "running":
             SCREEN.fill('white')
             SCREEN.blit(background, (0, 0))
-            SCREEN.blit(tower, (-150, 150))
+            SCREEN.blit(tower_1, (-150, 150))
 
             menu_but(SCREEN, (0,0,0, 128), (SCREEN.get_width() - 160, 100, 160 - 12.5, 300), (1,1))
             for but in BUTTON_LIST:
