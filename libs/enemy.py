@@ -30,8 +30,8 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.y = HEIGHT - 100 - self.size[1]
 
 
-    def hitbox(self): # calcule des point de vie
-        self.health -= 100
+    def hitbox(self, damage): # calcule des point de vie
+        self.health -= damage
 
     def est_mort(self): #vérifiation de mort
         return self.health <= 0
@@ -76,14 +76,11 @@ def run_enemy(SCREEN,all_sprites,enemies,wave_number,list_turret): # fonction d'
     all_sprites.update(SCREEN.get_width(),600 * height_ratio())
 
     # vérification si les ennemies sont touchés  par une tourelle et s'il meurt
-    if list_turret != []:
-        for enemy in enemies:
-            for t in list_turret:
-                if enemy.rect.colliderect(t):
-                    enemy.hitbox()
-            if enemy.est_mort():
-                all_sprites.remove(enemy)
-                enemies.remove(enemy)
+
+    for enemy in enemies[:]:  # sécurisation de boucle
+        if enemy.est_mort():
+            all_sprites.remove(enemy)
+            enemies.remove(enemy)
 
     # création d'une nouvelle vague quand tout les ennemies sont mort
     if not enemies:
