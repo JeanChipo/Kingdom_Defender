@@ -20,11 +20,11 @@ CLOCK = pygame.time.Clock()
 NB_FPS = 60
 
 LONG_BANDEAU = 12.5
-# menu_surface = pygame.Surface((WIDTH, HEIGHT))
+turrets = Turret_Gestion()
 B_upg_tower = Button("white", "black", "gray", "black", "upgrade tower", "kristenitc", 16, 
                  (120+LONG_BANDEAU, 40), (SCREEN.get_width()-165+LONG_BANDEAU, 100+LONG_BANDEAU), SCREEN.get_size(), lambda: print("tower upgraded"), SCREEN)
 B_upg_turret = Button("white", "black", "gray", "black", "upgrade turret", "kristenitc", 16, 
-                 (120+LONG_BANDEAU, 40), (SCREEN.get_width()-165+LONG_BANDEAU, 150+LONG_BANDEAU), SCREEN.get_size(), lambda: print("turret upgraded"), SCREEN)
+                 (120+LONG_BANDEAU, 40), (SCREEN.get_width()-165+LONG_BANDEAU, 150+LONG_BANDEAU), SCREEN.get_size(), turrets.turrets[0].upgrade, SCREEN)
 BUTTON_LIST = [B_upg_tower, B_upg_turret]
 
 RATIO_W = float(WIDTH  / 800)
@@ -35,7 +35,7 @@ turrets = Turret_Gestion()
 main_menu = MainMenu(SCREEN)
 
 wave_number = 1
-enemies, all_sprites = create_wave(wave_number)
+enemies, all_sprites = create_wave(wave_number,SCREEN.get_width(),420)
 
 # pygame.key.set_repeat(100) # a held key will be counted every 100 milliseconds
 
@@ -69,7 +69,7 @@ while RUNNING:
 
     SCREEN.fill("white")
     print(f"<game_state : {main_menu.game_state}>{' '*50}", end="\r")
-    # main_menu.game_state = "running"
+    main_menu.game_state = "running"
     match main_menu.game_state:
         case "menu":
             SCREEN.fill((230,230,230))
@@ -84,13 +84,13 @@ while RUNNING:
             menu_but(SCREEN, (0,0,0, 128), (SCREEN.get_width() - 160, 100, 160 - 12.5, 300), (1,1))
             for but in BUTTON_LIST:
                 but.render(pygame.mouse.get_pos(),border_radius=6)
-            turrets.draw(SCREEN, WIDTH)
+            turrets.draw(SCREEN, SCREEN.get_width(), SCREEN.get_width(), enemies)
             draw_enemy(SCREEN, enemies)
 
             if not PAUSE:
-                turrets.update()
+                turrets.update(enemies)
                 enemies, all_sprites, wave_number = update_enemy(
-                    all_sprites, enemies, wave_number, turrets.turrets[0].get_bullet()
+                    SCREEN, all_sprites, enemies, wave_number, turrets.turrets[0].get_bullet()
                 )
             else:
                 pause_text = pygame.font.Font(None, 48).render("PAUSED", True, "Black")
