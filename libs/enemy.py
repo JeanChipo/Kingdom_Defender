@@ -22,9 +22,11 @@ class Enemy(pygame.sprite.Sprite):
     def update(self,WIDTH, HEIGHT):# deplacement de l'ennemi
 
         # déplacement en x
-        if self.rect.x > 170*width_ratio() :
+        if self.rect.x > WIDTH/10 :
             self.ratio -= self.speed # calcule du déplacement sur un axe de 10000
             self.rect.x = (WIDTH*self.ratio)/10000 # produit en crois pour apliquer la position de l'axe 10000 a la taille de l'écran
+        else:
+            self.rect.x = WIDTH/10
 
         # déplacement en y
         self.rect.y = HEIGHT - 100 - self.size[1]
