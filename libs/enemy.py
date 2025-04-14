@@ -20,9 +20,11 @@ class Enemy(pygame.sprite.Sprite):
     def update(self,WIDTH, HEIGHT):# deplacement de l'ennemi
 
         # déplacement en x
-        if self.rect.x > 170 :
+        if self.rect.x > WIDTH/10 :
             self.ratio -= self.speed # calcule du déplacement sur un axe de 10000
             self.rect.x = (WIDTH*self.ratio)/10000 # produit en crois pour apliquer la position de l'axe 10000 a la taille de l'écran
+        else:
+            self.rect.x = WIDTH/10
 
         # déplacement en y
         self.rect.y = HEIGHT - 100 - self.size[1]
@@ -85,3 +87,10 @@ def update_enemy(SCREEN ,all_sprites, enemies, wave_number, list_turret):
 def draw_enemy(SCREEN, enemies):
     for enemy in enemies:
         enemy.draw(SCREEN)
+    return enemies, all_sprites,  wave_number
+
+def futur(posx,speed,nomber):
+    ratio = posx * 10000 / WIDTH
+    ratio -= speed * nomber
+    posx = (WIDTH * ratio) / 10000
+    return posx
