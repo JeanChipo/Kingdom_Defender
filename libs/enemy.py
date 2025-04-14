@@ -1,6 +1,6 @@
 import pygame
 import random
-from libs.Display import*
+
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, size, health, speed, power, pos, WIDTH, HEIGHT):
@@ -17,8 +17,6 @@ class Enemy(pygame.sprite.Sprite):
         self.HEIGHT = HEIGHT
         self.rect = pygame.Rect((WIDTH - self.size[0] + 2*pos, HEIGHT - 100 - self.size[1]), self.size)
 
-
-
     def update(self,WIDTH, HEIGHT):# deplacement de l'ennemi
 
         # déplacement en x
@@ -31,14 +29,13 @@ class Enemy(pygame.sprite.Sprite):
         # déplacement en y
         self.rect.y = HEIGHT - 100 - self.size[1]
 
-
     def hitbox(self, damage): # calcule des point de vie
         self.health -= damage
 
     def est_mort(self): #vérifiation de mort
         return self.health <= 0
 
-    def draw(self, surface): # méthode d'affichage
+    def draw(self, surface):
         pygame.draw.rect(surface, (255, 0, 0), self.rect)
 
 
@@ -72,27 +69,24 @@ def create_wave(wave_number, WIDTH, HEIGHT): # créateur d'énnemies
     all_sprites = pygame.sprite.Group(enemies)
     return enemies, all_sprites
 
-
-def run_enemy(SCREEN,all_sprites,enemies,wave_number,list_turret): # fonction d'exécution du scripte enemy.py
-    # déplacement des ennemies
-    all_sprites.update(SCREEN.get_width(),600 * height_ratio())
-
-    # vérification si les ennemies sont touchés  par une tourelle et s'il meurt
+def update_enemy(SCREEN ,all_sprites, enemies, wave_number, list_turret):
+    all_sprites.update(SCREEN.get_width(), 600)
 
     for enemy in enemies[:]:  # sécurisation de boucle
         if enemy.est_mort():
             all_sprites.remove(enemy)
             enemies.remove(enemy)
 
-    # création d'une nouvelle vague quand tout les ennemies sont mort
     if not enemies:
         wave_number += 1
         enemies, all_sprites = create_wave(wave_number,SCREEN.get_width(),SCREEN.get_height())
 
-    # affichage des ennemies
+    return enemies, all_sprites, wave_number
+
+
+def draw_enemy(SCREEN, enemies):
     for enemy in enemies:
         enemy.draw(SCREEN)
-
     return enemies, all_sprites,  wave_number
 
 def futur(posx,speed,nomber):
@@ -100,4 +94,3 @@ def futur(posx,speed,nomber):
     ratio -= speed * nomber
     posx = (WIDTH * ratio) / 10000
     return posx
-

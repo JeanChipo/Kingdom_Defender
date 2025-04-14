@@ -1,19 +1,24 @@
 from libs.models import*
 
+
 class Turret_Gestion:
     def __init__(self):
-        self.turrets = []
-        self.turrets.append(Turret())
-
+        self.turrets = [Turret()]
 
     def add_turret(self):
         self.turrets.append(Turret())
 
-    def run(self, window, WIDTH, HEIGHT, enemys):
-        for elm in self.turrets:
-            elm.update(enemys)
-            elm.draw(window, WIDTH, HEIGHT,enemys)
+    def update(self, enemys):
+        for turret in self.turrets:
+            turret.update(enemys)
 
+    def draw(self, window, WIDTH, HEIGHT,enemys):
+        for turret in self.turrets:
+            turret.draw(window, WIDTH, HEIGHT,enemys)
+
+    def run(self, window, WIDTH):
+        self.update()
+        self.draw(window, WIDTH)
 
 class Turret:
     def __init__(self):
@@ -37,6 +42,8 @@ class Turret:
     def update(self, enemys):
         self.time += 1
         self.firing(self.get_first_enemy_pos(enemys))
+        for elm in self.bullets:
+            elm.update()
 
     def get_first_enemy_pos(self, enemys):
         if not enemys:
@@ -73,7 +80,6 @@ class Turret:
     def draw(self, screen, X, Y, enemys):
         screen.blit(pygame.transform.rotate(turret_model,-40.0), (self.x, self.y))
         for elm in self.bullets:
-            elm.update()
             elm.draw(screen)
         self.bullets = [elm for elm in self.bullets if (elm.x <= X and elm.y <= Y and not elm.dead_bullet(enemys))]
 
