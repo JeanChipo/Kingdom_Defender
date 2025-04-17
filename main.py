@@ -51,8 +51,7 @@ while RUNNING:
             elif main_menu.game_state == "running":
                 for but in BUTTON_LIST:
                     but.handle_click(pygame.mouse.get_pos())
-            mouse_pos = pygame.mouse.get_pos()
-            Ensemble_fleche.append(Fleche(WIDTH, HEIGHT, mouse_pos, time, SCREEN))
+                Ensemble_fleche.append(Fleche(WIDTH, HEIGHT, pygame.mouse.get_pos(), time, SCREEN))
         if event.type == pygame.VIDEORESIZE:
             WIDTH, HEIGHT = SCREEN.get_size()
             RATIO_W = float(WIDTH  / 800)
