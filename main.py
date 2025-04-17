@@ -49,9 +49,18 @@ while RUNNING:
                 for but in main_menu.buttons:
                     but.handle_click(pygame.mouse.get_pos())
             elif main_menu.game_state == "running":
+                mouse_pos = pygame.mouse.get_pos()
+                hovering_any = False
+
                 for but in BUTTON_LIST:
-                    but.handle_click(pygame.mouse.get_pos())
-                Ensemble_fleche.append(Fleche(WIDTH, HEIGHT, pygame.mouse.get_pos(), time, SCREEN))
+                    if but.is_hovered(mouse_pos):
+                        but.handle_click(mouse_pos)
+                        hovering_any = True
+                        break
+
+                if not hovering_any:
+                    Ensemble_fleche.append(Fleche(WIDTH, HEIGHT, mouse_pos, time, SCREEN))
+
         if event.type == pygame.VIDEORESIZE:
             WIDTH, HEIGHT = SCREEN.get_size()
             RATIO_W = float(WIDTH  / 800)
