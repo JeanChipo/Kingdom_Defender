@@ -23,9 +23,3 @@ def fade_to(screen: pygame.Surface, color: tuple[int,int,int], duration: int = 1
         screen.blit(overlay, (0, 0))
         pygame.display.flip()
         clock.tick(1000 // delay)
-
-
-def fade_music_out(duration: int = 1000):
-    '''Fades the music volume out over duration in ms.'''
-    if pygame.mixer.get_init():
-        pygame.mixer.music.fadeout(duration)
