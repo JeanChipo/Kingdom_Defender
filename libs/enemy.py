@@ -87,10 +87,10 @@ def update_enemy(SCREEN ,all_sprites, enemies, wave_number, list_turret):
 def draw_enemy(SCREEN, enemies):
     for enemy in enemies:
         enemy.draw(SCREEN)
-    return enemies, all_sprites,  wave_number
+    return enemies
 
-def futur(posx,speed,nomber):
-    ratio = posx * 10000 / WIDTH
+def futur(posx,speed,nomber,screen_width):
+    ratio = posx * 10000 / screen_width
     ratio -= speed * nomber
-    posx = (WIDTH * ratio) / 10000
+    posx = (screen_width * ratio) / 10000
     return posx
