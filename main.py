@@ -3,6 +3,7 @@ from libs.ui import MainMenu, Button, menu_but
 from libs.turrets import Turret_Gestion
 from libs.models import *
 from libs.enemy import update_enemy, create_wave, draw_enemy
+from libs.fleche import *
 
 pygame.init()
 WIDTH, HEIGHT = 800,600
@@ -30,6 +31,7 @@ turrets = Turret_Gestion()
 
 main_menu = MainMenu(SCREEN)
 
+Ensemble_fleche =  []
 wave_number = 1
 enemies, all_sprites = create_wave(wave_number,SCREEN.get_width(),420)
 
@@ -38,6 +40,7 @@ enemies, all_sprites = create_wave(wave_number,SCREEN.get_width(),420)
 PAUSE = False       # Pause works by stop calling update functions but still calling draw functions
 RUNNING = True
 while RUNNING:
+    time = pygame.time.get_ticks()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             RUNNING = False
@@ -48,7 +51,7 @@ while RUNNING:
             elif main_menu.game_state == "running":
                 for but in BUTTON_LIST:
                     but.handle_click(pygame.mouse.get_pos())
-
+                Ensemble_fleche.append(Fleche(WIDTH, HEIGHT, pygame.mouse.get_pos(), time, SCREEN))
         if event.type == pygame.VIDEORESIZE:
             WIDTH, HEIGHT = SCREEN.get_size()
             RATIO_W = float(WIDTH  / 800)
@@ -92,6 +95,8 @@ while RUNNING:
                 pause_text = pygame.font.Font(None, 48).render("PAUSED", True, "Black")
                 SCREEN.blit(pause_text, (WIDTH // 2 - pause_text.get_width() // 2, 10))
 
+    dead_fleche(enemies, Ensemble_fleche)
+    draw(SCREEN, time, Ensemble_fleche)
     texte_fps = POLICE.render(f"{int(CLOCK.get_fps())} FPS", True, "Black")
     SCREEN.blit(texte_fps, (10, 10))
 
