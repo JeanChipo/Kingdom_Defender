@@ -1,12 +1,8 @@
-try :
-    import pygame
-    from libs.ui import MainMenu, Button, menu_but
-    from libs.turrets import Turret_Gestion
-    from libs.models import *
-    from libs.enemy import update_enemy, create_wave, draw_enemy
-except ImportError:
-    print("Erreur lors de l'importation des modules.")
-    exit()
+import pygame
+from libs.ui import MainMenu, Button, menu_but
+from libs.turrets import Turret_Gestion
+from libs.models import *
+from libs.enemy import update_enemy, create_wave, draw_enemy
 
 pygame.init()
 WIDTH, HEIGHT = 800,600
@@ -69,7 +65,7 @@ while RUNNING:
 
     SCREEN.fill("white")
     print(f"<game_state : {main_menu.game_state}>{' '*50}", end="\r")
-    main_menu.game_state = "running"
+    main_menu.game_state = "running"    # A SUPPRIMER QUAND LE MENU PRINCIPAL FONCTIONNE
     match main_menu.game_state:
         case "menu":
             SCREEN.fill((230,230,230))
