@@ -1,5 +1,5 @@
 import pygame
-from libs.transitions import fade_to
+from transitions import fade_to
 
 class MainMenu:
     def __init__(self, screen:pygame.Surface):
@@ -100,13 +100,13 @@ class Button:
         self.screen_to_print_on.blit(text_surface, (text_x, text_y))
 
     def handle_click(self, mouse: tuple[int, int]) -> None:
-        if self.is_hovered(mouse):
-            self.is_being_pressed = True
-            self.render(mouse)
-            pygame.display.update([self.coord_x, self.coord_y, self.button_width, self.button_height])
-            pygame.time.delay(100)  # short delay to show press
-            self.function_to_call()
-            self.is_being_pressed = False
+        # if self.is_hovered(mouse):
+        self.is_being_pressed = True
+        self.render(mouse)
+        pygame.display.update([self.coord_x, self.coord_y, self.button_width, self.button_height])
+        pygame.time.delay(100)  # short delay to show press
+        self.function_to_call()
+        self.is_being_pressed = False
 
 
 def menu_but(screen_to_print_on: pygame.Surface, 
@@ -122,3 +122,7 @@ def menu_but(screen_to_print_on: pygame.Surface,
     screen_to_print_on.blit(transparent_surface, (left, top))
     return pygame.Rect(left, top, scaled_width, scaled_height)
 
+def draw_text(screen:pygame.Surface, text:str, x:int, y:int, size:int=24):
+    font = pygame.font.Font(None, size)
+    img = font.render(text, True, "black")
+    screen.blit(img, (x, y))
