@@ -66,6 +66,9 @@ while RUNNING:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 PAUSE = not PAUSE
+                pygame.mixer.music.pause()
+            if event.key == pygame.K_1:
+                    play_next_music()
 
     print(f"<game_state : {main_menu.game_state}>{' '*50}", end="\r")
     # main_menu.game_state = "running"    # A SUPPRIMER QUAND LE MENU PRINCIPAL FONCTIONNE
@@ -75,7 +78,7 @@ while RUNNING:
             main_menu.render(pygame.mouse.get_pos(), ratio=(1,1))
             play_main_menu()
 
-        case "running":
+        case "running": 
             SCREEN.fill('white')
             SCREEN.blit(background, (0, 0))
             SCREEN.blit(tower_1, (-150, 150))
@@ -88,9 +91,9 @@ while RUNNING:
 
             if not PAUSE:
                 turrets.update(enemies)
-                enemies, all_sprites, wave_number = update_enemy(
-                    SCREEN, all_sprites, enemies, wave_number, turrets.turrets[0].get_bullet()
-                )
+                enemies, all_sprites, wave_number = update_enemy(SCREEN, all_sprites, enemies, wave_number, turrets.turrets[0].get_bullet())
+                if not pygame.mixer.music.get_busy():
+                    play_next_music()
             else:
                 pause_text = pygame.font.Font(None, 48).render("PAUSED", True, "Black")
                 SCREEN.blit(pause_text, (WIDTH // 2 - pause_text.get_width() // 2, 10))

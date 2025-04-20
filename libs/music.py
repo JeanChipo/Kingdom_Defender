@@ -17,13 +17,14 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 playlist = [
     "./assets/musics/LePoissonSteve.mp3",
+    "./assets/musics/test.mp3",
     "./assets/musics/HappyNation.mp3",
 ]
 
 current_track = 0
 pygame.mixer.music.load(playlist[current_track])
 # pygame.mixer.music.play()
-pygame.mixer.music.set_volume(1)
+pygame.mixer.music.set_volume(0.2)
 
 def play_main_menu(song_path:str="./assets/musics/TheInfiniteHole.mp3"):
     if not pygame.mixer.music.get_busy():
@@ -94,7 +95,7 @@ def option_menu():
 
             # get_next_music()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_a:
+                if event.key == pygame.K_1:
                     play_next_music()
                 if event.key == pygame.K_p:
                     pygame.mixer.music.pause()
@@ -102,7 +103,7 @@ def option_menu():
             volume_slider.handle_event(event)
 
         if not pygame.mixer.music.get_busy():
-            play_main_menu()
+            play_next_music()
 
         draw_text(screen, "Volume Control", 180, 150)
         volume_slider.draw(screen)
