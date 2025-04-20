@@ -9,9 +9,7 @@ WIDTH, HEIGHT = 500, 300
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 playlist = [
-    "./assets/musics/oo.wav",
     "./assets/musics/LePoissonSteve.mp3",
-    "./assets/musics/MP.wav",
     "./assets/musics/HappyNation.mp3",
 ]
 

@@ -1,4 +1,5 @@
 import pygame
+from libs.transitions import ScreenFader
 from libs.ui import MainMenu, Button, menu_but
 from libs.turrets import Turret_Gestion
 from libs.models import *
@@ -10,7 +11,6 @@ WIDTH, HEIGHT = 800,600
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
 pygame.display.set_caption("Kingdom defender ⊹ ࣪ ﹏𓊝﹏𓂁﹏⊹ ࣪ ˖")
 
-# Affichage du texte pour les FPS
 POLICE = pygame.font.Font(None, 24)
 CLOCK = pygame.time.Clock()
 
@@ -24,16 +24,12 @@ B_upg_turret = Button("white", "black", "gray", "black", "upgrade turret", "kris
                  (120+LONG_BANDEAU, 40), (SCREEN.get_width()-165+LONG_BANDEAU, 150+LONG_BANDEAU), SCREEN.get_size(), turrets.turrets[0].upgrade, SCREEN)
 BUTTON_LIST = [B_upg_tower, B_upg_turret]
 
-RATIO_W = float(WIDTH  / 800)
-RATIO_H = float(HEIGHT / 600)
-
-turrets = Turret_Gestion()
-
-main_menu = MainMenu(SCREEN)
-
 Ensemble_fleche =  []
 wave_number = 1
 enemies, all_sprites = create_wave(wave_number,SCREEN.get_width(),420)
+
+fader = ScreenFader(SCREEN, color=(0,0,0), duration=2000, steps=60)
+main_menu = MainMenu(SCREEN, fader)
 
 # pygame.key.set_repeat(100) # a held key will be counted every 100 milliseconds
 
@@ -50,24 +46,23 @@ while RUNNING:
                     but.handle_click(pygame.mouse.get_pos())
             elif main_menu.game_state == "running":
                 mouse_pos = pygame.mouse.get_pos()
-                hovering_any = False
-
+                hovering = False
                 for but in BUTTON_LIST:
                     if but.is_hovered(mouse_pos):
                         but.handle_click(mouse_pos)
-                        hovering_any = True
+                        hovering = True
                         break
-
-                if not hovering_any:
+                if not hovering:
                     Ensemble_fleche.append(Fleche(WIDTH, HEIGHT, mouse_pos, time, SCREEN))
 
-        if event.type == pygame.VIDEORESIZE:
+        elif event.type == pygame.VIDEORESIZE:
             WIDTH, HEIGHT = SCREEN.get_size()
-            RATIO_W = float(WIDTH  / 800)
-            RATIO_H = float(HEIGHT / 600)
+            RATIO_W = WIDTH / 800
+            RATIO_H = HEIGHT / 600
             for but in BUTTON_LIST:
                 but.update_pos((WIDTH, HEIGHT))
-        if event.type == pygame.KEYDOWN:
+
+        elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_p:
                 PAUSE = not PAUSE
             if event.key == pygame.K_a:
@@ -75,14 +70,12 @@ while RUNNING:
             if event.key == pygame.K_q:
                 NB_FPS *= 2
 
-    SCREEN.fill("white")
     print(f"<game_state : {main_menu.game_state}>{' '*50}", end="\r")
-    main_menu.game_state = "running"    # A SUPPRIMER QUAND LE MENU PRINCIPAL FONCTIONNE
+    # main_menu.game_state = "running"    # A SUPPRIMER QUAND LE MENU PRINCIPAL FONCTIONNE
     match main_menu.game_state:
         case "menu":
             SCREEN.fill((230,230,230))
-            main_menu.ratio = (RATIO_W, RATIO_H)
-            main_menu.render(pygame.mouse.get_pos())
+            main_menu.render(pygame.mouse.get_pos(), ratio=(1,1))
 
         case "running":
             SCREEN.fill('white')
@@ -112,6 +105,7 @@ while RUNNING:
     CLOCK.tick(NB_FPS)
     DT = CLOCK.get_time() / 1000
 
+    fader.update()
     pygame.display.flip()
 
 pygame.quit()

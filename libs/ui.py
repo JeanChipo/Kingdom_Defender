@@ -1,11 +1,12 @@
 import pygame
-from libs.transitions import fade_to
+from libs.transitions import ScreenFader
 
 class MainMenu:
-    def __init__(self, screen:pygame.Surface):
-        self.game_state = "menu"     # "menu", "running", "ended", "options"
-        screen_size = screen.get_size()
+    def __init__(self, screen: pygame.Surface, fader: ScreenFader):
         self.screen = screen
+        self.fader = fader
+        self.game_state = "menu"  # "menu", "running", "ended", "options"
+        screen_size = screen.get_size()
         self.band_size = 12.5
         self.buttons = [
             Button((230,230,230), (175,175,175), (150,150,150), (0,0,0), "New Game", None, 32, (140, 60), (0+self.band_size, 300+self.band_size), screen_size, self.start_new_game , screen),
@@ -21,8 +22,9 @@ class MainMenu:
         self.menu
 
     def start_new_game(self):
-        self.game_state = "running"
-        fade_to(self.screen, (0,0,0), 2000)
+        def switch_to_game():
+            self.game_state = "running"
+        self.fader.start(func_on_mid=switch_to_game) # switch state at mid-fade
 
     def quit_game(self):
         self.game_state = "ended"
@@ -100,13 +102,14 @@ class Button:
         self.screen_to_print_on.blit(text_surface, (text_x, text_y))
 
     def handle_click(self, mouse: tuple[int, int]) -> None:
-        # if self.is_hovered(mouse):
-        self.is_being_pressed = True
-        self.render(mouse)
-        pygame.display.update([self.coord_x, self.coord_y, self.button_width, self.button_height])
-        pygame.time.delay(100)  # short delay to show press
-        self.function_to_call()
-        self.is_being_pressed = False
+        if self.is_hovered(mouse):
+            self.is_being_pressed = True
+            self.render(mouse)
+            pygame.display.update([self.coord_x, self.coord_y, self.button_width, self.button_height])
+            pygame.time.delay(100)  # show press with delay
+            self.function_to_call()
+            self.is_being_pressed = False
+
 
 
 def menu_but(screen_to_print_on: pygame.Surface, 
