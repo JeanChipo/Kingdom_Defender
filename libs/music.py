@@ -1,5 +1,12 @@
 import pygame
-from ui import draw_text
+
+### To replace when done
+# from ui import draw_text
+def draw_text(screen:pygame.Surface, text:str, x:int, y:int, size:int=24):
+    font = pygame.font.Font(None, size)
+    img = font.render(text, True, "black")
+    screen.blit(img, (x, y))
+###
 
 pygame.init()
 pygame.font.init()
@@ -15,8 +22,14 @@ playlist = [
 
 current_track = 0
 pygame.mixer.music.load(playlist[current_track])
-pygame.mixer.music.play()
-pygame.mixer.music.set_volume(0.2)
+# pygame.mixer.music.play()
+pygame.mixer.music.set_volume(1)
+
+def play_main_menu(song_path:str="./assets/musics/TheInfiniteHole.mp3"):
+    if not pygame.mixer.music.get_busy():
+        pygame.mixer.music.load(song_path)
+        pygame.mixer.music.play()
+
 
 def get_next_music():
     global current_track
@@ -71,29 +84,29 @@ class VolumeSlider:
 
 volume_slider = VolumeSlider(100, 200, 300, 10, initial_volume=0.5)
 
+def option_menu():
+    running = True
+    while running:
+        screen.fill("white")
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
 
-running = True
-while running:
-    screen.fill("white")
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+            # get_next_music()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_a:
+                    play_next_music()
+                if event.key == pygame.K_p:
+                    pygame.mixer.music.pause()
 
-        # get_next_music()
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_a:
-                play_next_music()
-            if event.key == pygame.K_p:
-                pygame.mixer.music.pause()
-        
-        volume_slider.handle_event(event)
+            volume_slider.handle_event(event)
 
-    if not pygame.mixer.music.get_busy():
-        play_next_music()
+        if not pygame.mixer.music.get_busy():
+            play_main_menu()
 
-    draw_text(screen, "Volume Control", 180, 150)
-    volume_slider.draw(screen)
+        draw_text(screen, "Volume Control", 180, 150)
+        volume_slider.draw(screen)
 
-    pygame.display.flip()
+        pygame.display.flip()
 
-pygame.quit()
+    pygame.quit()

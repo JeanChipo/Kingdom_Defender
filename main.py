@@ -5,6 +5,7 @@ from libs.turrets import Turret_Gestion
 from libs.models import *
 from libs.enemy import update_enemy, create_wave, draw_enemy
 from libs.fleche import *
+from libs.music import *
 
 pygame.init()
 WIDTH, HEIGHT = 800,600
@@ -63,12 +64,8 @@ while RUNNING:
                 but.update_pos((WIDTH, HEIGHT))
 
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_p:
+            if event.key == pygame.K_ESCAPE:
                 PAUSE = not PAUSE
-            if event.key == pygame.K_a:
-                NB_FPS /= 2
-            if event.key == pygame.K_q:
-                NB_FPS *= 2
 
     print(f"<game_state : {main_menu.game_state}>{' '*50}", end="\r")
     # main_menu.game_state = "running"    # A SUPPRIMER QUAND LE MENU PRINCIPAL FONCTIONNE
@@ -76,6 +73,7 @@ while RUNNING:
         case "menu":
             SCREEN.fill((230,230,230))
             main_menu.render(pygame.mouse.get_pos(), ratio=(1,1))
+            play_main_menu()
 
         case "running":
             SCREEN.fill('white')
