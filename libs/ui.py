@@ -1,5 +1,5 @@
 import pygame
-from transitions import fade_to
+from libs.transitions import fade_to
 
 class MainMenu:
     def __init__(self, screen:pygame.Surface):
