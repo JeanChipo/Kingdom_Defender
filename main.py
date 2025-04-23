@@ -26,6 +26,7 @@ B_upg_turret = Button("white", "black", "gray", "black", "upgrade turret", "kris
 BUTTON_LIST = [B_upg_tower, B_upg_turret]
 
 Ensemble_fleche =  []
+upgrade = 1000
 wave_number = 1
 enemies, all_sprites = create_wave(wave_number,SCREEN.get_width(),420)
 
@@ -54,7 +55,7 @@ while RUNNING:
                         hovering = True
                         break
                 if not hovering:
-                    Ensemble_fleche.append(Fleche(WIDTH, HEIGHT, mouse_pos, time, SCREEN))
+                    cadence(Ensemble_fleche, upgrade, mouse_pos, time, WIDTH, HEIGHT, SCREEN)
 
         elif event.type == pygame.VIDEORESIZE:
             WIDTH, HEIGHT = SCREEN.get_size()

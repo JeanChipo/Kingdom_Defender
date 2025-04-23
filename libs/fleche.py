@@ -53,3 +53,18 @@ def draw(SCREEN,time,Ensemble_fleche):
         else:
             # Supprimer la flèche qui sort de l'écran
             Ensemble_fleche.remove(fleche)
+
+def cadence(Ensemble_fleche, upgrade, mouse_pos, time, WIDTH, HEIGHT, SCREEN):
+    # Si la liste est vide
+    if len(Ensemble_fleche) == 0:
+        Ensemble_fleche.append(Fleche(WIDTH, HEIGHT, mouse_pos, time, SCREEN))
+        return True
+
+    # Vérifie le temps écoulé depuis la dernière flèche
+    last_fleche = len(Ensemble_fleche) - 1  # Index de la dernière flèche
+    if time - Ensemble_fleche[last_fleche].time_start >= upgrade:
+        Ensemble_fleche.append(Fleche(WIDTH, HEIGHT, mouse_pos, time, SCREEN))
+        return True
+
+    return False
+
