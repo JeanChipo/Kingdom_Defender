@@ -57,14 +57,27 @@ def draw(SCREEN,time,Ensemble_fleche):
 def cadence(Ensemble_fleche, upgrade, mouse_pos, time, WIDTH, HEIGHT, SCREEN):
     # Si la liste est vide
     if len(Ensemble_fleche) == 0:
+        # Ajoute la première flèche
         Ensemble_fleche.append(Fleche(WIDTH, HEIGHT, mouse_pos, time, SCREEN))
+        # Ajoute la deuxième flèche avec un délai de 200ms
+        Ensemble_fleche.append(Fleche(WIDTH, HEIGHT, mouse_pos, time + 200, SCREEN))
         return True
 
-    # Vérifie le temps écoulé depuis la dernière flèche
-    last_fleche = len(Ensemble_fleche) - 1  # Index de la dernière flèche
-    if time - Ensemble_fleche[last_fleche].time_start >= upgrade:
-        Ensemble_fleche.append(Fleche(WIDTH, HEIGHT, mouse_pos, time, SCREEN))
-        return True
+    # Vérifie le temps écoulé depuis l'avant-dernière flèche (première flèche de la dernière salve)
+    if len(Ensemble_fleche) >= 2:
+        last_salve_time = Ensemble_fleche[-2].time_start
+        if time - last_salve_time >= upgrade:
+            # Ajoute une nouvelle salve de deux flèches
+            Ensemble_fleche.append(Fleche(WIDTH, HEIGHT, mouse_pos, time, SCREEN))
+            Ensemble_fleche.append(Fleche(WIDTH, HEIGHT, mouse_pos, time + 200, SCREEN))
+            return True
+    else:
+        # Si on n'a qu'une seule flèche, on vérifie par rapport à celle-ci
+        if time - Ensemble_fleche[-1].time_start >= upgrade:
+            Ensemble_fleche.append(Fleche(WIDTH, HEIGHT, mouse_pos, time, SCREEN))
+            Ensemble_fleche.append(Fleche(WIDTH, HEIGHT, mouse_pos, time + 200, SCREEN))
+            return True
 
     return False
+
 
