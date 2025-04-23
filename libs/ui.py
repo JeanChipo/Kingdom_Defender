@@ -9,9 +9,9 @@ class MainMenu:
         screen_size = screen.get_size()
         self.band_size = 12.5
         self.buttons = [
-            Button((230,230,230), (175,175,175), (150,150,150), (0,0,0), "New Game", None, 32, (140, 60), (0+self.band_size, 300+self.band_size), screen_size, self.start_new_game , screen),
-            Button((230,230,230), (175,175,175), (150,150,150), (0,0,0), "Load Game", None, 32, (140, 60), (0+self.band_size, 300+60*1+self.band_size), screen_size, self.load_game, screen),
-            Button((230,230,230), (175,175,175), (150,150,150), (0,0,0), "Options", None, 32, (140, 60), (0+self.band_size, 300+60*2+self.band_size), screen_size, self.open_options, screen),
+            Button((230,230,230), (175,175,175), (150,150,150), (0,0,0), "Start game", None, 32, (140, 60), (0+self.band_size, 300+self.band_size), screen_size, self.start_new_game , screen),
+            Button((230,230,230), (175,175,175), (150,150,150), (0,0,0), "Settings", None, 32, (140, 60), (0+self.band_size, 300+60*1+self.band_size), screen_size, self.open_options, screen),
+            Button((230,230,230), (175,175,175), (150,150,150), (0,0,0), "Credits", None, 32, (140, 60), (0+self.band_size, 300+60*2+self.band_size), screen_size, self.open_credits, screen),
             Button((230,230,230), (175,175,175), (150,150,150), (0,0,0), "Quit", None, 32, (140, 60), (0+self.band_size, 300+60*3+self.band_size), screen_size, self.quit_game, screen),
         ]
 
@@ -28,16 +28,12 @@ class MainMenu:
 
     def quit_game(self):
         self.game_state = "ended"
-        pygame.quit()
-        exit()
-
-    def load_game(self):
-        self.game_state = "running"
 
     def open_options(self):
         self.game_state = "options"
 
-    
+    def open_credits(self):
+        ...
 
 
 class Button:

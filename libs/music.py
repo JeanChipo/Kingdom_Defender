@@ -1,4 +1,5 @@
 import pygame
+from libs.ui import Button
 
 ### To replace when done
 # from ui import draw_text
@@ -85,29 +86,41 @@ class VolumeSlider:
 
 volume_slider = VolumeSlider(100, 200, 300, 10, initial_volume=0.5)
 
-def option_menu():
-    running = True
-    while running:
+
+def option_game_loop(screen, main_menu):
+    clock = pygame.time.Clock()
+    back_button = Button((230,230,230), (175,175,175), (150,150,150), (0, 0, 0), "<-- Back", None, 28, (120, 50), (20, 20),
+                          screen.get_size(), lambda: setattr(main_menu, "game_state", "menu"), screen_to_print_on=screen)
+    while main_menu.game_state == "options":
         screen.fill("white")
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                pygame.quit()
+                exit()
 
-            # get_next_music()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_1:
                     play_next_music()
-                if event.key == pygame.K_p:
+                elif event.key == pygame.K_ESCAPE:
                     pygame.mixer.music.pause()
 
             volume_slider.handle_event(event)
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                back_button.handle_click(pygame.mouse.get_pos())
+
+            elif event.type == pygame.VIDEORESIZE:
+                volume_slider.rect.width = int(screen.get_width() * 0.6)
+                volume_slider.rect.x = (screen.get_width() - volume_slider.rect.width) // 2
+                volume_slider.knob_x = int(volume_slider.rect.x + volume_slider.volume * volume_slider.rect.width)
+                back_button.update_pos(screen.get_size())
 
         if not pygame.mixer.music.get_busy():
             play_next_music()
 
         draw_text(screen, "Volume Control", 180, 150)
         volume_slider.draw(screen)
+        back_button.render(pygame.mouse.get_pos(), border_radius=8)
 
         pygame.display.flip()
-
-    pygame.quit()
+        clock.tick(60)

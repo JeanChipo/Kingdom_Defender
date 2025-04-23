@@ -75,8 +75,12 @@ while RUNNING:
     match main_menu.game_state:
         case "menu":
             SCREEN.fill((230,230,230))
+            # SCREEN.blit()
             main_menu.render(pygame.mouse.get_pos(), ratio=(1,1))
             play_main_menu()
+
+        case "options":
+            option_game_loop(SCREEN, main_menu)
 
         case "running": 
             SCREEN.fill('white')
@@ -97,9 +101,13 @@ while RUNNING:
             else:
                 pause_text = pygame.font.Font(None, 48).render("PAUSED", True, "Black")
                 SCREEN.blit(pause_text, (WIDTH // 2 - pause_text.get_width() // 2, 10))
+            dead_fleche(enemies, Ensemble_fleche)
+            draw(SCREEN, time, Ensemble_fleche)
+        
+        case "ended":
+            pygame.quit()
+            exit()
 
-    dead_fleche(enemies, Ensemble_fleche)
-    draw(SCREEN, time, Ensemble_fleche)
     texte_fps = POLICE.render(f"{int(CLOCK.get_fps())} FPS", True, "Black")
     SCREEN.blit(texte_fps, (10, 10))
 
