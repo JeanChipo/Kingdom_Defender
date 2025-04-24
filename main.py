@@ -95,7 +95,7 @@ while RUNNING:
             draw_enemy(SCREEN, enemies)
 
             if not PAUSE:
-                turrets.update(enemies)
+                turrets.update(enemies, WIDTH)
                 enemies, all_sprites, wave_number = update_enemy(SCREEN, all_sprites, enemies, wave_number, turrets.turrets[0].get_bullet())
                 if not pygame.mixer.music.get_busy():
                     play_next_music()
