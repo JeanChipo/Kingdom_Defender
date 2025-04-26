@@ -1,13 +1,15 @@
 import math
 import pygame
+
+
 class Fleche:
-    def __init__(self, WIDTH, HEIGHT, mouse_pos, time, SCREEN):
+    def __init__(self, WIDTH, HEIGHT, angle, mouse_pos, time, SCREEN):
         self.time_start = time
         self.time = 0
         self.x_end = mouse_pos[0]
         self.y_end = mouse_pos[1]
-        self.gravity = 300  # Augmenter pour un effet plus réaliste
-        self.angle = math.radians(-45)  # Convertir directement en radians
+        self.gravity = 300
+        self.angle = angle  # angle en radians
         self.x_init = WIDTH // 8
         self.y_init = HEIGHT // 4
         self.x = self.x_init
@@ -15,16 +17,29 @@ class Fleche:
         self.screen = SCREEN
         self.rect = pygame.Rect(self.x, self.y, 10, 10)
         self.damage = 1000
-        # Calcule de la distance entre le point de départ et le point d'arrivée
-        distance_point_arrive = math.sqrt((self.x_end - self.x_init) ** 2 + (self.y_end - self.y_init) ** 2)
 
-        # Calcul du temps d'arrivée basé sur la distance (arbitrairement divisé par 300 pour équilibrer)
+        # Distance de base (sans angle)
+        distance_point_arrive = math.sqrt((self.x_end - self.x_init) ** 2 + (self.y_end - self.y_init) ** 2)
         self.temps_arrive = max(0.1, distance_point_arrive / 300)
 
-        # Calcul des vitesses initiales
-        self.vx = (self.x_end - self.x_init) / self.temps_arrive
-        self.vy = (self.y_end - self.y_init) / self.temps_arrive - 0.5 * self.gravity * self.temps_arrive
+        # Calculer la direction de base
+        direction_x = self.x_end - self.x_init
+        direction_y = self.y_end - self.y_init
 
+        # Normaliser le vecteur de direction
+        longueur = math.sqrt(direction_x ** 2 + direction_y ** 2)
+        if longueur > 0:
+            direction_x /= longueur
+            direction_y /= longueur
+
+        # Appliquer la rotation en fonction de l'angle
+        vitesse = distance_point_arrive / self.temps_arrive
+        cos_angle = math.cos(angle)
+        sin_angle = math.sin(angle)
+
+        # Calculer les nouvelles composantes de vitesse avec l'angle
+        self.vx = vitesse * (direction_x * cos_angle - direction_y * sin_angle)
+        self.vy = vitesse * (direction_x * sin_angle + direction_y * cos_angle)
     def position(self, time):
         self.time = (time - self.time_start) / 1000  # Convertir le temps en secondes
         if self.time >= 0:
@@ -54,17 +69,27 @@ def draw(SCREEN,time,Ensemble_fleche):
             # Supprimer la flèche qui sort de l'écran
             Ensemble_fleche.remove(fleche)
 
-def cadence(Ensemble_fleche, upgrade, mouse_pos, time, WIDTH, HEIGHT, SCREEN):
+
+def creation(WIDTH, HEIGHT, angle, SCREEN, mouse_pos, time, Ensemble_fleche, Update_arc):
+    for i in range(Update_arc["salve"]):
+        for l in range(len(Update_arc["dispersion"])):
+            current_angle = math.radians(-Update_arc["dispersion"][l])  # Convertit chaque angle de dispersion en radians
+            fleche = Fleche(WIDTH, HEIGHT, current_angle, mouse_pos, time + i*200, SCREEN)  # délai entre les fléches de la salve (0,2sec) grâce à i*200
+            Ensemble_fleche.append(fleche)
+
+
+def cadence(Ensemble_fleche, upgrade, mouse_pos, time, WIDTH, HEIGHT, SCREEN, Upgrade_arc):
     # Si la liste est vide
     if len(Ensemble_fleche) == 0:
-        Ensemble_fleche.append(Fleche(WIDTH, HEIGHT, mouse_pos, time, SCREEN))
+        creation(WIDTH, HEIGHT, 0, SCREEN, mouse_pos, time, Ensemble_fleche, Upgrade_arc)
         return True
 
     # Vérifie le temps écoulé depuis la dernière flèche
     last_fleche = len(Ensemble_fleche) - 1  # Index de la dernière flèche
-    if time - Ensemble_fleche[last_fleche].time_start >= upgrade:
-        Ensemble_fleche.append(Fleche(WIDTH, HEIGHT, mouse_pos, time, SCREEN))
-        return True
-
+    if time - Ensemble_fleche[last_fleche].time_start >= (1 - Upgrade_arc["cadence"])*1000:
+        creation(WIDTH, HEIGHT, 0, SCREEN, mouse_pos, time, Ensemble_fleche, Upgrade_arc)
     return False
+
+
+
 
