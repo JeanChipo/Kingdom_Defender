@@ -8,9 +8,9 @@ class Turret_Gestion:
     def add_turret(self):
         self.turrets.append(Turret())
 
-    def update(self, enemys):
+    def update(self, enemys, WIDTH):
         for turret in self.turrets:
-            turret.update(enemys)
+            turret.update(enemys, WIDTH)
 
     def draw(self, window, WIDTH, HEIGHT,enemys):
         for turret in self.turrets:
@@ -39,24 +39,29 @@ class Turret:
         self.fire_rate = 10
         self.time = 0
 
-    def update(self, enemys):
+    def update(self, enemys, WIDTH):
         self.time += 1
-        self.firing(self.get_first_enemy_pos(enemys))
+        self.firing(self.get_first_enemy_pos(enemys, WIDTH), WIDTH)
         for elm in self.bullets:
             elm.update()
 
-    def get_first_enemy_pos(self, enemys):
+    def get_first_enemy_pos(self, enemys, WIDTH):
         if not enemys:
             return (0, 0)
+
         ennemi = enemys[0]
-        # On prédit sa future position après un certain temps de vol (basé sur la distance)
+
+        # Si l'ennemi est à l'arrêt (il ne va plus bouger), on vise sa position actuelle
+        if ennemi.rect.x <= WIDTH / 10:
+            print("on tire la !")
+            return -ennemi.rect.x, ennemi.rect.y
         dx = ennemi.rect.x - self.x
         dy = ennemi.rect.y - self.y
         distance = (dx ** 2 + dy ** 2) ** 0.5
-        vitesse_bullet = 10  # approx vitesse en px/frame (valeur arbitraire)
-        t = distance / vitesse_bullet  # temps estimé pour que la balle l'atteigne
+        vitesse_bullet = 10
+        t = distance / vitesse_bullet
         ratio_future = max(ennemi.ratio - ennemi.speed * t, 0)
-        future_x = (ennemi.WIDTH * ratio_future) / 10000
+        future_x = (WIDTH * ratio_future) / 10000
         return future_x, ennemi.rect.y
 
     def upgrade(self):
@@ -70,18 +75,28 @@ class Turret:
     def get_bullet(self):
         return [elm.bullet for elm in self.bullets]
 
-    def firing(self , pos):
-        X , Y = pos
+    def firing(self, pos, WIDTH):
+        X, Y = pos
         if self.time % self.fire_rate == 0:
-            self.bullets.append(Bullet(self.x + self.width + 80, self.y + self.height + 120// 2, (X-self.x)//120, (Y-self.y)//120, self.damage, self.bullet_penetration))
-            #self.bullets.append(Bullet(50, 450, 5,
-            #                           0, self.damage, self.bullet_penetration))
+            dir_x = X - self.x
+            dir_y = Y - self.y
+            print(dir_x)
+            magnitude = (dir_x ** 2 + dir_y ** 2) ** 0.5 or 1
+            bullet_speed = 7
+            speedx = bullet_speed * dir_x / magnitude
+            speedy = bullet_speed * dir_y / magnitude
+            self.bullets.append(Bullet(
+                self.x + self.width + 80,
+                self.y + self.height + 120 // 2,
+                speedx, speedy,
+                self.damage, self.bullet_penetration
+            ))
 
     def draw(self, screen, X, Y, enemys):
         screen.blit(pygame.transform.rotate(turret_model,-40.0), (self.x, self.y))
         for elm in self.bullets:
             elm.draw(screen)
-        self.bullets = [elm for elm in self.bullets if (elm.x <= X and elm.y <= Y and not elm.dead_bullet(enemys))]
+        self.bullets = [elm for elm in self.bullets if (elm.x <= X and elm.y <= Y-300 and not elm.dead_bullet(enemys))]
 
 
 class Bullet:
@@ -99,8 +114,8 @@ class Bullet:
     def update(self):
         self.x += self.speedx
         self.y += self.speedy
-        self.bullet.move_ip(self.speedx, self.speedy)
-
+        self.bullet.x = int(self.x)
+        self.bullet.y = int(self.y)
 
     def dead_bullet(self, enemys):
         hits = 0
