@@ -3,9 +3,10 @@ import random
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, size, health, speed, power, pos, WIDTH, HEIGHT):
+    def __init__(self, name, size, health, speed, power, pos, WIDTH, HEIGHT):
         super().__init__()
         # parametre
+        self.name = name
         self.size = size # taille
         self.health = health # point de vie
         self.speed = speed # vitesse de déplacement
@@ -57,20 +58,20 @@ def create_wave(wave_number, WIDTH, HEIGHT): # créateur d'énnemies
 
     # création de tout les ennemie et implémentation dans la liste des ennemies
     for i in range(type[1][0]):
-        enemy_petit = Enemy((15,30), 5000*type[1][1], 30, 5,i*30,WIDTH, HEIGHT)
+        enemy_petit = Enemy("petit",(15,30), 5000*type[1][1], 30, 5,i*30,WIDTH, HEIGHT)
         enemies.append(enemy_petit)
     for i in range(type[0][0]):
-        enemy_moyen = Enemy((30,50), 10000*type[0][1], 20, 10,i*20,WIDTH, HEIGHT)
+        enemy_moyen = Enemy("moyen",(30,50), 10000*type[0][1], 20, 10,i*20,WIDTH, HEIGHT)
         enemies.append(enemy_moyen)
     for i in range(type[2][0]):
-        enemy_grand = Enemy((50,70), 20000*type[2][1], 10, 20,i*50,WIDTH, HEIGHT)
+        enemy_grand = Enemy("grand",(50,70), 20000*type[2][1], 10, 20,i*50,WIDTH, HEIGHT)
         enemies.append(enemy_grand)
 
     all_sprites = pygame.sprite.Group(enemies)
     return enemies, all_sprites
 
 def update_enemy(SCREEN ,all_sprites, enemies, wave_number, list_turret):
-    all_sprites.update(SCREEN.get_width(), 600)
+    all_sprites.update(SCREEN.get_width(), SCREEN.get_height())
 
     for enemy in enemies[:]:  # sécurisation de boucle
         if enemy.est_mort():
