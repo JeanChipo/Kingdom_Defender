@@ -21,10 +21,10 @@ RATIO_W, RATIO_H = 1, 1
 
 turrets = Turret_Gestion()
 B_upg_tower = Button("white", "black", "gray", "black", "upgrade tower", "kristenitc", 16, 
-                 (120+LONG_BANDEAU, 40), (SCREEN.get_width()-165+LONG_BANDEAU, 100+LONG_BANDEAU), SCREEN.get_size(), lambda : [turrets.add_turret(), upgrade_tower()], SCREEN)
+                 (132.5, 40), (647.5, 112.5), SCREEN.get_size(), lambda : [turrets.add_turret(), upgrade_tower()], SCREEN)
 
 B_upg_turret = Button("white", "black", "gray", "black", "upgrade turret", "kristenitc", 16,
-                 (120+LONG_BANDEAU, 40), (SCREEN.get_width()-165+LONG_BANDEAU, 150+LONG_BANDEAU), SCREEN.get_size(), turrets.upgrade_turrets, SCREEN)
+                 (132.5, 40), (647.5, 162.5), SCREEN.get_size(), turrets.upgrade_turrets, SCREEN)
 
 BUTTON_LIST = [B_upg_tower, B_upg_turret]
 

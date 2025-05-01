@@ -29,10 +29,10 @@ playlist = [
     "./assets/musics/Our Wedding Day.mp3",
     "./assets/musics/Siamsa.mp3",
     "./assets/musics/Suil A Ruin.mp3",
-    "./assets/musics/TheInfiniteHole.mp3",
     "./assets/musics/Victory.mp3",
     "./assets/musics/Warriors.mp3",
     "./assets/musics/LePoissonSteve.mp3",
+    "./assets/musics/TheInfiniteHole.mp3",
 ]
 
 current_track = 0
@@ -42,7 +42,7 @@ pygame.mixer.music.set_volume(0.5)
 
 def shuffle_playlist():
     global playlist
-    music_index_list = [i for i in range(len(playlist))]
+    music_index_list = [i for i in range(len(playlist)-2)]
     shuffled_playlist = []
     while music_index_list:
         random_index = choice(music_index_list)
