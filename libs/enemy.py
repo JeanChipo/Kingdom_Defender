@@ -24,7 +24,7 @@ class Enemy(pygame.sprite.Sprite):
             self.ratio -= self.speed # calcule du déplacement sur un axe de 10000
             self.rect.x = (WIDTH*self.ratio)/10000 # produit en crois pour apliquer la position de l'axe 10000 a la taille de l'écran
         else:
-            self.rect.x = WIDTH/10
+            self.rect.x = WIDTH/10-1
 
         # déplacement en y
         self.rect.y = HEIGHT - 100 - self.size[1]
@@ -53,7 +53,7 @@ def create_wave(wave_number, WIDTH, HEIGHT): # créateur d'énnemies
         while  type[i][0] > 5:
             type[i][0] = type[i][0] - 5
             type[i][1] += 1
-            print(type[i][1])
+
 
     # création de tout les ennemie et implémentation dans la liste des ennemies
     for i in range(type[1][0]):
