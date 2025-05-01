@@ -26,6 +26,7 @@ class Enemy(pygame.sprite.Sprite):
         else:
             self.rect.x = WIDTH/10-1
 
+
         # déplacement en y
         self.rect.y = HEIGHT - 100 - self.size[1]
 
@@ -37,6 +38,14 @@ class Enemy(pygame.sprite.Sprite):
 
     def draw(self, surface):
         pygame.draw.rect(surface, (255, 0, 0), self.rect)
+
+    def futur(self, frames, screen_width):
+        if self.rect.x <= screen_width/10:
+            return self.rect.x - 50, self.rect.y
+        ratio = self.rect.x * 10000 / screen_width
+        ratio -= self.speed * frames
+        posx = (screen_width * ratio) / 10000
+        return posx, self.rect.y  # retourne une position (x, y)
 
 
 def create_wave(wave_number, WIDTH, HEIGHT): # créateur d'énnemies
@@ -89,9 +98,3 @@ def draw_enemy(SCREEN, enemies):
     for enemy in enemies:
         enemy.draw(SCREEN)
     return enemies
-
-def futur(posx,speed,nomber,screen_width):
-    ratio = posx * 10000 / screen_width
-    ratio -= speed * nomber
-    posx = (screen_width * ratio) / 10000
-    return posx

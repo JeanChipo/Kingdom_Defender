@@ -1,6 +1,6 @@
 import pygame
 from libs.models import *
-from libs.Turrets import *
+from libs.turrets import *
 WIDTH, HEIGHT = 800, 600
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
 
@@ -51,6 +51,7 @@ def tower_height_position(tower_level):
         return 410
 
 def upgrade_tower():
+    tower_level = 1
     if tower_level<3:
         tower_level+=1
         print(tower_level)
@@ -64,7 +65,7 @@ def upgrade_tower():
 #resized_background = pygame.transform.scale(background,(SCREEN.get_width(),SCREEN.get_height()))
 #ajuste la taille du fond d'écran en fonction de la taille de la fenêtre
 
-sprite_sheet_image_test = pygame.image.load("assets/doux.png").convert_alpha()
+sprite_sheet_image_test = pygame.image.load("assets/batedor_walk.png").convert_alpha()
 big_monster = pygame.image.load("assets/batedor_walk.png")
 
 black = (0,0,0)
