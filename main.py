@@ -30,6 +30,7 @@ upgrade = 1000
 wave_number = 1
 enemies, all_sprites = create_wave(wave_number,SCREEN.get_width(),420)
 
+shuffle_playlist()
 fader = ScreenFader(SCREEN, color=(0,0,0), duration=2000, steps=60)
 main_menu = MainMenu(SCREEN, fader)
 
@@ -72,7 +73,6 @@ while RUNNING:
                     play_next_music()
 
     # main_menu.game_state = "running" # skip le menu pour test
-    pygame.mixer.music.set_volume(0)  # TA GUEULE
     match main_menu.game_state:
         case "menu":
             SCREEN.fill((230,230,230))

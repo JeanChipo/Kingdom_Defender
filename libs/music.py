@@ -1,4 +1,5 @@
 import pygame
+from random import choice
 from libs.ui import Button
 
 ### To replace when done
@@ -17,21 +18,42 @@ WIDTH, HEIGHT = 500, 300
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 playlist = [
+    "./assets/musics/Breakout.mp3",
+    "./assets/musics/Celtic Dream.mp3",
+    "./assets/musics/Cry Of The Celts.mp3",
+    "./assets/musics/Fiery Nights.mp3",
+    "./assets/musics/Gypsy.mp3",
+    "./assets/musics/Lament.mp3",
+    "./assets/musics/Lord Of The Dance.mp3",
+    "./assets/musics/Nightmare.mp3",
+    "./assets/musics/Our Wedding Day.mp3",
+    "./assets/musics/Siamsa.mp3",
+    "./assets/musics/Suil A Ruin.mp3",
+    "./assets/musics/TheInfiniteHole.mp3",
+    "./assets/musics/Victory.mp3",
+    "./assets/musics/Warriors.mp3",
     "./assets/musics/LePoissonSteve.mp3",
-    "./assets/musics/test.mp3",
-    "./assets/musics/HappyNation.mp3",
 ]
 
 current_track = 0
 pygame.mixer.music.load(playlist[current_track])
 # pygame.mixer.music.play()
-pygame.mixer.music.set_volume(0.2)
+pygame.mixer.music.set_volume(0.5)
+
+def shuffle_playlist():
+    global playlist
+    music_index_list = [i for i in range(len(playlist))]
+    shuffled_playlist = []
+    while music_index_list:
+        random_index = choice(music_index_list)
+        shuffled_playlist.append(playlist[random_index])
+        music_index_list.remove(random_index)
+    playlist = shuffled_playlist
 
 def play_main_menu(song_path:str="./assets/musics/TheInfiniteHole.mp3"):
     if not pygame.mixer.music.get_busy():
         pygame.mixer.music.load(song_path)
         pygame.mixer.music.play()
-
 
 def play_next_music():
     global current_track
@@ -46,7 +68,6 @@ def play_last_music():
     pygame.mixer.music.load(playlist[song_id])
     pygame.mixer.music.play()   
     current_track -= 1
-
 
 class VolumeSlider:
     def __init__(self, x, y, width, height, initial_volume=0.5):
