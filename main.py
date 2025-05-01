@@ -97,7 +97,7 @@ while RUNNING:
             for but in BUTTON_LIST:
                 but.render(pygame.mouse.get_pos(),border_radius=6)
             turrets.draw(SCREEN, SCREEN.get_width(), SCREEN.get_width(), enemies)
-            draw_enemy(SCREEN, enemies)
+            #draw_enemy(SCREEN, enemies)
 
             if not PAUSE:
                 turrets.update(enemies, WIDTH)
