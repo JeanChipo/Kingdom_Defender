@@ -33,20 +33,11 @@ def play_main_menu(song_path:str="./assets/musics/TheInfiniteHole.mp3"):
         pygame.mixer.music.play()
 
 
-def get_next_music():
-    global current_track
-    if current_track == len(playlist)-1:
-        song_id = (current_track+1) % len(playlist)
-        print(f"now playing {playlist[song_id]}")
-        play_next_music()
-        current_track += 1
-
 def play_next_music():
     global current_track
     song_id = (current_track+1) % len(playlist)
     pygame.mixer.music.load(playlist[song_id])
     pygame.mixer.music.play()
-    print(song_id)
     current_track += 1
 
 def play_last_music():

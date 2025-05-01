@@ -16,13 +16,13 @@ POLICE = pygame.font.Font(None, 24)
 CLOCK = pygame.time.Clock()
 
 NB_FPS = 60
+RATIO_W, RATIO_H = 1, 1
 
-LONG_BANDEAU = 12.5
 turrets = Turret_Gestion()
 B_upg_tower = Button("white", "black", "gray", "black", "upgrade tower", "kristenitc", 16, 
-                 (120+LONG_BANDEAU, 40), (SCREEN.get_width()-165+LONG_BANDEAU, 100+LONG_BANDEAU), SCREEN.get_size(), lambda: print("tower upgraded"), SCREEN)
+                 (132.5, 40), (647.5, 112.5), SCREEN.get_size(), lambda: print("tower upgraded"), SCREEN)
 B_upg_turret = Button("white", "black", "gray", "black", "upgrade turret", "kristenitc", 16, 
-                 (120+LONG_BANDEAU, 40), (SCREEN.get_width()-165+LONG_BANDEAU, 150+LONG_BANDEAU), SCREEN.get_size(), turrets.turrets[0].upgrade, SCREEN)
+                 (132.5, 40), (647.5, 162.5), SCREEN.get_size(), turrets.turrets[0].upgrade, SCREEN)
 BUTTON_LIST = [B_upg_tower, B_upg_turret]
 
 Ensemble_fleche =  []
@@ -71,12 +71,11 @@ while RUNNING:
             if event.key == pygame.K_1:
                     play_next_music()
 
-    print(f"<game_state : {main_menu.game_state}>{' '*50}", end="\r")
-    # main_menu.game_state = "running"    # A SUPPRIMER QUAND LE MENU PRINCIPAL FONCTIONNE
+    # main_menu.game_state = "running" # skip le menu pour test
+    pygame.mixer.music.set_volume(0)  # TA GUEULE
     match main_menu.game_state:
         case "menu":
             SCREEN.fill((230,230,230))
-            # SCREEN.blit()
             main_menu.render(pygame.mouse.get_pos(), ratio=(1,1))
             play_main_menu()
 
@@ -88,7 +87,7 @@ while RUNNING:
             SCREEN.blit(background, (0, 0))
             SCREEN.blit(tower_1, (-150, 150))
 
-            menu_but(SCREEN, (0,0,0, 128), (SCREEN.get_width() - 160, 100, 160 - 12.5, 300), (1,1))
+            menu_but(SCREEN, (0,0,0, 128), (640, 100, 147.5, 300), (RATIO_W, RATIO_H))
             for but in BUTTON_LIST:
                 but.render(pygame.mouse.get_pos(),border_radius=6)
             turrets.draw(SCREEN, SCREEN.get_width(), SCREEN.get_width(), enemies)
