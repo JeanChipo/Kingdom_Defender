@@ -3,9 +3,10 @@ import random
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, size, health, speed, power, pos, WIDTH, HEIGHT):
+    def __init__(self, name, size, health, speed, power, pos, WIDTH, HEIGHT):
         super().__init__()
         # parametre
+        self.name = name
         self.size = size # taille
         self.health = health # point de vie
         self.speed = speed # vitesse de déplacement
@@ -15,7 +16,10 @@ class Enemy(pygame.sprite.Sprite):
         # position initiale
         self.WIDTH = WIDTH
         self.HEIGHT = HEIGHT
-        self.rect = pygame.Rect((self.WIDTH - self.size[0] + 30*pos, self.HEIGHT - 100 - self.size[1]), self.size)
+        if self.name == "volant":
+            self.rect = pygame.Rect((self.WIDTH - self.size[0] + 30*pos, self.HEIGHT - 200 - self.size[1]), self.size)
+        else:
+            self.rect = pygame.Rect((self.WIDTH - self.size[0] + 30*pos, self.HEIGHT - 100 - self.size[1]), self.size)
 
     def update(self,WIDTH, HEIGHT):# deplacement de l'ennemi
 
@@ -27,7 +31,10 @@ class Enemy(pygame.sprite.Sprite):
             self.rect.x = WIDTH/10-1
 
         # déplacement en y
-        self.rect.y = HEIGHT - 100 - self.size[1]
+        if self.name == "volant":
+            self.rect.y = HEIGHT - 300 - self.size[1]
+        else:
+            self.rect.y = HEIGHT - 100 - self.size[1]
 
     def hitbox(self, damage): # calcule des point de vie
         self.health -= damage
@@ -46,7 +53,8 @@ def create_wave(wave_number, WIDTH, HEIGHT): # créateur d'énnemies
     p = [random.randint(wave_number,wave_number*3),1]
     m = [random.randint(wave_number,wave_number*3),1]
     g = [random.randint(wave_number,wave_number*3),1]
-    type = [p,m,g]
+    v = [random.randint(wave_number,wave_number*3),1]
+    type = [p,m,g,v]
 
     # si le nombre d'ennemies est trop grand on le baisse et on change de tière
     for i in range(3):
@@ -57,14 +65,17 @@ def create_wave(wave_number, WIDTH, HEIGHT): # créateur d'énnemies
 
     # création de tout les ennemie et implémentation dans la liste des ennemies
     for i in range(type[1][0]):
-        enemy_petit = Enemy((15,30), 5000*type[1][1], 30, 5,i*20,WIDTH, HEIGHT)
+        enemy_petit = Enemy("petit", (15,30), 5000*type[1][1], 30, 5,i*20,WIDTH, HEIGHT)
         enemies.append(enemy_petit)
     for i in range(type[0][0]):
-        enemy_moyen = Enemy((30,50), 10000*type[0][1], 20, 10,i*20,WIDTH, HEIGHT)
+        enemy_moyen = Enemy("moyen", (30,50), 10000*type[0][1], 20, 10,i*20,WIDTH, HEIGHT)
         enemies.append(enemy_moyen)
     for i in range(type[2][0]):
-        enemy_grand = Enemy((50,70), 20000*type[2][1], 10, 20,i*50,WIDTH, HEIGHT)
+        enemy_grand = Enemy("grand", (50,70), 20000*type[2][1], 10, 20,i*50,WIDTH, HEIGHT)
         enemies.append(enemy_grand)
+    for i in range(type[3][0]):
+        enemy_volant = Enemy("volant", (50,30), 20000*type[3][1], 20, 20,i*50,WIDTH, HEIGHT)
+        enemies.append(enemy_volant)
         
 
     all_sprites = pygame.sprite.Group(enemies)
