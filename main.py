@@ -19,13 +19,13 @@ CLOCK = pygame.time.Clock()
 NB_FPS = 60
 RATIO_W, RATIO_H = 1, 1
 
-LONG_BANDEAU = 12.5
 turrets = Turret_Gestion()
 B_upg_tower = Button("white", "black", "gray", "black", "upgrade tower", "kristenitc", 16, 
                  (120+LONG_BANDEAU, 40), (SCREEN.get_width()-165+LONG_BANDEAU, 100+LONG_BANDEAU), SCREEN.get_size(), lambda : [turrets.add_turret(), upgrade_tower()], SCREEN)
 
 B_upg_turret = Button("white", "black", "gray", "black", "upgrade turret", "kristenitc", 16,
                  (120+LONG_BANDEAU, 40), (SCREEN.get_width()-165+LONG_BANDEAU, 150+LONG_BANDEAU), SCREEN.get_size(), turrets.upgrade_turrets, SCREEN)
+
 BUTTON_LIST = [B_upg_tower, B_upg_turret]
 
 Ensemble_fleche =  []

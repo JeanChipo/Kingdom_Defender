@@ -24,7 +24,8 @@ class Enemy(pygame.sprite.Sprite):
             self.ratio -= self.speed # calcule du déplacement sur un axe de 10000
             self.rect.x = (WIDTH*self.ratio)/10000 # produit en crois pour apliquer la position de l'axe 10000 a la taille de l'écran
         else:
-            self.rect.x = WIDTH/10 - 1
+            self.rect.x = WIDTH/10-1
+
 
         # déplacement en y
         self.rect.y = HEIGHT - 100 - self.size[1]

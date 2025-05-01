@@ -61,17 +61,23 @@ class Button:
         self.font = pygame.font.SysFont(font, font_size)
         self.function_to_call = function_to_call
         self.screen_to_print_on = screen_to_print_on
+
         self.screen_width, self.screen_height = screen_size
         self.button_width, self.button_height = button_size
         self.coord_x, self.coord_y = Button_coords
-        self.rel_x = Button_coords[0] / screen_size[0]
-        self.rel_y = Button_coords[1] / screen_size[1]
+        self.width_ratio = self.button_width / self.screen_width
+        self.height_ratio = self.button_height / self.screen_height
+        self.x_ratio = self.coord_x / self.screen_width
+        self.y_ratio = self.coord_y / self.screen_height
+
         self.is_being_pressed = False
 
     def update_pos(self, screen_size: tuple[int, int]):
         self.screen_width, self.screen_height = screen_size
-        self.coord_x = int(self.rel_x * self.screen_width)
-        self.coord_y = int(self.rel_y * self.screen_height)
+        self.button_width = int(self.width_ratio * self.screen_width)
+        self.button_height = int(self.height_ratio * self.screen_height)
+        self.coord_x = int(self.x_ratio * self.screen_width)
+        self.coord_y = int(self.y_ratio * self.screen_height)
 
     def is_hovered(self, mouse: tuple[int, int]) -> bool:
         return (self.coord_x <= mouse[0] <= self.coord_x + self.button_width and
@@ -106,20 +112,22 @@ class Button:
             self.function_to_call()
             self.is_being_pressed = False
 
-
-
 def menu_but(screen_to_print_on: pygame.Surface, 
              bg_color: str | tuple[int,int,int] | tuple[int,int,int,int], 
              initial_coords: tuple[int, int, int, int], # (left, top, width, height)
-             resize_ratio: tuple[float, float]) -> pygame.Rect:
+             resize_ratio: tuple[float, float]
+             )-> pygame.Rect:
     
     left, top, width, height = initial_coords
+    scaled_left = int(left * resize_ratio[0])
+    scaled_top = int(top * resize_ratio[1])
     scaled_width = int(width * resize_ratio[0])
     scaled_height = int(height * resize_ratio[1])
+
     transparent_surface = pygame.Surface((scaled_width, scaled_height), pygame.SRCALPHA)
     transparent_surface.fill(bg_color)
-    screen_to_print_on.blit(transparent_surface, (left, top))
-    return pygame.Rect(left, top, scaled_width, scaled_height)
+    screen_to_print_on.blit(transparent_surface, (scaled_left, scaled_top))
+    return pygame.Rect(scaled_left, scaled_top, scaled_width, scaled_height)
 
 def draw_text(screen:pygame.Surface, text:str, x:int, y:int, size:int=24):
     font = pygame.font.Font(None, size)
