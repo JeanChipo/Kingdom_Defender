@@ -6,6 +6,7 @@ from libs.models import *
 from libs.enemy import update_enemy, create_wave, draw_enemy
 from libs.fleche import *
 from libs.music import *
+from libs.display import *
 
 pygame.init()
 WIDTH, HEIGHT = 800,600
@@ -16,13 +17,15 @@ POLICE = pygame.font.Font(None, 24)
 CLOCK = pygame.time.Clock()
 
 NB_FPS = 60
+RATIO_W, RATIO_H = 1, 1
 
 LONG_BANDEAU = 12.5
 turrets = Turret_Gestion()
 B_upg_tower = Button("white", "black", "gray", "black", "upgrade tower", "kristenitc", 16, 
-                 (120+LONG_BANDEAU, 40), (SCREEN.get_width()-165+LONG_BANDEAU, 100+LONG_BANDEAU), SCREEN.get_size(), lambda: print("tower upgraded"), SCREEN)
-B_upg_turret = Button("white", "black", "gray", "black", "upgrade turret", "kristenitc", 16, 
-                 (120+LONG_BANDEAU, 40), (SCREEN.get_width()-165+LONG_BANDEAU, 150+LONG_BANDEAU), SCREEN.get_size(), turrets.turrets[0].upgrade, SCREEN)
+                 (120+LONG_BANDEAU, 40), (SCREEN.get_width()-165+LONG_BANDEAU, 100+LONG_BANDEAU), SCREEN.get_size(), lambda : [turrets.add_turret(), upgrade_tower()], SCREEN)
+
+B_upg_turret = Button("white", "black", "gray", "black", "upgrade turret", "kristenitc", 16,
+                 (120+LONG_BANDEAU, 40), (SCREEN.get_width()-165+LONG_BANDEAU, 150+LONG_BANDEAU), SCREEN.get_size(), turrets.upgrade_turrets, SCREEN)
 BUTTON_LIST = [B_upg_tower, B_upg_turret]
 
 Ensemble_fleche =  []
@@ -63,6 +66,7 @@ while RUNNING:
             RATIO_H = HEIGHT / 600
             for but in BUTTON_LIST:
                 but.update_pos((WIDTH, HEIGHT))
+            turrets.update_positions(WIDTH, HEIGHT)
 
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
@@ -71,12 +75,11 @@ while RUNNING:
             if event.key == pygame.K_1:
                     play_next_music()
 
-    print(f"<game_state : {main_menu.game_state}>{' '*50}", end="\r")
-    # main_menu.game_state = "running"    # A SUPPRIMER QUAND LE MENU PRINCIPAL FONCTIONNE
+    # main_menu.game_state = "running" # skip le menu pour test
+    pygame.mixer.music.set_volume(0)  # TA GUEULE
     match main_menu.game_state:
         case "menu":
             SCREEN.fill((230,230,230))
-            # SCREEN.blit()
             main_menu.render(pygame.mouse.get_pos(), ratio=(1,1))
             play_main_menu()
 
@@ -85,17 +88,23 @@ while RUNNING:
 
         case "running": 
             SCREEN.fill('white')
-            SCREEN.blit(background, (0, 0))
-            SCREEN.blit(tower_1, (-150, 150))
+            SCREEN.blit(resize_background(background), (0, 0))
+            SCREEN.blit(resize_tower_lvl_1(tower_1), (50*width_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()))
+            current_time = pygame.time.get_ticks()
+            if not enemies:
+                print("pause")
+            else:
+                last_update,frame = animation_running(frame,current_time, last_update, animation_cooldown,run_animation,enemies)
 
-            menu_but(SCREEN, (0,0,0, 128), (SCREEN.get_width() - 160, 100, 160 - 12.5, 300), (1,1))
+
+            menu_but(SCREEN, (0,0,0, 128), (640, 100, 147.5, 300), (RATIO_W, RATIO_H))
             for but in BUTTON_LIST:
                 but.render(pygame.mouse.get_pos(),border_radius=6)
             turrets.draw(SCREEN, SCREEN.get_width(), SCREEN.get_width(), enemies)
-            draw_enemy(SCREEN, enemies)
+            #draw_enemy(SCREEN, enemies)
 
             if not PAUSE:
-                turrets.update(enemies, WIDTH)
+                turrets.update(enemies, SCREEN.get_width())
                 enemies, all_sprites, wave_number = update_enemy(SCREEN, all_sprites, enemies, wave_number, turrets.turrets[0].get_bullet())
                 if not pygame.mixer.music.get_busy():
                     play_next_music()

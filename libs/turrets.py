@@ -1,12 +1,27 @@
+from libs.display import height_ratio
 from libs.models import*
+import math
+import pygame.transform
 
 
 class Turret_Gestion:
     def __init__(self):
-        self.turrets = [Turret()]
+        self.turrets = []
+        self.nb_turret=-1
+        self.pos = [(40,300),(40,260),(40,360)]
+        self.add_turret()
+
 
     def add_turret(self):
-        self.turrets.append(Turret())
+        self.nb_turret += 1
+        if self.nb_turret >= 3:
+            return
+        self.turrets.append(Turret(self.pos[self.nb_turret]))
+
+    def upgrade_turrets(self):
+        for turret in self.turrets:
+            turret.upgrade()
+
 
     def update(self, enemys, WIDTH):
         for turret in self.turrets:
@@ -20,23 +35,32 @@ class Turret_Gestion:
         self.update()
         self.draw(window, WIDTH)
 
+    def update_positions(self, WIDTH, HEIGHT):
+        for turret in self.turrets:
+            turret.x = turret.x_stable * WIDTH / 800
+            turret.y = turret.y_stable * HEIGHT / 600
+            turret.turret = pygame.Rect(turret.x, turret.y, turret.width, turret.height)
+
+
 class Turret:
-    def __init__(self):
-        self.x = 40
-        self.y = 160
+    def __init__(self, pos):
+        self.x, self.y = pos
+        self.x_stable, self.y_stable = pos[0], pos[1]
         self.name = "Basic"
         self.width = 50
         self.height = 25
         self.turret = pygame.Rect(self.x, self.y, self.width, self.height)
         self.bullets = []
         self.damage = 1000
-        self.upgrades = {1 : {"name" : "Basic", "damage" : 1000, "bullet_penetration" : 1, "fire_rate" : 10},
-                        2 : {"name" : "Canon", "damage" : 5000, "bullet_penetration" : 1, "fire_rate" : 15},
-                        3 : {"name" : "Lance", "damage" : 5000, "bullet_penetration" : 1, "fire_rate" : 10},
-                        4 : {"name" : "Laser", "damage" : 100, "bullet_penetration" : 100, "fire_rate" : 1}}
+        self.upgrades = {1 : {"name" : "Basic", "damage" : 1000, "bullet_penetration" : 1, "fire_rate" : 10, "bullet_size_x" : 10, "bullet_size_y" : 10},
+                        2 : {"name" : "Canon", "damage" : 5000, "bullet_penetration" : 1, "fire_rate" : 15, "bullet_size_x" : 20, "bullet_size_y" : 20},
+                        3 : {"name" : "Lance", "damage" : 5000, "bullet_penetration" : 1, "fire_rate" : 10, "bullet_size_x" : 10, "bullet_size_y" : 10},
+                        4 : {"name" : "Minigun", "damage" : 100, "bullet_penetration" : 100, "fire_rate" : 1, "bullet_size_x" : 10, "bullet_size_y" : 10}}
         self.level = 1
         self.bullet_penetration = 1
         self.fire_rate = 10
+        self.bullet_size_x = 10
+        self.bullet_size_y = 10
         self.time = 0
 
     def update(self, enemys, WIDTH):
@@ -48,21 +72,8 @@ class Turret:
     def get_first_enemy_pos(self, enemys, WIDTH):
         if not enemys:
             return (0, 0)
-
         ennemi = enemys[0]
-
-        # Si l'ennemi est à l'arrêt (il ne va plus bouger), on vise sa position actuelle
-        if ennemi.rect.x <= WIDTH / 10:
-            print("on tire la !")
-            return -ennemi.rect.x, ennemi.rect.y
-        dx = ennemi.rect.x - self.x
-        dy = ennemi.rect.y - self.y
-        distance = (dx ** 2 + dy ** 2) ** 0.5
-        vitesse_bullet = 10
-        t = distance / vitesse_bullet
-        ratio_future = max(ennemi.ratio - ennemi.speed * t, 0)
-        future_x = (WIDTH * ratio_future) / 10000
-        return future_x, ennemi.rect.y
+        return ennemi.futur(60, WIDTH)  # 60 frames = 1 seconde si 60 FPS
 
     def upgrade(self):
         self.level += 1 if self.level < 4 else 0
@@ -70,45 +81,52 @@ class Turret:
         self.damage = self.upgrades[self.level]["damage"]
         self.fire_rate = self.upgrades[self.level]["fire_rate"]
         self.bullet_penetration = self.upgrades[self.level]["bullet_penetration"]
+        self.bullet_size_x = self.upgrades[self.level]["bullet_size_x"]
+        self.bullet_size_y = self.upgrades[self.level]["bullet_size_y"]
 
 
     def get_bullet(self):
         return [elm.bullet for elm in self.bullets]
 
     def firing(self, pos, WIDTH):
+        if pos == (0,0): return
         X, Y = pos
         if self.time % self.fire_rate == 0:
             dir_x = X - self.x
             dir_y = Y - self.y
-            print(dir_x)
-            magnitude = (dir_x ** 2 + dir_y ** 2) ** 0.5 or 1
-            bullet_speed = 7
-            speedx = bullet_speed * dir_x / magnitude
-            speedy = bullet_speed * dir_y / magnitude
+            time_to_target = 1.0  # secondes
+            fps = 60
+            frames = time_to_target * fps
+            speedx = dir_x / frames
+            speedy = dir_y / frames
             self.bullets.append(Bullet(
-                self.x + self.width + 80,
-                self.y + self.height + 120 // 2,
+                self.x + self.width,
+                self.y + self.height*2,
                 speedx, speedy,
-                self.damage, self.bullet_penetration
+                self.damage, self.bullet_penetration,
+                self.bullet_size_x, self.bullet_size_y
             ))
 
     def draw(self, screen, X, Y, enemys):
-        screen.blit(pygame.transform.rotate(turret_model,-40.0), (self.x, self.y))
+        x, y = self.get_first_enemy_pos(enemys, Y)
+        if enemys:
+            rotated_baliste= pygame.transform.rotate(baliste,math.degrees(math.atan(x/y)-135))
+            screen.blit(pygame.transform.scale(rotated_baliste,(100*height_ratio(),100*height_ratio())),(self.x, self.y))
         for elm in self.bullets:
             elm.draw(screen)
         self.bullets = [elm for elm in self.bullets if (elm.x <= X and elm.y <= Y-300 and not elm.dead_bullet(enemys))]
 
 
 class Bullet:
-    def __init__(self, x, y, speedx, speedy, damage, penetration):
+    def __init__(self, x, y, speedx, speedy, damage, penetration, size_x, size_y):
         self.x = x
         self.y = y
         self.damage = damage
         self.speedx = speedx
         self.speedy = speedy
         self.penetration = penetration
-        self.width = 10
-        self.height = 10
+        self.width = size_x
+        self.height = size_y
         self.bullet = pygame.Rect(self.x, self.y, self.width, self.height)
 
     def update(self):
