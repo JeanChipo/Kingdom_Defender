@@ -1,4 +1,6 @@
 from libs.models import*
+import math
+import pygame.transform
 
 
 class Turret_Gestion:
@@ -93,7 +95,10 @@ class Turret:
             ))
 
     def draw(self, screen, X, Y, enemys):
-        screen.blit(pygame.transform.rotate(turret_model,-40.0), (self.x, self.y))
+        x, y = self.get_first_enemy_pos(enemys)
+        if enemys:
+            rotated_baliste= pygame.transform.rotate(baliste,math.degrees(math.atan(x/y)-135))
+            screen.blit(pygame.transform.scale(rotated_baliste,(100*height_ratio(screen),100*height_ratio(screen))),(self.x, self.y))
         for elm in self.bullets:
             elm.draw(screen)
         self.bullets = [elm for elm in self.bullets if (elm.x <= X and elm.y <= Y-300 and not elm.dead_bullet(enemys))]

@@ -20,7 +20,7 @@ RATIO_W, RATIO_H = 1, 1
 
 turrets = Turret_Gestion()
 B_upg_tower = Button("white", "black", "gray", "black", "upgrade tower", "kristenitc", 16, 
-                 (132.5, 40), (647.5, 112.5), SCREEN.get_size(), lambda: print("tower upgraded"), SCREEN)
+                 (132.5, 40), (647.5, 112.5), SCREEN.get_size(), upgrade_tower(), SCREEN)
 B_upg_turret = Button("white", "black", "gray", "black", "upgrade turret", "kristenitc", 16, 
                  (132.5, 40), (647.5, 162.5), SCREEN.get_size(), turrets.turrets[0].upgrade, SCREEN)
 BUTTON_LIST = [B_upg_tower, B_upg_turret]
@@ -84,14 +84,20 @@ while RUNNING:
 
         case "running": 
             SCREEN.fill('white')
-            SCREEN.blit(background, (0, 0))
-            SCREEN.blit(tower_1, (-150, 150))
+            SCREEN.blit(resize_background(background), (0, 0))
+            SCREEN.blit(resize_tower_lvl_1(tower_1), (50*width_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()))
+            current_time = pygame.time.get_ticks()
+            if not enemies:
+                print("pause")
+            else:
+                last_update,frame = animation_running(frame,current_time, last_update, animation_cooldown,run_animation,enemies)
+
 
             menu_but(SCREEN, (0,0,0, 128), (640, 100, 147.5, 300), (RATIO_W, RATIO_H))
             for but in BUTTON_LIST:
                 but.render(pygame.mouse.get_pos(),border_radius=6)
             turrets.draw(SCREEN, SCREEN.get_width(), SCREEN.get_width(), enemies)
-            draw_enemy(SCREEN, enemies)
+            #draw_enemy(SCREEN, enemies)
 
             if not PAUSE:
                 turrets.update(enemies, WIDTH)
