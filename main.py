@@ -6,6 +6,7 @@ from libs.models import *
 from libs.enemy import update_enemy, create_wave, draw_enemy
 from libs.fleche import *
 from libs.music import *
+from libs.display import *
 
 pygame.init()
 WIDTH, HEIGHT = 800,600
@@ -20,9 +21,11 @@ RATIO_W, RATIO_H = 1, 1
 
 turrets = Turret_Gestion()
 B_upg_tower = Button("white", "black", "gray", "black", "upgrade tower", "kristenitc", 16, 
-                 (132.5, 40), (647.5, 112.5), SCREEN.get_size(), upgrade_tower(), SCREEN)
-B_upg_turret = Button("white", "black", "gray", "black", "upgrade turret", "kristenitc", 16, 
-                 (132.5, 40), (647.5, 162.5), SCREEN.get_size(), turrets.turrets[0].upgrade, SCREEN)
+                 (120+LONG_BANDEAU, 40), (SCREEN.get_width()-165+LONG_BANDEAU, 100+LONG_BANDEAU), SCREEN.get_size(), lambda : [turrets.add_turret(), upgrade_tower()], SCREEN)
+
+B_upg_turret = Button("white", "black", "gray", "black", "upgrade turret", "kristenitc", 16,
+                 (120+LONG_BANDEAU, 40), (SCREEN.get_width()-165+LONG_BANDEAU, 150+LONG_BANDEAU), SCREEN.get_size(), turrets.upgrade_turrets, SCREEN)
+
 BUTTON_LIST = [B_upg_tower, B_upg_turret]
 
 Ensemble_fleche =  []
@@ -63,6 +66,7 @@ while RUNNING:
             RATIO_H = HEIGHT / 600
             for but in BUTTON_LIST:
                 but.update_pos((WIDTH, HEIGHT))
+            turrets.update_positions(WIDTH, HEIGHT)
 
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
@@ -100,7 +104,7 @@ while RUNNING:
             #draw_enemy(SCREEN, enemies)
 
             if not PAUSE:
-                turrets.update(enemies, WIDTH)
+                turrets.update(enemies, SCREEN.get_width())
                 enemies, all_sprites, wave_number = update_enemy(SCREEN, all_sprites, enemies, wave_number, turrets.turrets[0].get_bullet())
                 if not pygame.mixer.music.get_busy():
                     play_next_music()
