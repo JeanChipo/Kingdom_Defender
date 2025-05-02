@@ -29,11 +29,11 @@ B_upg_turret = Button("white", "black", "gray", "black", "upgrade turret", "kris
 BUTTON_LIST = [B_upg_tower, B_upg_turret]
 
 Ensemble_fleche =  []
+Upgrade_arc = {"cadence" : 0, "dispersion" : [45], "salve" : 1}
 upgrade = 1000
 wave_number = 1
 enemies, all_sprites = create_wave(wave_number,SCREEN.get_width(),420)
-
-shuffle_playlist()
+gold = 9999999999# Argent de début
 fader = ScreenFader(SCREEN, color=(0,0,0), duration=2000, steps=60)
 main_menu = MainMenu(SCREEN, fader)
 
@@ -59,7 +59,7 @@ while RUNNING:
                         hovering = True
                         break
                 if not hovering:
-                    cadence(Ensemble_fleche, upgrade, mouse_pos, time, WIDTH, HEIGHT, SCREEN)
+                    cadence(Ensemble_fleche, Upgrade_arc, mouse_pos, time, WIDTH, HEIGHT, SCREEN, Upgrade_arc)
 
         elif event.type == pygame.VIDEORESIZE:
             WIDTH, HEIGHT = SCREEN.get_size()
@@ -75,8 +75,28 @@ while RUNNING:
                 pygame.mixer.music.pause()
             if event.key == pygame.K_1:
                     play_next_music()
+            #Boutons d'amélioration de compétences de l'arc (modification du comportement des fléches)
+            if event.key == pygame.K_a and Upgrade_arc["cadence"] <=3 and gold >= 100 +Upgrade_arc["cadence"]*100: # Permet d'avoir une préogressioon linéaire du coût des améliorations
+                Upgrade_arc["cadence"] += 0.5
+                gold -= 100 + Upgrade_arc["cadence"] * 100
+                print(Upgrade_arc["cadence"])
+            if event.key == pygame.K_z and Upgrade_arc["salve"] <=3 and gold >= 100 +Upgrade_arc["salve"]*100:
+                Upgrade_arc["salve"] += 1
+                gold -= 100 + Upgrade_arc["salve"] * 100
+            if event.key == pygame.K_e and len(Upgrade_arc["dispersion"]) <= 9 and gold >= 100 + len(
+                    Upgrade_arc["dispersion"]) * 100:
+                min_angle = min(Upgrade_arc["dispersion"])
+                max_angle = max(Upgrade_arc["dispersion"])
+                Upgrade_arc["dispersion"].extend([min_angle - 15, max_angle + 15])  # Ajoute deux nouveaux angles
+                Upgrade_arc["dispersion"].sort()  # Trie la liste
+                gold -= 100 + len(Upgrade_arc["dispersion"]) * 100
+                print(Upgrade_arc["dispersion"])
 
-    # main_menu.game_state = "running" # skip le menu pour test
+            else :
+                print("error pas assez d'argent ou trop de palier monté")
+    print(f"<game_state : {main_menu.game_state}>{' '*50}", end="\r")
+    # main_menu.game_state = "running"    # A SUPPRIMER QUAND LE MENU PRINCIPAL FONCTIONNE
+
     match main_menu.game_state:
         case "menu":
             SCREEN.fill((230,230,230))
