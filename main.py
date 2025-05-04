@@ -24,7 +24,7 @@ B_upg_tower = Button("white", "black", "gray", "black", "upgrade tower", "kriste
                  (132.5, 40), (647.5, 112.5), SCREEN.get_size(), lambda : [turrets.add_turret(), upgrade_tower()], SCREEN)
 
 B_upg_turret = Button("white", "black", "gray", "black", "upgrade turret", "kristenitc", 16,
-                 (132.5, 40), (647.5, 162.5), SCREEN.get_size(), turrets.upgrade_turrets, SCREEN)
+                 (132.5, 40), (647.5, 162.5), SCREEN.get_size(), lambda:turrets.upgrade_turrets("special"), SCREEN)
 
 BUTTON_LIST = [B_upg_tower, B_upg_turret]
 
@@ -60,6 +60,7 @@ while RUNNING:
                         break
                 if not hovering:
                     cadence(Ensemble_fleche, upgrade, mouse_pos, time, WIDTH, HEIGHT, SCREEN)
+                    turrets.select_turret(pygame.mouse.get_pos())
 
         elif event.type == pygame.VIDEORESIZE:
             WIDTH, HEIGHT = SCREEN.get_size()
@@ -73,8 +74,16 @@ while RUNNING:
             if event.key == pygame.K_ESCAPE:
                 PAUSE = not PAUSE
                 pygame.mixer.music.pause()
-            if event.key == pygame.K_1:
+            if event.key == pygame.K_0:
                     play_next_music()
+            if event.key == pygame.K_1:
+                turrets.change_priorities("petit")
+            if event.key == pygame.K_2:
+                turrets.change_priorities("volant")
+            if event.key == pygame.K_3:
+                turrets.change_priorities("moyen")
+            if event.key == pygame.K_4:
+                turrets.change_priorities("grand")
 
     # main_menu.game_state = "running" # skip le menu pour test
     match main_menu.game_state:
@@ -104,7 +113,7 @@ while RUNNING:
             #draw_enemy(SCREEN, enemies)
 
             if not PAUSE:
-                turrets.update(enemies, SCREEN.get_width())
+                turrets.update(enemies, SCREEN.get_width(), SCREEN.get_height())
                 enemies, all_sprites, wave_number = update_enemy(SCREEN, all_sprites, enemies, wave_number, turrets.turrets[0].get_bullet())
                 if not pygame.mixer.music.get_busy():
                     play_next_music()
