@@ -132,7 +132,7 @@ while RUNNING:
                 pause_text = pygame.font.Font(None, 48).render("PAUSED", True, "Black")
                 SCREEN.blit(pause_text, (WIDTH // 2 - pause_text.get_width() // 2, 10))
             dead_fleche(enemies, Ensemble_fleche)
-            draw(SCREEN, time, Ensemble_fleche)
+            draw(time ,SCREEN, Ensemble_fleche)
         
         case "ended":
             pygame.quit()

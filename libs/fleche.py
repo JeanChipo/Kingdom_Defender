@@ -1,66 +1,58 @@
 import math
 import pygame
+from pygame.examples.moveit import WIDTH
 
+from libs.display import upgrade_tower
+from libs.music import HEIGHT
 
+amelioration_tower=1/8
 class Fleche:
     def __init__(self, WIDTH, HEIGHT, angle, mouse_pos, time, SCREEN):
+        self.width = WIDTH
+        self.height = HEIGHT
         self.time_start = time
         self.time = 0
         self.x_end = mouse_pos[0]
         self.y_end = mouse_pos[1]
-        self.gravity = 300
+        self.gravity = 500
         self.angle = angle  # angle en radians
-        self.x_init = WIDTH // 8
-        self.y_init = HEIGHT // 4
+        self.x_init = WIDTH * amelioration_tower
+        self.y_init = HEIGHT * amelioration_tower
         self.x = self.x_init
         self.y = self.y_init
         self.screen = SCREEN
-        self.rect = pygame.Rect(self.x, self.y, 10, 10)
         self.damage = 1000
+        self.rect = pygame.Rect(self.x, self.y, 10, 10)
+        # Calcule des vitesses x et y
+        self.v_x = max(100,WIDTH*0.25)
+        distance_x = self.x_end - self.x_init
+        temps_arrive = distance_x / self.v_x
+        self.v_y = (self.y_end-self.y_init-0.5*self.gravity*temps_arrive)/(math.sin(self.angle)*temps_arrive)
 
-        # Distance de base (sans angle)
-        distance_point_arrive = math.sqrt((self.x_end - self.x_init) ** 2 + (self.y_end - self.y_init) ** 2)
-
-        # Calcul du temps d'arrivée basé sur la distance (arbitrairement divisé par 300 pour équilibrer)
-        self.temps_arrive = max(0.1, distance_point_arrive / 300)
-
-        # Calculer la direction de base
-        direction_x = self.x_end - self.x_init
-        direction_y = self.y_end - self.y_init
-
-        # Normaliser le vecteur de direction
-        longueur = math.sqrt(direction_x ** 2 + direction_y ** 2)
-        if longueur > 0:
-            direction_x /= longueur
-            direction_y /= longueur
-
-        # Appliquer la rotation en fonction de l'angle
-        vitesse = distance_point_arrive / self.temps_arrive
-        cos_angle = math.cos(angle)
-        sin_angle = math.sin(angle)
-
-        # Calculer les nouvelles composantes de vitesse avec l'angle
-        self.vx = vitesse * (direction_x * cos_angle - direction_y * sin_angle)
-        self.vy = vitesse * (direction_x * sin_angle + direction_y * cos_angle)
     def position(self, time):
-        self.time = (time - self.time_start) / 1000  # Convertir le temps en secondes
-        if self.time >= 0:
-            self.x = self.x_init + self.vx * self.time
-            self.y = self.y_init + self.vy * self.time + 0.5 * self.gravity * self.time ** 2
-        self.rect.x = self.x
-        self.rect.y = self.y
-        return self.y >= self.screen.get_height() - 5  # Retourne si la flèche est hors de l'écran
+        self.time = time  # Mettre à jour le temps
+        temps_ecoule = (self.time - self.time_start) / 1000
+        self.x = self.x_init + math.cos(self.angle) * temps_ecoule * self.v_x
+        self.y = self.y_init+math.sin(self.angle)*temps_ecoule*self.v_y+0.5*self.gravity*temps_ecoule**2
 
-def dead_fleche(enemys,Ensemble_fleche):
-    for ennemy in enemys:  # On copie la liste pour éviter les conflits
-        for fleche in Ensemble_fleche:
+        return self.x < 0 or self.x > self.width or self.y < 0 or self.y > self.height
+
+def dead_fleche(enemys, Ensemble_fleche):
+    for ennemy in enemys[:]:
+        for fleche in Ensemble_fleche[:]:
+            # Met à jour les coordonnées du rectangle de collision
+            fleche.rect.x = fleche.x
+            fleche.rect.y = fleche.y
+
             if fleche.rect.colliderect(ennemy.rect):
                 Ensemble_fleche.remove(fleche)
                 ennemy.hitbox(1000)
                 if ennemy.est_mort():
                     enemys.remove(ennemy)
+                break
 
-def draw(SCREEN,time,Ensemble_fleche):
+
+def draw(time, SCREEN,Ensemble_fleche):
     # Gérer les flèches existantes
     for fleche in Ensemble_fleche:
         if not fleche.position(time):
