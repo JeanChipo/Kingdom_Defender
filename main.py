@@ -20,13 +20,6 @@ NB_FPS = 60
 RATIO_W, RATIO_H = 1, 1
 
 turrets = Turret_Gestion()
-B_upg_tower = Button("white", "black", "gray", "black", "upgrade tower", "kristenitc", 16, 
-                 (132.5, 40), (647.5, 112.5), SCREEN.get_size(), lambda : [turrets.add_turret(), upgrade_tower()], SCREEN)
-
-B_upg_turret = Button("white", "black", "gray", "black", "upgrade turret", "kristenitc", 16,
-                 (132.5, 40), (647.5, 162.5), SCREEN.get_size(), turrets.upgrade_turrets, SCREEN)
-
-BUTTON_LIST = [B_upg_tower, B_upg_turret]
 
 Ensemble_fleche =  []
 Upgrade_arc = {"cadence" : 0, "dispersion" : [45], "salve" : 1}
@@ -36,6 +29,26 @@ enemies, all_sprites = create_wave(wave_number,SCREEN.get_width(),420)
 gold = 9999999999# Argent de début
 fader = ScreenFader(SCREEN, color=(0,0,0), duration=2000, steps=60)
 main_menu = MainMenu(SCREEN, fader)
+
+# buttons to upgrade the tower and turret
+B_upg_tower = Button("white", "black", "gray", "black", "upgrade tower", "kristenitc", 16, 
+                 (132.5, 40), (647.5, 112.5 + 0*50), SCREEN.get_size(), lambda : [turrets.add_turret(), upgrade_tower()], SCREEN)
+B_upg_turret = Button("white", "black", "gray", "black", "upgrade turret", "kristenitc", 16,
+                 (132.5, 40), (647.5, 112.5 + 1*50), SCREEN.get_size(), turrets.upgrade_turrets, SCREEN)
+
+def update_gold_bow(upg_function: callable):
+    global gold, Upgrade_arc
+    gold, Upgrade_arc = upg_function(gold, Upgrade_arc)
+
+# buttons to upgrade the archer
+B_upg_cadence = Button("white", "black", "gray", "black", "bow - fire rate", "kristenitc", 16,
+                 (132.5, 40), (647.5, 112.5 + 2*50 + 10), SCREEN.get_size(), lambda : update_gold_bow(upgrade_cadence), SCREEN)
+B_upg_salve = Button("white", "black", "gray", "black", "bow - salvo", "kristenitc", 16,
+                 (132.5, 40), (647.5, 112.5 + 3*50 + 10), SCREEN.get_size(), lambda : update_gold_bow(upgrade_salve), SCREEN)
+B_upg_dispersion = Button("white", "black", "gray", "black", "bow - dispersion", "kristenitc", 16,
+                 (132.5, 40), (647.5, 112.5 + 4*50 + 10), SCREEN.get_size(), lambda : update_gold_bow(upgrade_dispersion), SCREEN)
+
+BUTTON_LIST = [B_upg_tower, B_upg_turret, B_upg_cadence, B_upg_salve, B_upg_dispersion]
 
 # pygame.key.set_repeat(100) # a held key will be counted every 100 milliseconds
 
@@ -73,28 +86,10 @@ while RUNNING:
             if event.key == pygame.K_ESCAPE:
                 PAUSE = not PAUSE
                 pygame.mixer.music.pause()
+
             if event.key == pygame.K_1:
                     play_next_music()
-            #Boutons d'amélioration de compétences de l'arc (modification du comportement des fléches)
-            if event.key == pygame.K_a and Upgrade_arc["cadence"] <=3 and gold >= 100 +Upgrade_arc["cadence"]*100: # Permet d'avoir une préogressioon linéaire du coût des améliorations
-                Upgrade_arc["cadence"] += 0.5
-                gold -= 100 + Upgrade_arc["cadence"] * 100
-                print(Upgrade_arc["cadence"])
-            if event.key == pygame.K_z and Upgrade_arc["salve"] <=3 and gold >= 100 +Upgrade_arc["salve"]*100:
-                Upgrade_arc["salve"] += 1
-                gold -= 100 + Upgrade_arc["salve"] * 100
-            if event.key == pygame.K_e and len(Upgrade_arc["dispersion"]) <= 9 and gold >= 100 + len(
-                    Upgrade_arc["dispersion"]) * 100:
-                min_angle = min(Upgrade_arc["dispersion"])
-                max_angle = max(Upgrade_arc["dispersion"])
-                Upgrade_arc["dispersion"].extend([min_angle - 15, max_angle + 15])  # Ajoute deux nouveaux angles
-                Upgrade_arc["dispersion"].sort()  # Trie la liste
-                gold -= 100 + len(Upgrade_arc["dispersion"]) * 100
-                print(Upgrade_arc["dispersion"])
 
-            else :
-                print("error pas assez d'argent ou trop de palier monté")
-    print(f"<game_state : {main_menu.game_state}>{' '*50}", end="\r")
     # main_menu.game_state = "running"    # A SUPPRIMER QUAND LE MENU PRINCIPAL FONCTIONNE
 
     match main_menu.game_state:
