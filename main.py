@@ -20,6 +20,13 @@ NB_FPS = 60
 RATIO_W, RATIO_H = 1, 1
 
 turrets = Turret_Gestion()
+B_upg_tower = Button("white", "black", "gray", "black", "upgrade tower", "kristenitc", 16, 
+                 (132.5, 40), (647.5, 112.5), SCREEN.get_size(), lambda : [turrets.add_turret(), upgrade_tower()], SCREEN)
+
+B_upg_turret = Button("white", "black", "gray", "black", "upgrade turret", "kristenitc", 16,
+                 (132.5, 40), (647.5, 162.5), SCREEN.get_size(), lambda:turrets.upgrade_turrets("special"), SCREEN)
+
+BUTTON_LIST = [B_upg_tower, B_upg_turret]
 
 Ensemble_fleche =  []
 Upgrade_arc = {"cadence" : 0, "dispersion" : [45], "salve" : 1}
@@ -73,6 +80,7 @@ while RUNNING:
                         break
                 if not hovering:
                     cadence(Ensemble_fleche, Upgrade_arc, mouse_pos, time, WIDTH, HEIGHT, SCREEN, Upgrade_arc)
+                    turrets.select_turret(pygame.mouse.get_pos())
 
         elif event.type == pygame.VIDEORESIZE:
             WIDTH, HEIGHT = SCREEN.get_size()
@@ -86,10 +94,36 @@ while RUNNING:
             if event.key == pygame.K_ESCAPE:
                 PAUSE = not PAUSE
                 pygame.mixer.music.pause()
-
-            if event.key == pygame.K_1:
+            if event.key == pygame.K_0:
                     play_next_music()
+            if event.key == pygame.K_1:
+                turrets.change_priorities("petit")
+            if event.key == pygame.K_2:
+                turrets.change_priorities("volant")
+            if event.key == pygame.K_3:
+                turrets.change_priorities("moyen")
+            if event.key == pygame.K_4:
+                turrets.change_priorities("grand")
+            #Boutons d'amélioration de compétences de l'arc (modification du comportement des fléches)
+            if event.key == pygame.K_a and Upgrade_arc["cadence"] <=3 and gold >= 100 +Upgrade_arc["cadence"]*100: # Permet d'avoir une préogressioon linéaire du coût des améliorations
+                Upgrade_arc["cadence"] += 0.5
+                gold -= 100 + Upgrade_arc["cadence"] * 100
+                print(Upgrade_arc["cadence"])
+            if event.key == pygame.K_z and Upgrade_arc["salve"] <=3 and gold >= 100 +Upgrade_arc["salve"]*100:
+                Upgrade_arc["salve"] += 1
+                gold -= 100 + Upgrade_arc["salve"] * 100
+            if event.key == pygame.K_e and len(Upgrade_arc["dispersion"]) <= 9 and gold >= 100 + len(
+                    Upgrade_arc["dispersion"]) * 100:
+                min_angle = min(Upgrade_arc["dispersion"])
+                max_angle = max(Upgrade_arc["dispersion"])
+                Upgrade_arc["dispersion"].extend([min_angle - 15, max_angle + 15])  # Ajoute deux nouveaux angles
+                Upgrade_arc["dispersion"].sort()  # Trie la liste
+                gold -= 100 + len(Upgrade_arc["dispersion"]) * 100
+                print(Upgrade_arc["dispersion"])
 
+            else :
+                print("error pas assez d'argent ou trop de palier monté")
+    print(f"<game_state : {main_menu.game_state}>{' '*50}", end="\r")
     # main_menu.game_state = "running"    # A SUPPRIMER QUAND LE MENU PRINCIPAL FONCTIONNE
 
     match main_menu.game_state:
@@ -119,7 +153,7 @@ while RUNNING:
             #draw_enemy(SCREEN, enemies)
 
             if not PAUSE:
-                turrets.update(enemies, SCREEN.get_width())
+                turrets.update(enemies, SCREEN.get_width(), SCREEN.get_height())
                 enemies, all_sprites, wave_number = update_enemy(SCREEN, all_sprites, enemies, wave_number, turrets.turrets[0].get_bullet())
                 if not pygame.mixer.music.get_busy():
                     play_next_music()
