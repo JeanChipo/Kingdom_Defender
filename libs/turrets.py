@@ -169,7 +169,7 @@ class Turret:
 
         if enemys:
             rotated_baliste= pygame.transform.rotate(baliste,math.degrees(math.atan(x/y)-135))
-            screen.blit(pygame.transform.scale(rotated_baliste,(100*height_ratio(),100*height_ratio())),(self.x, self.y))
+            screen.blit(pygame.transform.scale(rotated_baliste,(100*height_ratio(screen),100*height_ratio(screen))),(self.x, self.y))
             """resized_baliste = pygame.transform.scale(baliste, (100 * height_ratio(screen), 100 * height_ratio(screen)))
             rotated_baliste = pygame.transform.rotate(resized_baliste, math.degrees(math.atan(x / y) - 135))
             rotated_rect = rotated_baliste.get_rect(center=baliste_rect.center)
