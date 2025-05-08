@@ -51,7 +51,7 @@ hp_tower = 10000000000 # vie de la tour
 B_upg_tower = Button("white", "black", "gray", "black", "upgrade tower", "kristenitc", 16, 
                  (132.5, 40), (647.5, 112.5 + 0*50), SCREEN.get_size(), lambda : [turrets.add_turret(), upgrade_tower()], SCREEN)
 B_upg_turret = Button("white", "black", "gray", "black", "upgrade turret", "kristenitc", 16,
-                 (132.5, 40), (647.5, 112.5 + 1*50), SCREEN.get_size(), turrets.upgrade_turrets, SCREEN)
+                 (132.5, 40), (647.5, 112.5 + 1*50), SCREEN.get_size(), lambda: turrets.upgrade_turrets, SCREEN)
 
 def update_gold_bow(upg_function: callable):
     global gold, Upgrade_arc
