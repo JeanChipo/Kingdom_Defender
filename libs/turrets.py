@@ -4,24 +4,27 @@ from libs.display import *
 from libs.models import*
 import math
 
+
 def height_ratio (screen) :
     ratio= screen.get_height() /600
     return ratio
 
 class Turret_Gestion:
-    def __init__(self):
+    def __init__(self, gain_gold):
         self.turrets = []
         self.nb_turret=-1
         self.pos = [(40,300),(40,260),(40,360)]
+        self.gain_gold = gain_gold
         self.add_turret()
         self.selected_turret = None
+
 
 
     def add_turret(self):
         self.nb_turret += 1
         if self.nb_turret >= 3:
             return
-        self.turrets.append(Turret(self.pos[self.nb_turret]))
+        self.turrets.append(Turret(self.pos[self.nb_turret], self.gain_gold))
 
     def select_turret(self, mouse_pos):
         for turret in self.turrets:
@@ -31,10 +34,10 @@ class Turret_Gestion:
                 return
         self.selected_turret = None
 
-    def upgrade_turrets(self, path):
+    def upgrade_turrets(self, path, gold):
         if self.selected_turret is None:
             return
-        self.selected_turret.upgrade(path)
+        self.selected_turret.upgrade(path, gold)
 
     def change_priorities(self, priorities):
         if self.selected_turret is None:
@@ -61,8 +64,9 @@ class Turret_Gestion:
 
 
 class Turret:
-    def __init__(self, pos):
+    def __init__(self, pos, gain_gold):
         self.x, self.y = pos
+        self.gain_gold = gain_gold
         self.x_stable, self.y_stable = pos[0], pos[1]
         self.name = "Unupgraded"
         self.width = 100
@@ -70,20 +74,20 @@ class Turret:
         self.turret = pygame.Rect(self.x, self.y, self.width, self.height)
         self.bullets = []
         self.damage = 1000
-        self.upgrades = {"speed" : {1: {"name": "Standard", "damage": 500, "bullet_penetration": 1, "fire_rate": 10, "bullet_size_x": 10, "bullet_size_y": 10, "bullet_lifetime": 120},
-                                    2: {"name": "Rapide", "damage": 400, "bullet_penetration": 1, "fire_rate": 7, "bullet_size_x": 10, "bullet_size_y": 10, "bullet_lifetime": 120},
-                                    3: {"name": "Minigun", "damage": 300, "bullet_penetration": 2, "fire_rate": 4, "bullet_size_x": 8, "bullet_size_y": 8, "bullet_lifetime": 120},
-                                    4: {"name": "Fusil Laser", "damage": 200, "bullet_penetration": 3, "fire_rate": 2, "bullet_size_x": 6, "bullet_size_y": 6, "bullet_lifetime": 120}},
+        self.upgrades = {"speed" : {1: {"name": "Standard", "damage": 500, "bullet_penetration": 1, "fire_rate": 10, "bullet_size_x": 10, "bullet_size_y": 10, "bullet_lifetime": 120, "price" : 3000},
+                                    2: {"name": "Rapide", "damage": 400, "bullet_penetration": 1, "fire_rate": 7, "bullet_size_x": 10, "bullet_size_y": 10, "bullet_lifetime": 120, "price" : 7000},
+                                    3: {"name": "Minigun", "damage": 300, "bullet_penetration": 2, "fire_rate": 4, "bullet_size_x": 8, "bullet_size_y": 8, "bullet_lifetime": 120, "price" : 15000},
+                                    4: {"name": "Fusil Laser", "damage": 200, "bullet_penetration": 3, "fire_rate": 2, "bullet_size_x": 6, "bullet_size_y": 6, "bullet_lifetime": 120, "price" : 30000}},
 
-                        "bullet" : {1: {"name": "Basic", "damage": 1000, "bullet_penetration": 1, "fire_rate": 10, "bullet_size_x": 10, "bullet_size_y": 10, "bullet_lifetime": 120},
-                                    2: {"name": "Gros Boulet", "damage": 1500, "bullet_penetration": 1, "fire_rate": 12, "bullet_size_x": 20, "bullet_size_y": 20, "bullet_lifetime": 120},
-                                    3: {"name": "Mega Boulet", "damage": 2000, "bullet_penetration": 2, "fire_rate": 14, "bullet_size_x": 30, "bullet_size_y": 30, "bullet_lifetime": 120},
-                                    4: {"name": "God Boulet", "damage": 3000, "bullet_penetration": 3, "fire_rate": 16, "bullet_size_x": 40,"bullet_size_y": 40, "bullet_lifetime": 120}},
+                        "bullet" : {1: {"name": "Basic", "damage": 1000, "bullet_penetration": 1, "fire_rate": 10, "bullet_size_x": 10, "bullet_size_y": 10, "bullet_lifetime": 120, "price" : 3000},
+                                    2: {"name": "Gros Boulet", "damage": 1500, "bullet_penetration": 1, "fire_rate": 12, "bullet_size_x": 20, "bullet_size_y": 20, "bullet_lifetime": 120, "price" : 7000},
+                                    3: {"name": "Mega Boulet", "damage": 2000, "bullet_penetration": 2, "fire_rate": 14, "bullet_size_x": 30, "bullet_size_y": 30, "bullet_lifetime": 120, "price" : 15000},
+                                    4: {"name": "God Boulet", "damage": 3000, "bullet_penetration": 3, "fire_rate": 16, "bullet_size_x": 40,"bullet_size_y": 40, "bullet_lifetime": 120, "price" : 30000}},
 
-                        "special" : {   1: {"name": "Explosif", "damage": 1200, "bullet_penetration": 1, "fire_rate": 10, "bullet_size_x": 15, "bullet_size_y": 15, "bullet_lifetime": 120, "explosive": True},
-                                        2: {"name": "Perforant", "damage": 800, "bullet_penetration": 5, "fire_rate": 9, "bullet_size_x": 10, "bullet_size_y": 10, "bullet_lifetime": 120},
-                                        3: {"name": "Persistant", "damage": 700, "bullet_penetration": 1, "fire_rate": 10, "bullet_size_x": 10, "bullet_size_y": 10, "bullet_lifetime": 400},
-                                        4: {"name": "Ricochet", "damage": 900, "bullet_penetration": 2, "fire_rate": 5, "bullet_size_x": 10, "bullet_size_y": 10, "bullet_lifetime": 500, "bounces": 3}}
+                        "special" : {   1: {"name": "Explosif", "damage": 1200, "bullet_penetration": 1, "fire_rate": 10, "bullet_size_x": 15, "bullet_size_y": 15, "bullet_lifetime": 120, "explosive": True, "price" : 3000},
+                                        2: {"name": "Perforant", "damage": 800, "bullet_penetration": 5, "fire_rate": 9, "bullet_size_x": 10, "bullet_size_y": 10, "bullet_lifetime": 120, "price" : 7000},
+                                        3: {"name": "Persistant", "damage": 700, "bullet_penetration": 1, "fire_rate": 10, "bullet_size_x": 10, "bullet_size_y": 10, "bullet_lifetime": 400, "price" : 15000},
+                                        4: {"name": "Ricochet", "damage": 900, "bullet_penetration": 2, "fire_rate": 5, "bullet_size_x": 10, "bullet_size_y": 10, "bullet_lifetime": 500, "bounces": 3, "price" : 30000}}
                          }
         self.level = 0
         self.bullet_penetration = 1
@@ -122,10 +126,15 @@ class Turret:
         return
 
 
-    def upgrade(self, path):
+    def upgrade(self, path, gold):
         if self.level >= 4:
             return
         self.choose_path(path)
+        if self.upgrades[self.path][self.level + 1]["price"] > gold:
+            print("Not enough gold.")
+            return
+        self.gain_gold(-self.upgrades[self.path][self.level + 1]["price"])
+        print(gold)
         self.level += 1
         self.name = self.upgrades[self.path][self.level]["name"]
         self.bullet_penetration = self.upgrades[self.path][self.level]["bullet_penetration"]
@@ -147,9 +156,12 @@ class Turret:
         if pos == (0,0): return
         X, Y = pos
         if self.time % self.fire_rate == 0:
-            dir_x = X - self.x
-            dir_y = Y - self.y
-            time_to_target = 1.0  # secondes
+            dir_x = X - (self.x + self.width/2)
+            dir_y = Y - (self.y + self.height/2)
+            if dir_y < 50 and dir_x < 50:
+                time_to_target = 0.5
+            else:
+                time_to_target = 1.0  # secondes
             fps = 60
             frames = time_to_target * fps
             speedx = dir_x / frames
@@ -160,13 +172,13 @@ class Turret:
                 speedx, speedy,
                 self.damage, self.bullet_penetration,
                 self.bullet_size_x, self.bullet_size_y, self.bullet_lifetime,
-                self.explosive, self.bounces
+                self.explosive, self.bounces,
+                self.gain_gold
             ))
 
     def draw(self, screen, X, Y, enemys):
         x, y = self.get_first_enemy_pos(enemys, self.width)
         baliste_rect = baliste.get_rect(center=(self.x, self.y))
-
         if enemys:
             rotated_baliste= pygame.transform.rotate(baliste,math.degrees(math.atan(x/y)-135))
             screen.blit(pygame.transform.scale(rotated_baliste,(100*height_ratio(screen),100*height_ratio(screen))),(self.x, self.y))
@@ -183,9 +195,10 @@ class Turret:
 
 
 class Bullet:
-    def __init__(self, x, y, speedx, speedy, damage, penetration, size_x, size_y, lifetime, explosive, bounces):
+    def __init__(self, x, y, speedx, speedy, damage, penetration, size_x, size_y, lifetime, explosive, bounces, gain_gold):
         self.x = x
         self.y = y
+        self.gain_gold = gain_gold
         self.damage = damage
         self.speedx = speedx
         self.speedy = speedy
@@ -206,12 +219,7 @@ class Bullet:
         self.bullet.y = int(self.y)
         screen_width, screen_height = WIDTH, HEIGHT
         if self.bounces > 0:
-            if self.bullet.left <= 0 or self.bullet.right >= screen_width:
-                self.speedx *= -1
-                self.bounces -= 1
-                if self.bullet.right >= screen_width:
-                    self.bullet.right = screen_width - 10
-            if self.bullet.top <= 0 or self.bullet.bottom >= screen_height -100:
+            if self.bullet.bottom >= screen_height -100:
                 self.speedy *= -1
                 self.bounces -= 1
                 if self.bullet.bottom >= screen_height - 100:
@@ -234,12 +242,12 @@ class Bullet:
                     ennemy.hitbox(self.damage)
                     if ennemy.est_mort():
                         enemys.remove(ennemy)
+                        self.gain_gold(ennemy.money())
                 self.penetration -= 1
                 if self.penetration <= 0:
                     return True
         return False
 
     def draw(self, screen):
-        pygame.draw.rect(screen, (0, 0, 0), self.bullet)
         screen.blit(resize_cannonball(resized_cannonball),(self.x,self.y))
 
