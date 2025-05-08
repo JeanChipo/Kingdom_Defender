@@ -34,16 +34,56 @@ class MainMenu:
 
     def open_credits(self):
         self.game_state = "credits"
-        self.screen.fill((0, 0, 0))
-        text_str =  " -- Kingdom defender -- \n" + \
-                    "\n" + \
-                    " Game by "
+        self.credits_game_loop()
 
-        text = pygame.font.Font(None, 48).render("PAUSED", True, "Black")
-        screen_middle = ((self.screen.get_width() // 2 - text.get_width() // 2,
-                          self.screen.get_height() // 2 - text.get_height() // 2))
-        self.screen.blit(text, screen_middle)
-        pygame.display.flip()
+    def credits_game_loop(self):
+        clock = pygame.time.Clock()
+        back_button = Button((255,255,255), (175,175,175), (150,150,150), (0, 0, 0), "<-- Back", None, 28, (120, 50), (20, 20),
+                              self.screen.get_size(), lambda: setattr(self, "game_state", "menu"), screen_to_print_on=self.screen)
+
+        credits_text = "-- Kingdom defender --\n"                                                               \
+                       "\n"                                                                                     \
+                       "Game by @JeanChipo, @WarennOne, @QuentinDegouge, @Dragbnx, @Kosinix-17 on github\n"     \
+                       "\n"                                                                                     \
+                       "Main menu songs: \n"                                                                    \
+                       "    \"Chanson d'automne\" by Chris Christodoulou - from Risk of Rain\n"                 \
+                       "    \"TheInfiniteHole\" by Tom Schley - from The Stanley Parable\n"                     \
+                       "\n"                                                                                     \
+                       "In game songs: \n"                                                                      \
+                       "    \"Michael Flatley's Lord Of The Dance\" by Ronan Hardiman\n"                        \
+                       "\n"                                                                                     \
+                       "Easter egg song:\n"                                                                     \
+                       "    \"le poisson steve\" by @tomomp3 and @vigzvigz"
+        lines = credits_text.split("\n")
+
+        font_size = max(24, self.screen.get_height() // 30)
+        font = pygame.font.Font(None, font_size)
+        line_spacing = font_size + 10
+        y_offset = self.screen.get_height() // 10
+        
+        while self.game_state == "credits":
+            self.screen.fill((230, 230, 230))
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    back_button.handle_click(pygame.mouse.get_pos())
+
+                elif event.type == pygame.VIDEORESIZE:
+                    back_button.update_pos(self.screen.get_size())
+
+            current_y_offset = y_offset
+            for l in lines:
+                text_surface = font.render(l, True, "Black")
+                x = (self.screen.get_width() - text_surface.get_width()) // 2  # center the text
+                self.screen.blit(text_surface, (x, current_y_offset))
+                current_y_offset += line_spacing
+
+            back_button.render(pygame.mouse.get_pos(), border_radius=8)
+            pygame.display.flip()
+            clock.tick(60)
         
 class Button: 
     def __init__(self,

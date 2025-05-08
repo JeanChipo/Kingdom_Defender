@@ -109,7 +109,10 @@ while RUNNING:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 PAUSE = not PAUSE
-                pygame.mixer.music.pause()
+                if PAUSE:
+                    pygame.mixer.music.pause()
+                else:
+                    pygame.mixer.music.unpause()
             if event.key == pygame.K_0:
                     play_next_music()
             if event.key == pygame.K_1:
@@ -147,13 +150,13 @@ while RUNNING:
             SCREEN.fill((230, 230, 230))
             B_steve.render(pygame.mouse.get_pos(), border_radius=8)
             main_menu.render(pygame.mouse.get_pos(), ratio=(1, 1))
-            play_main_menu()
+            play_main_menu(["./assets/musics/TheInfiniteHole.mp3", "./assets/musics/ChansonDAutomne.mp3"])
 
         case "options":
-            ...
+            option_game_loop(SCREEN, main_menu)
 
         case "steve":
-            steve_game_loop(SCREEN, main_menu)  # Call the steve_game_loop here
+            steve_game_loop(SCREEN, main_menu)
 
         case "running": 
             SCREEN.fill('white')
