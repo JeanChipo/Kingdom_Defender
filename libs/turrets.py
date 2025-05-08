@@ -74,27 +74,27 @@ class Turret:
         self.turret = pygame.Rect(self.x, self.y, self.width, self.height)
         self.bullets = []
         self.damage = 1000
-        self.upgrades = {"speed" : {1: {"name": "Standard", "damage": 500, "bullet_penetration": 1, "fire_rate": 10, "bullet_size_x": 10, "bullet_size_y": 10, "bullet_lifetime": 120, "price" : 3000},
-                                    2: {"name": "Rapide", "damage": 400, "bullet_penetration": 1, "fire_rate": 7, "bullet_size_x": 10, "bullet_size_y": 10, "bullet_lifetime": 120, "price" : 7000},
-                                    3: {"name": "Minigun", "damage": 300, "bullet_penetration": 2, "fire_rate": 4, "bullet_size_x": 8, "bullet_size_y": 8, "bullet_lifetime": 120, "price" : 15000},
-                                    4: {"name": "Fusil Laser", "damage": 200, "bullet_penetration": 3, "fire_rate": 2, "bullet_size_x": 6, "bullet_size_y": 6, "bullet_lifetime": 120, "price" : 30000}},
+        self.upgrades = {"speed" : {1: {"name": "Standard", "damage": 1000, "bullet_penetration": 1, "fire_rate": 10, "bullet_size_x": 10, "bullet_size_y": 10, "bullet_lifetime": 120, "price" : 5000},
+                                    2: {"name": "Rapide", "damage": 1000, "bullet_penetration": 1, "fire_rate": 7, "bullet_size_x": 10, "bullet_size_y": 10, "bullet_lifetime": 120, "price" : 10000},
+                                    3: {"name": "Minigun", "damage": 300, "bullet_penetration": 2, "fire_rate": 4, "bullet_size_x": 8, "bullet_size_y": 8, "bullet_lifetime": 120, "price" : 20000},
+                                    4: {"name": "Fusil Laser", "damage": 200, "bullet_penetration": 3, "fire_rate": 2, "bullet_size_x": 6, "bullet_size_y": 6, "bullet_lifetime": 120, "price" : 40000}},
 
-                        "bullet" : {1: {"name": "Basic", "damage": 1000, "bullet_penetration": 1, "fire_rate": 10, "bullet_size_x": 10, "bullet_size_y": 10, "bullet_lifetime": 120, "price" : 3000},
-                                    2: {"name": "Gros Boulet", "damage": 1500, "bullet_penetration": 1, "fire_rate": 12, "bullet_size_x": 20, "bullet_size_y": 20, "bullet_lifetime": 120, "price" : 7000},
-                                    3: {"name": "Mega Boulet", "damage": 2000, "bullet_penetration": 2, "fire_rate": 14, "bullet_size_x": 30, "bullet_size_y": 30, "bullet_lifetime": 120, "price" : 15000},
-                                    4: {"name": "God Boulet", "damage": 3000, "bullet_penetration": 3, "fire_rate": 16, "bullet_size_x": 40,"bullet_size_y": 40, "bullet_lifetime": 120, "price" : 30000}},
+                        "bullet" : {1: {"name": "Basic", "damage": 1000, "bullet_penetration": 1, "fire_rate": 10, "bullet_size_x": 25, "bullet_size_y": 10, "bullet_lifetime": 120, "price" : 5000},
+                                    2: {"name": "Gros Boulet", "damage": 1500, "bullet_penetration": 1, "fire_rate": 12, "bullet_size_x": 25, "bullet_size_y": 20, "bullet_lifetime": 120, "price" : 10000},
+                                    3: {"name": "Mega Boulet", "damage": 2000, "bullet_penetration": 2, "fire_rate": 14, "bullet_size_x": 30, "bullet_size_y": 30, "bullet_lifetime": 120, "price" : 20000},
+                                    4: {"name": "God Boulet", "damage": 3000, "bullet_penetration": 3, "fire_rate": 16, "bullet_size_x": 40,"bullet_size_y": 40, "bullet_lifetime": 120, "price" : 40000}},
 
-                        "special" : {   1: {"name": "Explosif", "damage": 1200, "bullet_penetration": 1, "fire_rate": 10, "bullet_size_x": 15, "bullet_size_y": 15, "bullet_lifetime": 120, "explosive": True, "price" : 3000},
-                                        2: {"name": "Perforant", "damage": 800, "bullet_penetration": 5, "fire_rate": 9, "bullet_size_x": 10, "bullet_size_y": 10, "bullet_lifetime": 120, "price" : 7000},
-                                        3: {"name": "Persistant", "damage": 700, "bullet_penetration": 1, "fire_rate": 10, "bullet_size_x": 10, "bullet_size_y": 10, "bullet_lifetime": 400, "price" : 15000},
-                                        4: {"name": "Ricochet", "damage": 900, "bullet_penetration": 2, "fire_rate": 5, "bullet_size_x": 10, "bullet_size_y": 10, "bullet_lifetime": 500, "bounces": 3, "price" : 30000}}
-                         }
+                        "special" : {   1: {"name": "Explosif", "damage": 1200, "bullet_penetration": 1, "fire_rate": 10, "bullet_size_x": 15, "bullet_size_y": 15, "bullet_lifetime": 120, "explosive": True, "price" : 5000},
+                                        2: {"name": "Perforant", "damage": 800, "bullet_penetration": 5, "fire_rate": 9, "bullet_size_x": 10, "bullet_size_y": 10, "bullet_lifetime": 120, "price" : 10000},
+                                        3: {"name": "Persistant", "damage": 700, "bullet_penetration": 1, "fire_rate": 10, "bullet_size_x": 10, "bullet_size_y": 10, "bullet_lifetime": 400, "price" : 20000},
+                                        4: {"name": "Ricochet", "damage": 900, "bullet_penetration": 2, "fire_rate": 5, "bullet_size_x": 10, "bullet_size_y": 10, "bullet_lifetime": 500, "bounces": 3, "price" : 40000}}
+                        }
         self.level = 0
         self.bullet_penetration = 1
-        self.fire_rate = 10
+        self.fire_rate = 25
         self.bullet_size_x = 10
         self.bullet_size_y = 10
-        self.bullet_lifetime = 120
+        self.bullet_lifetime = 180
         self.priority = "petit"
         self.explosive = False
         self.bounces = 0
@@ -127,26 +127,57 @@ class Turret:
 
 
     def upgrade(self, path, gold):
-        if self.level >= 4:
-            return
         self.choose_path(path)
-        if self.upgrades[self.path][self.level + 1]["price"] > gold:
-            print("Not enough gold.")
-            return
-        self.gain_gold(-self.upgrades[self.path][self.level + 1]["price"])
-        print(gold)
-        self.level += 1
-        self.name = self.upgrades[self.path][self.level]["name"]
-        self.bullet_penetration = self.upgrades[self.path][self.level]["bullet_penetration"]
-        self.fire_rate = self.upgrades[self.path][self.level]["fire_rate"]
-        self.bullet_size_x = self.upgrades[self.path][self.level]["bullet_size_x"]
-        self.bullet_size_y = self.upgrades[self.path][self.level]["bullet_size_y"]
-        self.bullet_lifetime = self.upgrades[self.path][self.level]["bullet_lifetime"]
-        self.damage = self.upgrades[self.path][self.level]["damage"]
-        if "explosive" in self.upgrades[self.path][self.level]:
-            self.explosive = self.upgrades[self.path][self.level]["explosive"]
-        if "bounces" in self.upgrades[self.path][self.level]:
-            self.bounces = self.upgrades[self.path][self.level]["bounces"]
+        if self.level <= 4:
+            if self.upgrades[self.path][self.level + 1]["price"] > gold:
+                print("Not enough gold.")
+                return
+            self.gain_gold(-self.upgrades[self.path][self.level + 1]["price"])
+            print(gold)
+            self.level += 1
+            self.name = self.upgrades[self.path][self.level]["name"]
+            self.bullet_penetration = self.upgrades[self.path][self.level]["bullet_penetration"]
+            self.fire_rate = self.upgrades[self.path][self.level]["fire_rate"]
+            self.bullet_size_x = self.upgrades[self.path][self.level]["bullet_size_x"]
+            self.bullet_size_y = self.upgrades[self.path][self.level]["bullet_size_y"]
+            self.bullet_lifetime = self.upgrades[self.path][self.level]["bullet_lifetime"]
+            self.damage = self.upgrades[self.path][self.level]["damage"]
+            if "explosive" in self.upgrades[self.path][self.level]:
+                self.explosive = self.upgrades[self.path][self.level]["explosive"]
+            if "bounces" in self.upgrades[self.path][self.level]:
+                self.bounces = self.upgrades[self.path][self.level]["bounces"]
+        elif self.path == "speed":
+            if self.upgrades[self.path][4]["price"] * self.level ** 2 > gold:
+                print("Not enough gold.")
+                return
+            self.gain_gold(-(self.upgrades[self.path][4]["price"] * self.level ** 2))
+            print(gold)
+            self.level += 1
+            self.bullet_penetration *= 2
+            self.fire_rate /= 2
+            self.damage *= 2
+        elif self.path == "bullet":
+            if self.upgrades[self.path][4]["price"] * self.level ** 2 > gold:
+                print("Not enough gold.")
+                return
+            self.gain_gold(-(self.upgrades[self.path][4]["price"] * self.level ** 2))
+            print(gold)
+            self.level += 1
+            self.bullet_penetration *= 2
+            self.damage *= 2
+            self.bullet_size_x += 10
+            self.bullet_size_y += 10
+        elif self.path == "special":
+            if self.upgrades[self.path][4]["price"] * self.level ** 2 > gold:
+                print("Not enough gold.")
+                return
+            self.gain_gold(-(self.upgrades[self.path][4]["price"] * self.level ** 2))
+            print(gold)
+            self.level += 1
+            self.damage *= 2
+            self.bullet_lifetime *= 2
+            self.bullet_size_x *= 2
+
 
 
     def get_bullet(self):
@@ -249,5 +280,6 @@ class Bullet:
         return False
 
     def draw(self, screen):
+        #pygame.draw.rect(screen, (255,0,0), self.bullet)
         screen.blit(resize_cannonball(resized_cannonball),(self.x,self.y))
 
