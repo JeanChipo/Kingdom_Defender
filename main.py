@@ -207,7 +207,11 @@ while RUNNING:
                 pause_text = pygame.font.Font(None, 48).render("PAUSED", True, "Black")
                 SCREEN.blit(pause_text, (WIDTH // 2 - pause_text.get_width() // 2, 10))
             money_text = pygame.font.Font(None, 21).render(f"current gold : {gold}", True, "Black")
+            wave_text = pygame.font.Font(None, 21).render(f"current wave : {wave_number}", True, "Black")
+            tower_text = pygame.font.Font(None, 21).render(f"life : {hp_tower//100000000}", True, "Black")
             SCREEN.blit(money_text, (WIDTH - (money_text.get_width()+5), 10))
+            SCREEN.blit(wave_text, (WIDTH - (wave_text.get_width() + 5), 25))
+            SCREEN.blit(tower_text, (WIDTH - (wave_text.get_width() + 5), 40))
             dead_fleche(enemies, Ensemble_fleche)
             draw(SCREEN, time, Ensemble_fleche)
 

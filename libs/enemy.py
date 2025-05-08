@@ -3,7 +3,7 @@ import random
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, name, size, health, speed, power, pos, val,WIDTH, HEIGHT):
+    def __init__(self, name, size, health, speed, power, pos, valeur,WIDTH, HEIGHT):
         super().__init__()
         # parametre
         self.name = name
@@ -12,7 +12,7 @@ class Enemy(pygame.sprite.Sprite):
         self.speed = speed # vitesse de déplacement
         self.power = power # nombre de déga
         self.ratio = 10000 + (pos*50+600) # ratio pour calcule du déplacement
-        self.valeur = val
+        self.valeur = valeur
 
         # position initiale
         self.WIDTH = WIDTH
@@ -69,31 +69,42 @@ def create_wave(wave_number, WIDTH, HEIGHT): # créateur d'énnemies
     enemies = [] # lite des ennemies
 
     # choix du nombre d'enemie de mainère aléatoire
-    p = [random.randint(wave_number,wave_number*3),1]
-    m = [random.randint(wave_number,wave_number*3),1]
-    g = [random.randint(wave_number,wave_number*3),1]
-    v = [random.randint(wave_number,wave_number*3),1]
+    if wave_number <= 3:
+        p = [random.randint(wave_number,wave_number+5),0]
+        m = [0, 0]
+        g = [0, 0]
+        v = [0, 0]
+    elif wave_number <= 5:
+        p = [random.randint(wave_number,wave_number+10),0]
+        m = [random.randint(1,wave_number),0]
+        v = [random.randint(wave_number, wave_number*3), 0]
+        g = [0, 0]
+    else :
+        p = [random.randint(wave_number,wave_number + 10),0]
+        m = [random.randint(wave_number,wave_number + 10),0]
+        g = [random.randint(wave_number,wave_number + 10),0]
+        v = [random.randint(wave_number,wave_number + 10),0]
     type = [p,m,g,v]
 
     # si le nombre d'ennemies est trop grand on le baisse et on change de tière
-    for i in range(3):
+    for i in range(4):
         while  type[i][0] > 5:
             type[i][0] = type[i][0] - 5
             type[i][1] += 1
 
 
     # création de tout les ennemie et implémentation dans la liste des ennemies
-    for i in range(type[1][0]):
-        enemy_petit = Enemy("petit", (15,30), 5000*type[1][1], 30, 5,i*20, 100, WIDTH, HEIGHT)
+    for i in range(type[0][0]):
+        enemy_petit = Enemy("petit", (15,40), 2000 + 500*type[0][1], 20, 5,i*10, 500, WIDTH, HEIGHT)
         enemies.append(enemy_petit)
     for i in range(type[3][0]):
-        enemy_volant = Enemy("volant", (50,30), 2000*type[3][1], 20, 20,i*50, 50,WIDTH, HEIGHT)
+        enemy_volant = Enemy("volant", (50,30), 1000 + 500 * type[3][1], 20, 20,i*20, 100,WIDTH, HEIGHT)
         enemies.append(enemy_volant)
-    for i in range(type[0][0]):
-        enemy_moyen = Enemy("moyen", (30,50), 10000*type[0][1], 19, 10,i*20, 500,WIDTH, HEIGHT)
+    for i in range(type[1][0]):
+        enemy_moyen = Enemy("moyen", (30,50), 6000+2000*type[1][1], 15, 10,i*20, 1000,WIDTH, HEIGHT)
         enemies.append(enemy_moyen)
     for i in range(type[2][0]):
-        enemy_grand = Enemy("grand", (50,70), 20000*type[2][1], 10, 20,i*50, 1000,WIDTH, HEIGHT)
+        enemy_grand = Enemy("grand", (50,70), 15000+6000*type[2][1], 10, 20,i*50, 5000,WIDTH, HEIGHT)
         enemies.append(enemy_grand)
     
         
