@@ -112,6 +112,7 @@ while RUNNING:
             for but in BUTTON_LIST:
                 but.update_pos((WIDTH, HEIGHT))
             turrets.update_positions(WIDTH, HEIGHT)
+            fader.update_overlay_size()
 
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:

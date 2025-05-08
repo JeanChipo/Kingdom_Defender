@@ -25,6 +25,10 @@ class ScreenFader:
         self.func_on_mid = func_on_mid    # /!\ func_on_mid is a function to call when the screen is fully covered
         self.phase = 1
 
+    def update_overlay_size(self):
+        self.overlay = pygame.Surface(self.screen.get_size()).convert()
+        self.overlay.fill(self.color)
+
     def update(self):
         if self.phase == 0:
             return      # can only start when not idling 
