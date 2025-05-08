@@ -1,14 +1,6 @@
 import pygame
 from random import choice
-from libs.ui import Button
-
-### To replace when done
-# from ui import draw_text
-def draw_text(screen:pygame.Surface, text:str, x:int, y:int, size:int=24):
-    font = pygame.font.Font(None, size)
-    img = font.render(text, True, "black")
-    screen.blit(img, (x, y))
-###
+from libs.ui import Button, draw_text
 
 pygame.init()
 pygame.font.init()

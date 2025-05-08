@@ -5,7 +5,7 @@ class MainMenu:
     def __init__(self, screen: pygame.Surface, fader: ScreenFader):
         self.screen = screen
         self.fader = fader
-        self.game_state = "menu"  # "menu", "running", "ended", "options"
+        self.game_state = "menu"  # "menu", "running", "ended", "options", "credits", "steve"
         screen_size = screen.get_size()
         self.band_size = 12.5
         self.buttons = [
@@ -33,10 +33,19 @@ class MainMenu:
         self.game_state = "options"
 
     def open_credits(self):
-        ...
+        self.game_state = "credits"
+        self.screen.fill((0, 0, 0))
+        text_str =  " -- Kingdom defender -- \n" + \
+                    "\n" + \
+                    " Game by "
 
-
-class Button:
+        text = pygame.font.Font(None, 48).render("PAUSED", True, "Black")
+        screen_middle = ((self.screen.get_width() // 2 - text.get_width() // 2,
+                          self.screen.get_height() // 2 - text.get_height() // 2))
+        self.screen.blit(text, screen_middle)
+        pygame.display.flip()
+        
+class Button: 
     def __init__(self,
                  normal_color:  str | tuple[int, int, int],
                  hover_color:   str | tuple[int, int, int],
