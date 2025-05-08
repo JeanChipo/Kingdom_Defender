@@ -12,6 +12,14 @@ pygame.init()
 WIDTH, HEIGHT = 800,600
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
 pygame.display.set_caption("Kingdom defender ⊹ ࣪ ﹏𓊝﹏𓂁﹏⊹ ࣪ ˖")
+tower_level=1
+
+def upgrade_tower():
+    global tower_level
+    if tower_level<3:
+        tower_level+=1
+    print(tower_level)
+
 
 POLICE = pygame.font.Font(None, 24)
 CLOCK = pygame.time.Clock()
@@ -118,7 +126,22 @@ while RUNNING:
         case "running": 
             SCREEN.fill('white')
             SCREEN.blit(resize_background(background), (0, 0))
-            SCREEN.blit(resize_tower_lvl_1(tower_1), (50*width_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()))
+            if tower_level == 1 :
+                SCREEN.blit(resize_tower_lvl_1(tower_1), (50*width_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()))
+
+                pygame.draw.circle(screen,0,(50*width_ratio()+55*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+225*height_ratio()),10)
+
+            elif tower_level == 2:
+                SCREEN.blit(resize_tower_lvl_2(tower_2), (50*width_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()))
+                pygame.draw.circle(screen,0,(50*width_ratio()+55*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+225*height_ratio()),10)
+                pygame.draw.circle(screen,0,(50*width_ratio()+55*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+295*height_ratio()),10)
+
+            else :
+                SCREEN.blit(resize_tower_lvl_3(tower_3), (50*width_ratio()-3,SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()))
+                pygame.draw.circle(screen, 0, (50 * width_ratio() + 55 * height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio() + 225 * height_ratio()), 10)
+                pygame.draw.circle(screen, 0, (50 * width_ratio() + 55 * height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio() + 295 * height_ratio()), 10)
+                pygame.draw.circle(screen, 0, (50 * width_ratio() + 55 * height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio() + 362 * height_ratio()), 10)
+
             current_time = pygame.time.get_ticks()
             if not enemies:
                 print("pause")
