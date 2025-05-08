@@ -13,6 +13,14 @@ pygame.init()
 WIDTH, HEIGHT = 800,600
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
 pygame.display.set_caption("Kingdom defender ⊹ ࣪ ﹏𓊝﹏𓂁﹏⊹ ࣪ ˖")
+tower_level=1
+
+def upgrade_tower():
+    global tower_level
+    if tower_level<3:
+        tower_level+=1
+    print(tower_level)
+
 
 POLICE = pygame.font.Font(None, 24)
 CLOCK = pygame.time.Clock()
@@ -37,6 +45,7 @@ enemies, all_sprites = create_wave(wave_number,SCREEN.get_width(),420)
 gold = 9999999999   # Argent de début
 fader = ScreenFader(SCREEN, color=(0,0,0), duration=2000, steps=60)
 main_menu = MainMenu(SCREEN, fader)
+hp_tower = 10000000000 # vie de la tour
 
 # buttons to upgrade the tower and turret
 B_upg_tower = Button("white", "black", "gray", "black", "upgrade tower", "kristenitc", 16, 
@@ -149,7 +158,22 @@ while RUNNING:
         case "running": 
             SCREEN.fill('white')
             SCREEN.blit(resize_background(background), (0, 0))
-            SCREEN.blit(resize_tower_lvl_1(tower_1), (50*width_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()))
+            if tower_level == 1 :
+                SCREEN.blit(resize_tower_lvl_1(tower_1), (50*width_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()))
+
+                pygame.draw.circle(screen,0,(50*width_ratio()+55*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+225*height_ratio()),10)
+
+            elif tower_level == 2:
+                SCREEN.blit(resize_tower_lvl_2(tower_2), (50*width_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()))
+                pygame.draw.circle(screen,0,(50*width_ratio()+55*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+225*height_ratio()),10)
+                pygame.draw.circle(screen,0,(50*width_ratio()+55*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+295*height_ratio()),10)
+
+            else :
+                SCREEN.blit(resize_tower_lvl_3(tower_3), (50*width_ratio()-3,SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()))
+                pygame.draw.circle(screen, 0, (50 * width_ratio() + 55 * height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio() + 225 * height_ratio()), 10)
+                pygame.draw.circle(screen, 0, (50 * width_ratio() + 55 * height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio() + 295 * height_ratio()), 10)
+                pygame.draw.circle(screen, 0, (50 * width_ratio() + 55 * height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio() + 362 * height_ratio()), 10)
+
             current_time = pygame.time.get_ticks()
             if not enemies:
                 print("pause")
@@ -165,7 +189,7 @@ while RUNNING:
 
             if not PAUSE:
                 turrets.update(enemies, SCREEN.get_width(), SCREEN.get_height())
-                enemies, all_sprites, wave_number = update_enemy(SCREEN, all_sprites, enemies, wave_number, turrets.turrets[0].get_bullet())
+                enemies, all_sprites, wave_number,damage = update_enemy(SCREEN, all_sprites, enemies, wave_number)
                 if not pygame.mixer.music.get_busy():
                     play_next_music()
             else:
@@ -175,6 +199,10 @@ while RUNNING:
             SCREEN.blit(money_text, (WIDTH - (money_text.get_width()+5), 10))
             dead_fleche(enemies, Ensemble_fleche)
             draw(SCREEN, time, Ensemble_fleche)
+
+            hp_tower -= damage
+            if hp_tower <= 0:
+                main_menu.game_state = "ended"
         
         case "ended":
             pygame.quit()

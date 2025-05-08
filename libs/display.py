@@ -1,6 +1,6 @@
 import pygame
 from libs.models import *
-from libs.turrets import *
+
 WIDTH, HEIGHT = 800, 600
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
 
@@ -33,6 +33,11 @@ def resize_tower_lvl_2(image):
     resized_image = (pygame.transform.scale(image,(new_width,new_height)))
     return resized_image
 
+def resize_tower_lvl_3(image):
+    new_height = 507 * height_ratio()
+    new_width = 121 * height_ratio()
+    resized_image = (pygame.transform.scale(image,(new_width,new_height)))
+    return resized_image
 
 resized_cannonball = pygame.transform.scale(cannonball, (30, 30))
 
@@ -49,13 +54,8 @@ def tower_height_position(tower_level):
         return 333
     if tower_level == 2:
         return 410
-
-def upgrade_tower():
-    tower_level = 1
-    if tower_level<3:
-        tower_level+=1
-        print(tower_level)
-        return tower_level
+    if tower_level == 3:
+        return 470
 
 #SCREEN.blit(tower_1, (-100, SCREEN.get_height()-450 )) #"colle" la tour en bas à gauche de la fenètre
 
