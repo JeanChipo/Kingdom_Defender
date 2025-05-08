@@ -36,6 +36,7 @@ enemies, all_sprites = create_wave(wave_number,SCREEN.get_width(),420)
 gold = 9999999999# Argent de début
 fader = ScreenFader(SCREEN, color=(0,0,0), duration=2000, steps=60)
 main_menu = MainMenu(SCREEN, fader)
+hp_tower = 10000000000 # vie de la tour
 
 # pygame.key.set_repeat(100) # a held key will be counted every 100 milliseconds
 
@@ -134,7 +135,7 @@ while RUNNING:
 
             if not PAUSE:
                 turrets.update(enemies, SCREEN.get_width(), SCREEN.get_height())
-                enemies, all_sprites, wave_number = update_enemy(SCREEN, all_sprites, enemies, wave_number, turrets.turrets[0].get_bullet())
+                enemies, all_sprites, wave_number,damage = update_enemy(SCREEN, all_sprites, enemies, wave_number)
                 if not pygame.mixer.music.get_busy():
                     play_next_music()
             else:
@@ -142,6 +143,10 @@ while RUNNING:
                 SCREEN.blit(pause_text, (WIDTH // 2 - pause_text.get_width() // 2, 10))
             dead_fleche(enemies, Ensemble_fleche)
             draw(SCREEN, time, Ensemble_fleche)
+
+            hp_tower -= damage
+            if hp_tower <= 0:
+                main_menu.game_state = "ended"
         
         case "ended":
             pygame.quit()
