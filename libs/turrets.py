@@ -1,7 +1,12 @@
 from pygame.examples.moveit import HEIGHT
 from libs.display import height_ratio
+from libs.display import *
 from libs.models import*
 import math
+
+def height_ratio (screen) :
+    ratio= screen.get_height() /600
+    return ratio
 
 class Turret_Gestion:
     def __init__(self):
@@ -109,6 +114,7 @@ class Turret:
             return (0, 0)
         ennemi = self.select_type(enemys)
         return ennemi.futur(60, WIDTH)
+        #à vérifier si ça fonction avec l'affichage de la rotation des tourrelles
 
     def choose_path(self, path):
         if self.path is None:
@@ -158,10 +164,19 @@ class Turret:
             ))
 
     def draw(self, screen, X, Y, enemys):
-        x, y = self.get_first_enemy_pos(enemys, Y)
+        x, y = self.get_first_enemy_pos(enemys, self.width)
+        baliste_rect = baliste.get_rect(center=(self.x, self.y))
+
         if enemys:
             rotated_baliste= pygame.transform.rotate(baliste,math.degrees(math.atan(x/y)-135))
             screen.blit(pygame.transform.scale(rotated_baliste,(100*height_ratio(),100*height_ratio())),(self.x, self.y))
+            """resized_baliste = pygame.transform.scale(baliste, (100 * height_ratio(screen), 100 * height_ratio(screen)))
+            rotated_baliste = pygame.transform.rotate(resized_baliste, math.degrees(math.atan(x / y) - 135))
+            rotated_rect = rotated_baliste.get_rect(center=baliste_rect.center)
+
+            screen.blit((rotated_baliste),(rotated_rect))"""
+            #à remplacer quand get_first_enemy_pos sera fix
+            
         for elm in self.bullets:
             elm.draw(screen)
         self.bullets = [elm for elm in self.bullets if (elm.x <= X and elm.y <= Y-300 and not elm.dead_bullet(enemys) and elm.time < elm.lifetime)]
@@ -226,3 +241,5 @@ class Bullet:
 
     def draw(self, screen):
         pygame.draw.rect(screen, (0, 0, 0), self.bullet)
+        screen.blit(resize_cannonball(resized_cannonball),(self.x,self.y))
+
