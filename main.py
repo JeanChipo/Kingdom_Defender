@@ -7,6 +7,7 @@ from libs.enemy import update_enemy, create_wave, draw_enemy
 from libs.fleche import *
 from libs.music import *
 from libs.display import *
+from libs.steve import *
 
 pygame.init()
 WIDTH, HEIGHT = 800,600
@@ -20,6 +21,9 @@ def upgrade_tower():
         tower_level+=1
     print(tower_level)
 
+def gain_gold(amount):
+    global gold
+    gold += amount
 
 POLICE = pygame.font.Font(None, 24)
 CLOCK = pygame.time.Clock()
@@ -27,7 +31,7 @@ CLOCK = pygame.time.Clock()
 NB_FPS = 60
 RATIO_W, RATIO_H = 1, 1
 
-turrets = Turret_Gestion()
+turrets = Turret_Gestion(gain_gold)
 B_upg_tower = Button("white", "black", "gray", "black", "upgrade tower", "kristenitc", 16, 
                  (132.5, 40), (647.5, 112.5), SCREEN.get_size(), lambda : [turrets.add_turret(), upgrade_tower()], SCREEN)
 
@@ -41,10 +45,40 @@ Upgrade_arc = {"cadence" : 0, "dispersion" : [45], "salve" : 1}
 upgrade = 1000
 wave_number = 1
 enemies, all_sprites = create_wave(wave_number,SCREEN.get_width(),420)
-gold = 9999999999# Argent de début
+gold = 0# Argent de début
 fader = ScreenFader(SCREEN, color=(0,0,0), duration=2000, steps=60)
 main_menu = MainMenu(SCREEN, fader)
 hp_tower = 10000000000 # vie de la tour
+
+# buttons to upgrade the tower and turret
+B_upg_tower = Button("white", "black", "gray", "black", "upgrade tower", "kristenitc", 16,
+                 (132.5, 40), (647.5, 112.5 + 0*50), SCREEN.get_size(), lambda : [turrets.add_turret(), upgrade_tower()], SCREEN)
+B_upg_turret = Button("white", "black", "gray", "black", "turret - speed", "kristenitc", 16,
+                 (132.5, 40), (647.5, 112.5 + 1*50), SCREEN.get_size(), lambda: turrets.upgrade_turrets("speed", gold), SCREEN)
+B_upg_turret1 = Button("white", "black", "gray", "black", "turret - bullet", "kristenitc", 16,
+                 (132.5, 40), (647.5, 112.5 + 2*50), SCREEN.get_size(), lambda: turrets.upgrade_turrets("bullet", gold), SCREEN)
+B_upg_turret2 = Button("white", "black", "gray", "black", "turret - special", "kristenitc", 16,
+                 (132.5, 40), (647.5, 112.5 + 3*50), SCREEN.get_size(), lambda: turrets.upgrade_turrets("special", gold), SCREEN)
+
+def update_gold_bow(upg_function: callable):
+    global gold, Upgrade_arc
+    gold, Upgrade_arc = upg_function(gold, Upgrade_arc)
+
+# buttons to upgrade the archer
+B_upg_cadence = Button("white", "black", "gray", "black", "bow - fire rate", "kristenitc", 16,
+                 (132.5, 40), (647.5, 112.5 + 4*50 + 10), SCREEN.get_size(), lambda : update_gold_bow(upgrade_cadence), SCREEN)
+B_upg_salve = Button("white", "black", "gray", "black", "bow - salvo", "kristenitc", 16,
+                 (132.5, 40), (647.5, 112.5 + 5*50 + 10), SCREEN.get_size(), lambda : update_gold_bow(upgrade_salve), SCREEN)
+B_upg_dispersion = Button("white", "black", "gray", "black", "bow - dispersion", "kristenitc", 16,
+                 (132.5, 40), (647.5, 112.5 + 6*50 + 10), SCREEN.get_size(), lambda : update_gold_bow(upgrade_dispersion), SCREEN)
+
+BUTTON_LIST = [B_upg_tower, B_upg_turret, B_upg_turret1, B_upg_turret2, B_upg_cadence, B_upg_salve, B_upg_dispersion]
+
+B_steve = Button("white", "black", "gray", "black", "steve", "kristenitc", 16,
+                 (100, 100), (0, 0), SCREEN.get_size(),
+                 lambda: press_steve(main_menu), SCREEN)
+
+main_menu.buttons.append(B_steve)
 
 # pygame.key.set_repeat(100) # a held key will be counted every 100 milliseconds
 
@@ -117,12 +151,16 @@ while RUNNING:
 
     match main_menu.game_state:
         case "menu":
-            SCREEN.fill((230,230,230))
-            main_menu.render(pygame.mouse.get_pos(), ratio=(1,1))
+            SCREEN.fill((230, 230, 230))
+            B_steve.render(pygame.mouse.get_pos(), border_radius=8)
+            main_menu.render(pygame.mouse.get_pos(), ratio=(1, 1))
             play_main_menu()
 
         case "options":
-            option_game_loop(SCREEN, main_menu)
+            ...
+
+        case "steve":
+            steve_game_loop(SCREEN, main_menu)  # Call the steve_game_loop here
 
         case "running": 
             SCREEN.fill('white')
@@ -164,6 +202,8 @@ while RUNNING:
             else:
                 pause_text = pygame.font.Font(None, 48).render("PAUSED", True, "Black")
                 SCREEN.blit(pause_text, (WIDTH // 2 - pause_text.get_width() // 2, 10))
+            money_text = pygame.font.Font(None, 21).render(f"current gold : {gold}", True, "Black")
+            SCREEN.blit(money_text, (WIDTH - (money_text.get_width()+5), 10))
             dead_fleche(enemies, Ensemble_fleche)
             draw(SCREEN, time, Ensemble_fleche)
 
