@@ -64,9 +64,11 @@ class Turret_Gestion:
     def get_next_price(self, path):
         if self.selected_turret is None:
             return 0
+        elif self.selected_turret.level == 0 :
+            return 5000
         else:
             if path != self.selected_turret.path:
-                return 0
+                return "X"
             else:
                 if self.selected_turret.level <= 4:
                     return self.selected_turret.upgrades[path][self.selected_turret.level + 1]["price"]
