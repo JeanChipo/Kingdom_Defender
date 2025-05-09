@@ -1,5 +1,6 @@
 import math
 import pygame
+from libs.ui import TimedTextManager
 
 
 class Fleche:
@@ -92,24 +93,24 @@ def cadence(Ensemble_fleche, upgrade, mouse_pos, time, WIDTH, HEIGHT, SCREEN, Up
         creation(WIDTH, HEIGHT, 0, SCREEN, mouse_pos, time, Ensemble_fleche, Upgrade_arc)
     return False
 
-def upgrade_cadence(gold, Upgrade_arc):
+def upgrade_cadence(gold, Upgrade_arc, manager):
     if Upgrade_arc["cadence"] <=3 and gold >= 100 +Upgrade_arc["cadence"]*100: # Permet d'avoir une préogressioon linéaire du coût des améliorations
         Upgrade_arc["cadence"] += 0.5
         gold -= 100 + Upgrade_arc["cadence"] * 100
         print(Upgrade_arc["cadence"])
     else:
-        print("error pas assez d'argent ou trop de palier monté")
+        manager.show_text("error pas assez d'argent ou trop de palier monté", 2)
     return gold, Upgrade_arc
 
-def upgrade_salve(gold, Upgrade_arc):
+def upgrade_salve(gold, Upgrade_arc, manager):
     if Upgrade_arc["salve"] <=3 and gold >= 100 +Upgrade_arc["salve"]*100:
         Upgrade_arc["salve"] += 1
         gold -= 100 + Upgrade_arc["salve"] * 100
     else:
-        print("error pas assez d'argent ou trop de palier monté")
+        manager.show_text("error pas assez d'argent ou trop de palier monté", 2)
     return gold, Upgrade_arc
 
-def upgrade_dispersion(gold, Upgrade_arc):
+def upgrade_dispersion(gold, Upgrade_arc, manager):
     if len(Upgrade_arc["dispersion"]) <= 9 and gold >= 100 + len(
             Upgrade_arc["dispersion"]) * 100:
         min_angle = min(Upgrade_arc["dispersion"])
@@ -119,5 +120,5 @@ def upgrade_dispersion(gold, Upgrade_arc):
         gold -= 100 + len(Upgrade_arc["dispersion"]) * 100
         print(Upgrade_arc["dispersion"])
     else:
-        print("error pas assez d'argent ou trop de palier monté")
+        manager.show_text("error pas assez d'argent ou trop de palier monté", 2)
     return gold, Upgrade_arc
