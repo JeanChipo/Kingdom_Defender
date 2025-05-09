@@ -152,7 +152,7 @@ while RUNNING:
                 print(Upgrade_arc["dispersion"])
 
             else :
-                TextManager.show_text("Not enough Money")
+                TextManager.show_text("Not enough Money", 2)
     print(f"<game_state : {main_menu.game_state}>{' '*50}", end="\r")
     # main_menu.game_state = "options"    # A SUPPRIMER APRES DEBUGUAGE
 
