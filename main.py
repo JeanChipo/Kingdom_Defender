@@ -94,46 +94,10 @@ while RUNNING:
                     if but.is_hovered(mouse_pos):
                         but.handle_click(mouse_pos)
                         hovering = True
-                        #a fix
-                        B_upg_turret = Button("white", "black", "gray", "black",
-                                              f"turret - speed - cost={turrets.get_next_price("speed")}", "kristenitc",
-                                              16,
-                                              (132.5, 40), (647.5, 112.5 + 1 * 50), SCREEN.get_size(),
-                                              lambda: turrets.upgrade_turrets("speed", gold, TextManager), SCREEN)
-                        B_upg_turret1 = Button("white", "black", "gray", "black",
-                                               f"turret - bullet - cost={turrets.get_next_price("bullet")}",
-                                               "kristenitc", 16,
-                                               (132.5, 40), (647.5, 112.5 + 2 * 50), SCREEN.get_size(),
-                                               lambda: turrets.upgrade_turrets("bullet", gold, TextManager), SCREEN)
-                        B_upg_turret2 = Button("white", "black", "gray", "black",
-                                               f"turret - special - cost={turrets.get_next_price("special")}",
-                                               "kristenitc", 16,
-                                               (132.5, 40), (647.5, 112.5 + 3 * 50), SCREEN.get_size(),
-                                               lambda: turrets.upgrade_turrets("special", gold, TextManager), SCREEN)
-                        BUTTON_LIST = [B_upg_tower, B_upg_turret, B_upg_turret1, B_upg_turret2, B_upg_cadence,
-                                       B_upg_salve, B_upg_dispersion]
                         break
                 if not hovering:
                     cadence(Ensemble_fleche, Upgrade_arc, mouse_pos, time, WIDTH, HEIGHT, SCREEN, Upgrade_arc)
                     turrets.select_turret(pygame.mouse.get_pos(),TextManager)
-                    #a fix
-                    B_upg_turret = Button("white", "black", "gray", "black",
-                                          f"turret - speed - cost={turrets.get_next_price("speed")}", "kristenitc",
-                                          16,
-                                          (132.5, 40), (647.5, 112.5 + 1 * 50), SCREEN.get_size(),
-                                          lambda: turrets.upgrade_turrets("speed", gold, TextManager), SCREEN)
-                    B_upg_turret1 = Button("white", "black", "gray", "black",
-                                           f"turret - bullet - cost={turrets.get_next_price("bullet")}",
-                                           "kristenitc", 16,
-                                           (132.5, 40), (647.5, 112.5 + 2 * 50), SCREEN.get_size(),
-                                           lambda: turrets.upgrade_turrets("bullet", gold, TextManager), SCREEN)
-                    B_upg_turret2 = Button("white", "black", "gray", "black",
-                                           f"turret - special - cost={turrets.get_next_price("special")}",
-                                           "kristenitc", 16,
-                                           (132.5, 40), (647.5, 112.5 + 3 * 50), SCREEN.get_size(),
-                                           lambda: turrets.upgrade_turrets("special", gold, TextManager), SCREEN)
-                    BUTTON_LIST = [B_upg_tower, B_upg_turret, B_upg_turret1, B_upg_turret2, B_upg_cadence,
-                                   B_upg_salve, B_upg_dispersion]
 
         elif event.type == pygame.VIDEORESIZE:
             WIDTH, HEIGHT = SCREEN.get_size()
@@ -197,7 +161,7 @@ while RUNNING:
                 pygame.draw.circle(screen, 0, (50 * width_ratio() + 55 * height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio() + 362 * height_ratio()), 10)
 
             current_time = pygame.time.get_ticks()
-            if not enemies:
+            if enemies != []:
                 print("pause")
             else:
                 last_update,frame = animation_running(frame,current_time, last_update, animation_cooldown,run_animation,enemies)
