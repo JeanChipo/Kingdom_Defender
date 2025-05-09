@@ -80,6 +80,8 @@ B_steve = Button("white", "black", "gray", "black", "steve", "kristenitc", 16,
 
 main_menu.buttons.append(B_steve)
 
+shuffle_playlist()
+
 # pygame.key.set_repeat(100) # a held key will be counted every 100 milliseconds
 
 PAUSE = False       # Pause works by stop calling update functions but still calling draw functions
@@ -89,7 +91,7 @@ while RUNNING:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             RUNNING = False
-        elif event.type == pygame.MOUSEBUTTONDOWN:
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Left click
             if main_menu.game_state == "menu":
                 for but in main_menu.buttons:
                     but.handle_click(pygame.mouse.get_pos())
@@ -151,7 +153,7 @@ while RUNNING:
             else :
                 print("error pas assez d'argent ou trop de palier monté")
     print(f"<game_state : {main_menu.game_state}>{' '*50}", end="\r")
-    # main_menu.game_state = "running"    # A SUPPRIMER QUAND LE MENU PRINCIPAL FONCTIONNE
+    # main_menu.game_state = "options"    # A SUPPRIMER APRES DEBUGUAGE
 
     match main_menu.game_state:
         case "menu":

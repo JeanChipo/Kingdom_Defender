@@ -68,7 +68,7 @@ class MainMenu:
                     pygame.quit()
                     exit()
 
-                if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Left click
                     back_button.handle_click(pygame.mouse.get_pos())
 
                 elif event.type == pygame.VIDEORESIZE:
@@ -177,8 +177,3 @@ def menu_but(screen_to_print_on: pygame.Surface,
     transparent_surface.fill(bg_color)
     screen_to_print_on.blit(transparent_surface, (scaled_left, scaled_top))
     return pygame.Rect(scaled_left, scaled_top, scaled_width, scaled_height)
-
-def draw_text(screen:pygame.Surface, text:str, x:int, y:int, size:int=24):
-    font = pygame.font.Font(None, size)
-    img = font.render(text, True, "black")
-    screen.blit(img, (x, y))
