@@ -106,7 +106,7 @@ class Button:
         self.hover_color = pygame.Color(hover_color)
         self.pressed_color = pygame.Color(pressed_color)
         self.text_color = pygame.Color(text_color)
-        self.original_text_color = self.text_color
+        # self.original_text_color = self.text_color
         self.text = text
         self.font = pygame.font.SysFont(font, font_size)
         self.function_to_call = function_to_call
@@ -122,6 +122,7 @@ class Button:
 
         self.is_being_pressed = False
 
+
     def update_pos(self, screen_size: tuple[int, int]):
         self.screen_width, self.screen_height = screen_size
         self.button_width = int(self.width_ratio * self.screen_width)
@@ -135,7 +136,7 @@ class Button:
 
     def render(self, mouse: tuple[int, int], border_radius:int=0) -> None:
         color_to_use = self.normal_color
-        text_color = self.text_color
+        # text_color = self.text_color
         offset = 0
 
         if self.is_being_pressed:
@@ -143,12 +144,12 @@ class Button:
             offset = 2  # slight y offset when pressed
         elif self.is_hovered(mouse):
             color_to_use = self.hover_color
-            text_color = self.normal_color  # invert colors on hover
+            # text_color = self.normal_color  # invert colors on hover
 
         pygame.draw.rect(self.screen_to_print_on, color_to_use,
             [self.coord_x, self.coord_y, self.button_width, self.button_height])
 
-        text_surface = self.font.render(self.text, True, text_color)
+        text_surface = self.font.render(self.text, True, self.text_color)
         text_x = self.coord_x + (self.button_width - text_surface.get_width()) // 2
         text_y = self.coord_y + (self.button_height - text_surface.get_height()) // 2 + offset
         self.screen_to_print_on.blit(text_surface, (text_x, text_y))
@@ -161,6 +162,16 @@ class Button:
             pygame.time.delay(100)  # show press with delay
             self.function_to_call()
             self.is_being_pressed = False
+
+    def update_colors_based_on_gold(self, gold:int, cost:int):
+        if gold >= cost:    # enough gold to buy
+            self.normal_color = pygame.Color((157, 205, 128))
+            self.hover_color = pygame.Color((101, 191, 77))
+            self.pressed_color = pygame.Color((55, 105, 42))
+        else:
+            self.normal_color = pygame.Color((205, 128, 128))
+            self.hover_color = pygame.Color((191, 77, 77))
+            self.pressed_color = pygame.Color((105, 42, 42))
 
 def menu_but(screen_to_print_on: pygame.Surface, 
              bg_color: str | tuple[int,int,int] | tuple[int,int,int,int], 
@@ -201,3 +212,4 @@ class TimedTextManager:
             self.screen.blit(self.current_text, (self.screen.get_width() // 2 - self.current_text.get_width() // 2, 10))
         else:
             self.current_text = None
+

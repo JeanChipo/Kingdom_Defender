@@ -18,8 +18,6 @@ class Turret_Gestion:
         self.add_turret()
         self.selected_turret = None
 
-
-
     def add_turret(self):
         self.nb_turret += 1
         if self.nb_turret >= 3:
@@ -62,6 +60,18 @@ class Turret_Gestion:
             turret.x = turret.x_stable * WIDTH / 800
             turret.y = turret.y_stable * HEIGHT / 600
             turret.turret = pygame.Rect(turret.x, turret.y, turret.width, turret.height)
+    
+    def get_next_price(self, path):
+        if self.selected_turret is None:
+            return 0
+        else:
+            if path != self.selected_turret.path:
+                return 0
+            else:
+                if self.selected_turret.level <= 4:
+                    return self.selected_turret.upgrades[path][self.selected_turret.level + 1]["price"]
+                else:
+                    return self.selected_turret.upgrades[path][4]["price"] * ((self.level-3) ** 2)
 
 
 class Turret:
