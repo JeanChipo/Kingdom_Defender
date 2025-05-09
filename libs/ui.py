@@ -1,4 +1,5 @@
 import pygame
+import time
 from libs.transitions import ScreenFader
 
 class MainMenu:
@@ -182,3 +183,21 @@ def draw_text(screen:pygame.Surface, text:str, x:int, y:int, size:int=24):
     font = pygame.font.Font(None, size)
     img = font.render(text, True, "black")
     screen.blit(img, (x, y))
+
+class TimedTextManager:
+    def __init__(self, screen, font_size, color=(0, 0, 0)):
+        self.screen = screen
+        self.font = pygame.font.Font(None, font_size)
+        self.color = color
+        self.current_text = None
+        self.end_time = 0
+
+    def show_text(self, text, duration):
+        self.current_text = self.font.render(text, True, self.color)
+        self.end_time = time.time() + duration
+
+    def update(self):
+        if self.current_text and time.time() < self.end_time:
+            self.screen.blit(self.current_text, (self.screen.get_width() // 2 - self.current_text.get_width() // 2, 10))
+        else:
+            self.current_text = None
