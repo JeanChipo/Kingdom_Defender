@@ -209,15 +209,15 @@ class Turret:
 
     def draw(self, screen, X, Y, enemys):
         x, y = self.get_first_enemy_pos(enemys, self.width)
-        baliste_rect = baliste.get_rect(center=(self.x, self.y))
+        minigun_rect = minigun.get_rect(center=(self.x+90, self.y+70))
         if enemys:
-            rotated_baliste= pygame.transform.rotate(baliste,math.degrees(math.atan(x/y)-135))
-            screen.blit(pygame.transform.scale(rotated_baliste,(100*height_ratio(screen),100*height_ratio(screen))),(self.x, self.y))
-            """resized_baliste = pygame.transform.scale(baliste, (100 * height_ratio(screen), 100 * height_ratio(screen)))
-            rotated_baliste = pygame.transform.rotate(resized_baliste, math.degrees(math.atan(x / y) - 135))
-            rotated_rect = rotated_baliste.get_rect(center=baliste_rect.center)
+            """rotated_baliste= pygame.transform.rotate(baliste,math.degrees(math.atan(x/y)-135))
+            screen.blit(pygame.transform.scale(rotated_baliste,(100*height_ratio(screen),100*height_ratio(screen))),(self.x, self.y))"""
+            resized_minigun = pygame.transform.scale(minigun, (100 * height_ratio(screen), 100 * height_ratio(screen)))
+            rotated_minigun = pygame.transform.rotate(resized_minigun, math.degrees(math.atan(x / y))-65)
+            rotated_rect = rotated_minigun.get_rect(center=minigun_rect.center)
 
-            screen.blit((rotated_baliste),(rotated_rect))"""
+            screen.blit((rotated_minigun),(rotated_rect))
             #à remplacer quand get_first_enemy_pos sera fix
             
         for elm in self.bullets:

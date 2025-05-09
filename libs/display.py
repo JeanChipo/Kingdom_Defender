@@ -65,16 +65,12 @@ def tower_height_position(tower_level):
 #resized_background = pygame.transform.scale(background,(SCREEN.get_width(),SCREEN.get_height()))
 #ajuste la taille du fond d'écran en fonction de la taille de la fenêtre
 
-sprite_sheet_image_test = pygame.image.load("assets/batedor_walk.png").convert_alpha()
 big_monster = pygame.image.load("assets/batedor_walk.png")
+litlle_monster = pygame.image.load("assets/slime.jiggle.png")
+medium_monster = pygame.image.load("assets/goblinsword.png")
 
 black = (0,0,0)
-def get_sprite_image(sheet,frame,width,height,scale,colour):
-    image = pygame.Surface((width,height)).convert_alpha()
-    image.blit(sheet,(0,0),(frame*width,0,width,height))
-    image = pygame.transform.scale(image, (width * scale, height * scale))
-    image.set_colorkey(colour)
-    return image
+
 
 
 
@@ -90,28 +86,33 @@ class Spritesheet() :
         image.set_colorkey(colour)
         return image
 
-sprite_sheet = Spritesheet(sprite_sheet_image_test)
 big_monster_sprite_sheet = Spritesheet(big_monster)
+litlle_monster_sprite_sheet = Spritesheet(litlle_monster)
+medium_monster_sprite_sheet = Spritesheet(medium_monster)
 
 run_animation=[]
 sprint_animation=[]
 big_monster_run = []
+litlle_monster_run = []
+medium_monster_run = []
+
 run_animation_steps = 7
 sprint_animation_steps = 7
 big_monster_run_steps = 8
-for x in range (4,4+run_animation_steps):
-    run_animation.append(sprite_sheet.get_sprite_image(x, 24, 24, 3, black))
-for y in range (18,18+sprint_animation_steps ):
-    sprint_animation.append(sprite_sheet.get_sprite_image(y, 24, 24, 3, black))
+litlle_monster_run_steps = 8
+medium_monster_run_steps =8
+
 for j in range (0, run_animation_steps):
     big_monster_run.append((big_monster_sprite_sheet.get_sprite_image(j,320,320,0.2,black)))
+    litlle_monster_run.append((litlle_monster_sprite_sheet.get_sprite_image(j, 64, 64, 1, black)))
+    medium_monster_run.append((medium_monster_sprite_sheet.get_sprite_image(j, 65, 64, 2, black)))
 
-
+medium_monster_run.reverse()
 last_update = pygame.time.get_ticks()
 animation_cooldown = 120
 frame = 0
 
-def animation_running(frame,time,last_update,animation_cooldown,run_animation,enemies):
+def animation_big_monster_running(frame,time,last_update,animation_cooldown,run_animation,enemies):
     if time - last_update >= animation_cooldown:
         if frame == len(big_monster_run)-1:
             frame = 0
@@ -121,12 +122,15 @@ def animation_running(frame,time,last_update,animation_cooldown,run_animation,en
     else:
         new_update = last_update
     for i in range (len(enemies)):
-        SCREEN.blit(big_monster_run[frame], (enemies[i].rect.x-10,enemies[i].rect.y-15))
+        if enemies[i].name == "grand":
+            SCREEN.blit(big_monster_run[frame], (enemies[i].rect.x - 50, enemies[i].rect.y - 15))
+        elif enemies[i].name == "petit":
+            SCREEN.blit(litlle_monster_run[frame], (enemies[i].rect.x - 10, enemies[i].rect.y - 15))
+        elif enemies[i].name == "moyen":
+            SCREEN.blit(medium_monster_run[frame], (enemies[i].rect.x - 10, enemies[i].rect.y - 15))
+        else:
+            SCREEN.blit(big_monster_run[frame], (enemies[i].rect.x - 10, enemies[i].rect.y - 15))
     return new_update,frame
 
-def rotation_baliste(enemys):
-    x,y= turrets.get_first_enemy_pos(enemys)
-    angle=x/y
-    return angle
 
 
