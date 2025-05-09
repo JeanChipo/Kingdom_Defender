@@ -1,6 +1,6 @@
 import pygame
 from libs.transitions import ScreenFader
-from libs.ui import MainMenu, Button, menu_but
+from libs.ui import MainMenu, Button, menu_but, TimedTextManager
 from libs.turrets import Turret_Gestion
 from libs.models import *
 from libs.enemy import update_enemy, create_wave, draw_enemy
@@ -32,37 +32,31 @@ NB_FPS = 60
 RATIO_W, RATIO_H = 1, 1
 
 turrets = Turret_Gestion(gain_gold)
-B_upg_tower = Button("white", "black", "gray", "black", "upgrade tower", "kristenitc", 16, 
-                 (132.5, 40), (647.5, 112.5), SCREEN.get_size(), lambda : [turrets.add_turret(), upgrade_tower()], SCREEN)
-
-B_upg_turret = Button("white", "black", "gray", "black", "upgrade turret", "kristenitc", 16,
-                 (132.5, 40), (647.5, 162.5), SCREEN.get_size(), lambda:turrets.upgrade_turrets("special"), SCREEN)
-
-BUTTON_LIST = [B_upg_tower, B_upg_turret]
 
 Ensemble_fleche =  []
 Upgrade_arc = {"cadence" : 0, "dispersion" : [45], "salve" : 1}
 upgrade = 1000
 wave_number = 1
 enemies, all_sprites = create_wave(wave_number,SCREEN.get_width(),420)
-gold = 0# Argent de début
+gold = 0    # Argent de début
 fader = ScreenFader(SCREEN, color=(0,0,0), duration=2000, steps=60)
 main_menu = MainMenu(SCREEN, fader)
 hp_tower = 10000000000 # vie de la tour
+TextManager = TimedTextManager(SCREEN, 25)
 
 # buttons to upgrade the tower and turret
 B_upg_tower = Button("white", "black", "gray", "black", "upgrade tower", "kristenitc", 16,
                  (132.5, 40), (647.5, 112.5 + 0*50), SCREEN.get_size(), lambda : [turrets.add_turret(), upgrade_tower()], SCREEN)
-B_upg_turret = Button("white", "black", "gray", "black", "turret - speed", "kristenitc", 16,
-                 (132.5, 40), (647.5, 112.5 + 1*50), SCREEN.get_size(), lambda: turrets.upgrade_turrets("speed", gold), SCREEN)
-B_upg_turret1 = Button("white", "black", "gray", "black", "turret - bullet", "kristenitc", 16,
-                 (132.5, 40), (647.5, 112.5 + 2*50), SCREEN.get_size(), lambda: turrets.upgrade_turrets("bullet", gold), SCREEN)
-B_upg_turret2 = Button("white", "black", "gray", "black", "turret - special", "kristenitc", 16,
-                 (132.5, 40), (647.5, 112.5 + 3*50), SCREEN.get_size(), lambda: turrets.upgrade_turrets("special", gold), SCREEN)
+B_upg_turret = Button("white", "black", "gray", "black", f"turret - speed - cost={turrets.get_next_price("speed")}", "kristenitc", 16,
+                 (132.5, 40), (647.5, 112.5 + 1*50), SCREEN.get_size(), lambda: turrets.upgrade_turrets("speed", gold, TextManager), SCREEN)
+B_upg_turret1 = Button("white", "black", "gray", "black", f"turret - bullet - cost={turrets.get_next_price("bullet")}", "kristenitc", 16,
+                 (132.5, 40), (647.5, 112.5 + 2*50), SCREEN.get_size(), lambda: turrets.upgrade_turrets("bullet", gold, TextManager), SCREEN)
+B_upg_turret2 = Button("white", "black", "gray", "black", f"turret - special - cost={turrets.get_next_price("special")}", "kristenitc", 16,
+                 (132.5, 40), (647.5, 112.5 + 3*50), SCREEN.get_size(), lambda: turrets.upgrade_turrets("special", gold, TextManager), SCREEN)
 
 def update_gold_bow(upg_function: callable):
-    global gold, Upgrade_arc
-    gold, Upgrade_arc = upg_function(gold, Upgrade_arc)
+    global gold, Upgrade_arc, TextManager
+    gold, Upgrade_arc = upg_function(gold, Upgrade_arc, TextManager)
 
 # buttons to upgrade the archer
 B_upg_cadence = Button("white", "black", "gray", "black", "bow - fire rate", "kristenitc", 16,
@@ -72,15 +66,15 @@ B_upg_salve = Button("white", "black", "gray", "black", "bow - salvo", "kristeni
 B_upg_dispersion = Button("white", "black", "gray", "black", "bow - dispersion", "kristenitc", 16,
                  (132.5, 40), (647.5, 112.5 + 6*50 + 10), SCREEN.get_size(), lambda : update_gold_bow(upgrade_dispersion), SCREEN)
 
-BUTTON_LIST = [B_upg_tower, B_upg_turret, B_upg_turret1, B_upg_turret2, B_upg_cadence, B_upg_salve, B_upg_dispersion]
-
 B_steve = Button("white", "black", "gray", "black", "steve", "kristenitc", 16,
                  (100, 100), (0, 0), SCREEN.get_size(),
                  lambda: press_steve(main_menu), SCREEN)
 
+BUTTON_LIST = [B_upg_tower, B_upg_turret, B_upg_turret1, B_upg_turret2, B_upg_cadence, B_upg_salve, B_upg_dispersion]
+
 main_menu.buttons.append(B_steve)
 
-# pygame.key.set_repeat(100) # a held key will be counted every 100 milliseconds
+shuffle_playlist()
 
 PAUSE = False       # Pause works by stop calling update functions but still calling draw functions
 RUNNING = True
@@ -89,7 +83,7 @@ while RUNNING:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             RUNNING = False
-        elif event.type == pygame.MOUSEBUTTONDOWN:
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Left click
             if main_menu.game_state == "menu":
                 for but in main_menu.buttons:
                     but.handle_click(pygame.mouse.get_pos())
@@ -103,7 +97,7 @@ while RUNNING:
                         break
                 if not hovering:
                     cadence(Ensemble_fleche, Upgrade_arc, mouse_pos, time, WIDTH, HEIGHT, SCREEN, Upgrade_arc)
-                    turrets.select_turret(pygame.mouse.get_pos())
+                    turrets.select_turret(pygame.mouse.get_pos(),TextManager)
 
         elif event.type == pygame.VIDEORESIZE:
             WIDTH, HEIGHT = SCREEN.get_size()
@@ -112,6 +106,7 @@ while RUNNING:
             for but in BUTTON_LIST:
                 but.update_pos((WIDTH, HEIGHT))
             turrets.update_positions(WIDTH, HEIGHT)
+            fader.update_overlay_size()
 
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
@@ -120,37 +115,18 @@ while RUNNING:
                     pygame.mixer.music.pause()
                 else:
                     pygame.mixer.music.unpause()
-            if event.key == pygame.K_0:
+            elif event.key == pygame.K_0:
                     play_next_music()
-            if event.key == pygame.K_1:
+            elif event.key == pygame.K_1:
                 turrets.change_priorities("petit")
-            if event.key == pygame.K_2:
+            elif event.key == pygame.K_2:
                 turrets.change_priorities("volant")
-            if event.key == pygame.K_3:
+            elif event.key == pygame.K_3:
                 turrets.change_priorities("moyen")
-            if event.key == pygame.K_4:
+            elif event.key == pygame.K_4:
                 turrets.change_priorities("grand")
-            #Boutons d'amélioration de compétences de l'arc (modification du comportement des fléches)
-            if event.key == pygame.K_a and Upgrade_arc["cadence"] <=3 and gold >= 100 +Upgrade_arc["cadence"]*100: # Permet d'avoir une préogressioon linéaire du coût des améliorations
-                Upgrade_arc["cadence"] += 0.5
-                gold -= 100 + Upgrade_arc["cadence"] * 100
-                print(Upgrade_arc["cadence"])
-            if event.key == pygame.K_z and Upgrade_arc["salve"] <=3 and gold >= 100 +Upgrade_arc["salve"]*100:
-                Upgrade_arc["salve"] += 1
-                gold -= 100 + Upgrade_arc["salve"] * 100
-            if event.key == pygame.K_e and len(Upgrade_arc["dispersion"]) <= 9 and gold >= 100 + len(
-                    Upgrade_arc["dispersion"]) * 100:
-                min_angle = min(Upgrade_arc["dispersion"])
-                max_angle = max(Upgrade_arc["dispersion"])
-                Upgrade_arc["dispersion"].extend([min_angle - 15, max_angle + 15])  # Ajoute deux nouveaux angles
-                Upgrade_arc["dispersion"].sort()  # Trie la liste
-                gold -= 100 + len(Upgrade_arc["dispersion"]) * 100
-                print(Upgrade_arc["dispersion"])
 
-            else :
-                print("error pas assez d'argent ou trop de palier monté")
-    print(f"<game_state : {main_menu.game_state}>{' '*50}", end="\r")
-    # main_menu.game_state = "running"    # A SUPPRIMER QUAND LE MENU PRINCIPAL FONCTIONNE
+    main_menu.game_state = "running"    # A SUPPRIMER APRES DEBUGUAGE
 
     match main_menu.game_state:
         case "menu":
@@ -191,14 +167,16 @@ while RUNNING:
                 last_update,frame = animation_running(frame,current_time, last_update, animation_cooldown,run_animation,enemies)
 
 
-            menu_but(SCREEN, (0,0,0, 128), (640, 100, 147.5, 300), (RATIO_W, RATIO_H))
+            menu_but(SCREEN, (0,0,0, 128), (640, 100, 147.5, 375), (RATIO_W, RATIO_H))
             for but in BUTTON_LIST:
+                but.update_colors_based_on_gold(gold, cost=10000) 
                 but.render(pygame.mouse.get_pos(),border_radius=6)
             turrets.draw(SCREEN, SCREEN.get_width(), SCREEN.get_width(), enemies)
             #draw_enemy(SCREEN, enemies)
 
             if not PAUSE:
                 turrets.update(enemies, SCREEN.get_width(), SCREEN.get_height())
+                TextManager.update()
                 enemies, all_sprites, wave_number,damage = update_enemy(SCREEN, all_sprites, enemies, wave_number)
                 if not pygame.mixer.music.get_busy():
                     play_next_music()
@@ -206,7 +184,11 @@ while RUNNING:
                 pause_text = pygame.font.Font(None, 48).render("PAUSED", True, "Black")
                 SCREEN.blit(pause_text, (WIDTH // 2 - pause_text.get_width() // 2, 10))
             money_text = pygame.font.Font(None, 21).render(f"current gold : {gold}", True, "Black")
+            wave_text = pygame.font.Font(None, 21).render(f"current wave : {wave_number}", True, "Black")
+            tower_text = pygame.font.Font(None, 21).render(f"life : {hp_tower//100000000}", True, "Black")
             SCREEN.blit(money_text, (WIDTH - (money_text.get_width()+5), 10))
+            SCREEN.blit(wave_text, (WIDTH - (wave_text.get_width() + 5), 25))
+            SCREEN.blit(tower_text, (WIDTH - (wave_text.get_width() + 5), 40))
             dead_fleche(enemies, Ensemble_fleche)
             draw(SCREEN, time, Ensemble_fleche)
 

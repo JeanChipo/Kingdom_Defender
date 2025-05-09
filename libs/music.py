@@ -1,6 +1,6 @@
 import pygame
 from random import choice
-from libs.ui import Button, draw_text
+from libs.ui import Button
 
 pygame.init()
 pygame.font.init()
@@ -79,7 +79,7 @@ class VolumeSlider:
         pygame.mixer.music.set_volume(self.volume)
 
     def handle_event(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Left click
             if pygame.Rect(self.knob_x - self.knob_radius, self.rect.centery - self.knob_radius, self.knob_radius * 2, self.knob_radius * 2).collidepoint(event.pos):
                 self.dragging = True
         elif event.type == pygame.MOUSEBUTTONUP:
@@ -94,6 +94,11 @@ def option_game_loop(screen, main_menu):
     clock = pygame.time.Clock()
     back_button = Button((230,230,230), (175,175,175), (150,150,150), (0, 0, 0), "<-- Back", None, 28, (120, 50), (20, 20),
                           screen.get_size(), lambda: setattr(main_menu, "game_state", "menu"), screen_to_print_on=screen)
+    
+    volume_slider.rect.width = int(screen.get_width() * 0.6)
+    volume_slider.rect.x = (screen.get_width() - volume_slider.rect.width) // 2
+    volume_slider.knob_x = int(volume_slider.rect.x + volume_slider.volume * volume_slider.rect.width)
+
     while main_menu.game_state == "options":
         screen.fill("white")
         for event in pygame.event.get():
@@ -109,7 +114,7 @@ def option_game_loop(screen, main_menu):
 
             volume_slider.handle_event(event)
 
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Left click
                 back_button.handle_click(pygame.mouse.get_pos())
 
             elif event.type == pygame.VIDEORESIZE:
@@ -121,7 +126,9 @@ def option_game_loop(screen, main_menu):
         if not pygame.mixer.music.get_busy():
             play_next_music()
 
-        draw_text(screen, "Volume Control", 180, 150)
+        texte_volume_control = pygame.font.Font(None, 24).render("Volume Control", True, "Black")
+        screen.blit(texte_volume_control, ((screen.get_width() // 2 - texte_volume_control.get_width() // 2,
+                                            volume_slider.rect.bottom + 20)))
         volume_slider.draw(screen)
         back_button.render(pygame.mouse.get_pos(), border_radius=8)
 

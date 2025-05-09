@@ -30,7 +30,7 @@ def steve_game_loop(screen, main_menu):
                 pygame.mixer.music.load("./assets/musics/LePoissonSteve.mp3")
                 pygame.mixer.music.play()
 
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Left click
                 back_button.handle_click(pygame.mouse.get_pos())
             elif event.type == pygame.VIDEORESIZE:
                 back_button.update_pos(screen.get_size())
