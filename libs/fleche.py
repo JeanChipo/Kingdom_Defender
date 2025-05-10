@@ -1,16 +1,15 @@
 import math
 import pygame
-from libs.ui import TimedTextManager
+
 
 
 class Fleche:
-    def __init__(self, WIDTH, HEIGHT, angle, mouse_pos, time, SCREEN):
+    def __init__(self, WIDTH, HEIGHT,RATIO_W, RATIO_H,vitesse_plus, mouse_pos, time, SCREEN):
         self.time_start = time
         self.time = 0
         self.x_end = mouse_pos[0]
         self.y_end = mouse_pos[1]
         self.gravity = 300
-        self.angle = angle  # angle en radians
         self.x_init = WIDTH // 8
         self.y_init = HEIGHT // 4
         self.x = self.x_init
@@ -19,30 +18,16 @@ class Fleche:
         self.rect = pygame.Rect(self.x, self.y, 10, 10)
         self.damage = 1000
 
-        # Distance de base (sans angle)
-        distance_point_arrive = math.sqrt((self.x_end - self.x_init) ** 2 + (self.y_end - self.y_init) ** 2)
+        # Calcule de la distance entre le point de départ et le point d'arrivée
+        distance_point_arrive = math.sqrt(((self.x_end - self.x_init) / RATIO_W) ** 2 + ((self.y_end - self.y_init) / RATIO_H) ** 2)
 
         # Calcul du temps d'arrivée basé sur la distance (arbitrairement divisé par 300 pour équilibrer)
         self.temps_arrive = max(0.1, distance_point_arrive / 300)
 
-        # Calculer la direction de base
-        direction_x = self.x_end - self.x_init
-        direction_y = self.y_end - self.y_init
+        # Calcul des vitesses initiales
+        self.vx = ((self.x_end - self.x_init) / self.temps_arrive) + vitesse_plus
+        self.vy = (self.y_end - self.y_init) / self.temps_arrive - 0.5 * self.gravity * self.temps_arrive
 
-        # Normaliser le vecteur de direction
-        longueur = math.sqrt(direction_x ** 2 + direction_y ** 2)
-        if longueur > 0:
-            direction_x /= longueur
-            direction_y /= longueur
-
-        # Appliquer la rotation en fonction de l'angle
-        vitesse = distance_point_arrive / self.temps_arrive
-        cos_angle = math.cos(angle)
-        sin_angle = math.sin(angle)
-
-        # Calculer les nouvelles composantes de vitesse avec l'angle
-        self.vx = vitesse * (direction_x * cos_angle - direction_y * sin_angle)
-        self.vy = vitesse * (direction_x * sin_angle + direction_y * cos_angle)
     def position(self, time):
         self.time = (time - self.time_start) / 1000  # Convertir le temps en secondes
         if self.time >= 0:
@@ -73,24 +58,23 @@ def draw(SCREEN,time,Ensemble_fleche):
             Ensemble_fleche.remove(fleche)
 
 
-def creation(WIDTH, HEIGHT, angle, SCREEN, mouse_pos, time, Ensemble_fleche, Update_arc):
-    for i in range(Update_arc["salve"]):
-        for l in range(len(Update_arc["dispersion"])):
-            current_angle = math.radians(-Update_arc["dispersion"][l])  # Convertit chaque angle de dispersion en radians
-            fleche = Fleche(WIDTH, HEIGHT, current_angle, mouse_pos, time + i*200, SCREEN)  # délai entre les fléches de la salve (0,2sec) grâce à i*200
+def creation(WIDTH, HEIGHT,RATIO_W, RATIO_H, SCREEN, mouse_pos, time, Ensemble_fleche, Upgrade_arc):
+    for i in range(Upgrade_arc["salve"]):
+        for l in range(len(Upgrade_arc["dispersion"])):
+            vitesse_plus = Upgrade_arc["dispersion"][l]  # Convertit ch aque angle de dispersion en radians
+            fleche = Fleche(WIDTH, HEIGHT,RATIO_W, RATIO_H,vitesse_plus, mouse_pos, time + i*200, SCREEN)  # délai entre les fléches de la salve (0,2sec) grâce à i*200
             Ensemble_fleche.append(fleche)
 
-
-def cadence(Ensemble_fleche, upgrade, mouse_pos, time, WIDTH, HEIGHT, SCREEN, Upgrade_arc):
+def cadence(Ensemble_fleche,RATIO_W, RATIO_H, upgrade, mouse_pos, time, WIDTH, HEIGHT, SCREEN, Upgrade_arc):
     # Si la liste est vide
     if len(Ensemble_fleche) == 0:
-        creation(WIDTH, HEIGHT, 0, SCREEN, mouse_pos, time, Ensemble_fleche, Upgrade_arc)
+        creation(WIDTH, HEIGHT,RATIO_W, RATIO_H, SCREEN, mouse_pos, time, Ensemble_fleche, Upgrade_arc)
         return True
 
     # Vérifie le temps écoulé depuis la dernière flèche
     last_fleche = len(Ensemble_fleche) - 1  # Index de la dernière flèche
     if time - Ensemble_fleche[last_fleche].time_start >= (1 - Upgrade_arc["cadence"])*1000:
-        creation(WIDTH, HEIGHT, 0, SCREEN, mouse_pos, time, Ensemble_fleche, Upgrade_arc)
+        creation(WIDTH, HEIGHT, RATIO_W, RATIO_H, SCREEN, mouse_pos, time, Ensemble_fleche, Upgrade_arc)
     return False
 
 def upgrade_cadence(gold, Upgrade_arc, manager):
@@ -113,9 +97,9 @@ def upgrade_salve(gold, Upgrade_arc, manager):
 def upgrade_dispersion(gold, Upgrade_arc, manager):
     if len(Upgrade_arc["dispersion"]) <= 9 and gold >= 100 + len(
             Upgrade_arc["dispersion"]) * 100:
-        min_angle = min(Upgrade_arc["dispersion"])
-        max_angle = max(Upgrade_arc["dispersion"])
-        Upgrade_arc["dispersion"].extend([min_angle - 15, max_angle + 15])  # Ajoute deux nouveaux angles
+        min_vitesse = min(Upgrade_arc["dispersion"])
+        max_vitesse = max(Upgrade_arc["dispersion"])
+        Upgrade_arc["dispersion"].extend([min_vitesse - 15, max_vitesse + 15])  # Ajoute deux nouveaux angles
         Upgrade_arc["dispersion"].sort()  # Trie la liste
         gold -= 100 + len(Upgrade_arc["dispersion"]) * 100
         print(Upgrade_arc["dispersion"])
