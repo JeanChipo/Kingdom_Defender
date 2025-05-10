@@ -42,7 +42,7 @@ def resize_tower_lvl_3(image):
 resized_cannonball = pygame.transform.scale(cannonball, (30, 30))
 
 def resize_cannonball(image):
-    resize = pygame.transform.scale(image,(28*height_ratio(),28*height_ratio()))
+    resize = pygame.transform.scale(image,(15*height_ratio(),15*height_ratio()))
     return resize
 
 def resize_baliste(image):
