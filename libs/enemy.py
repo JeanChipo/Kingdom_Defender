@@ -4,6 +4,9 @@ import random
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, name, size, health, speed, power, pos, valeur ,WIDTH, HEIGHT):
+
+        ### classe qui gère les ennemies ###
+
         super().__init__()
         # parametre
 
@@ -25,7 +28,8 @@ class Enemy(pygame.sprite.Sprite):
             self.rect = pygame.Rect((self.WIDTH - self.size[0] + 30*pos, self.HEIGHT - 100 - self.size[1]), self.size) # position des l'ennemis normaux a 100 pixel du sol
 
 
-    def update(self,WIDTH, HEIGHT): # déplacement des l'ennemis
+    def update(self,WIDTH, HEIGHT): 
+        ### déplacement des l'ennemis ###
 
         # déplacement en y (permet de faire apparaitre les ennemies tout le temps en bas de l'écran meme si la taille de l'écran change)
         if self.name == "volant":
@@ -48,18 +52,26 @@ class Enemy(pygame.sprite.Sprite):
 
 
 
-    def hitbox(self, damage): # calcule des point de vie
+    def hitbox(self, damage): 
+        ### calcule des point de vie ###
+
         self.health -= damage
 
-    def est_mort(self): #vérification de mort
+    def est_mort(self): 
+        ###vérification de mort ###
+
         return self.health <= 0
 
-    def draw(self, surface): # dessine l'ennemi (utilisé pour le débug)
+    def draw(self, surface): 
+        ### dessine l'ennemi (utilisé pour le débug) ###
+
         pygame.draw.rect(surface, (255, 0, 0), self.rect)
 
 
 
-    def futur(self, frames, screen_width): # fonction de prévision de la position de l'ennemi pour le tir des tourelles
+    def futur(self, frames, screen_width): 
+        ### fonction de prévision de la position de l'ennemi pour le tir des tourelles ###
+
         if self.rect.x <= (125*screen_width/800)+(screen_width/10): # condition d'arret de prédiction quand l'ennemi est trop proche de la tour
             return screen_width/10-1 + (self.size[0] * screen_width / 800)/2, self.rect.centery
         # calcule de la position futur de l'ennemi
@@ -68,11 +80,16 @@ class Enemy(pygame.sprite.Sprite):
         posx = (screen_width * ratio) / 10000
         return posx, self.rect.centery
 
-    def money(self): # fonction de renvoie de la valeur de l'ennemi pour le calcul de l'argent
+    def money(self): 
+        ### fonction de renvoie de la valeur de l'ennemi pour le calcul de l'argent ###
+
         return self.valeur
 
 
-def create_wave(wave_number, WIDTH, HEIGHT): # créateur d'ennemies
+def create_wave(wave_number, WIDTH, HEIGHT): 
+    ### créateur d'ennemies ###
+
+
     enemies = [] # lite des ennemies
 
     
@@ -122,7 +139,9 @@ def create_wave(wave_number, WIDTH, HEIGHT): # créateur d'ennemies
     return enemies, all_sprites
 
 
-def update_enemy(SCREEN ,all_sprites, enemies, wave_number): # fonction main du fichier enemy.py
+def update_enemy(SCREEN ,all_sprites, enemies, wave_number): 
+    ### fonction main du fichier enemy.py ###
+    
     damage = 0
 
     # mise a jour de la position de tout l'ennemi
