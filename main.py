@@ -140,7 +140,7 @@ while RUNNING:
 
     match main_menu.game_state:
         case "menu":
-            SCREEN.fill((230, 230, 230))
+            SCREEN.blit(resize_background(menu_background), (0, 0))
             B_steve.render(pygame.mouse.get_pos())
             main_menu.render(pygame.mouse.get_pos(), ratio=(1, 1))
             play_main_menu(["./assets/musics/TheInfiniteHole.mp3", "./assets/musics/ChansonDAutomne.mp3"])
