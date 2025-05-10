@@ -47,11 +47,11 @@ TextManager = TimedTextManager(SCREEN, 25)
 # buttons to upgrade the tower and turret
 B_upg_tower = Button("white", "black", "gray", "black", "upgrade tower", "kristenitc", 16,
                  (132.5, 40), (647.5, 112.5 + 0*50), SCREEN.get_size(), lambda : [turrets.add_turret(), upgrade_tower()], SCREEN)
-B_upg_turret = Button("white", "black", "gray", "black", f"turret - speed - cost={turrets.get_next_price("speed")}", "kristenitc", 16,
+B_upg_turret = Button("white", "black", "gray", "black", f"turret - speed", "kristenitc", 16,
                  (132.5, 40), (647.5, 112.5 + 1*50), SCREEN.get_size(), lambda: turrets.upgrade_turrets("speed", gold, TextManager), SCREEN)
-B_upg_turret1 = Button("white", "black", "gray", "black", f"turret - bullet - cost={turrets.get_next_price("bullet")}", "kristenitc", 16,
+B_upg_turret1 = Button("white", "black", "gray", "black", f"turret - bullet", "kristenitc", 16,
                  (132.5, 40), (647.5, 112.5 + 2*50), SCREEN.get_size(), lambda: turrets.upgrade_turrets("bullet", gold, TextManager), SCREEN)
-B_upg_turret2 = Button("white", "black", "gray", "black", f"turret - special - cost={turrets.get_next_price("special")}", "kristenitc", 16,
+B_upg_turret2 = Button("white", "black", "gray", "black", f"turret - special", "kristenitc", 16,
                  (132.5, 40), (647.5, 112.5 + 3*50), SCREEN.get_size(), lambda: turrets.upgrade_turrets("special", gold, TextManager), SCREEN)
 
 def update_gold_bow(upg_function: callable):
@@ -72,12 +72,30 @@ B_steve = Button("white", "black", "gray", "black", "steve", "kristenitc", 16,
 
 BUTTON_LIST = [B_upg_tower, B_upg_turret, B_upg_turret1, B_upg_turret2, B_upg_cadence, B_upg_salve, B_upg_dispersion]
 
+def upg_turret_text():
+    return turrets.selected_turret.name if turrets.selected_turret else '[No turret selected]'
+def upg_turret_price(upg_name:str):
+    if upg_name not in ["bullet", "special", "speed"]: return 0
+    return turrets.get_next_price(upg_name) if turrets.get_next_price(upg_name) != 0 else '...'
+
 main_menu.buttons.append(B_steve)
 
 shuffle_playlist()
 
 PAUSE = False       # Pause works by stop calling update functions but still calling draw functions
 RUNNING = True
+
+money_text = pygame.font.SysFont("Lucida Sans", 18).render(f"current gold : {gold}", True, "Black")
+wave_text = pygame.font.SysFont("Lucida Sans", 18).render(f"current wave : {wave_number}", True, "Black")
+tower_text = pygame.font.SysFont("Lucida Sans", 18).render(f"life : {hp_tower//100000000}", True, "Black")
+upgrade_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s speed : {upg_turret_price('speed')} gold", True, "Black")
+upgrade_bullet_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s bullet : {upg_turret_price('bullet')} gold", True, "Black")
+upgrade_special_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s special : {upg_turret_price('special')} gold", True, "Black")
+
+upgrade_arrow_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's fire rate {...} : gold", True, "Black")
+upgrade_arrow_dispersion_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's salvo : {...} gold", True, "Black")
+upgrade_arrow_salve_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's dispersion : {...} gold", True, "Black")
+
 while RUNNING:
     time = pygame.time.get_ticks()
     for event in pygame.event.get():
@@ -166,10 +184,9 @@ while RUNNING:
             else:
                 last_update,frame = animation_running(frame,current_time, last_update, animation_cooldown,run_animation,enemies)
 
-
             menu_but(SCREEN, (0,0,0, 128), (640, 100, 147.5, 375), (RATIO_W, RATIO_H))
             for but in BUTTON_LIST:
-                but.update_colors_based_on_gold(gold, cost=10000) 
+                but.update_colors_based_on_gold(gold, cost=10000)
                 but.render(pygame.mouse.get_pos(),border_radius=6)
             turrets.draw(SCREEN, SCREEN.get_width(), SCREEN.get_width(), enemies)
             #draw_enemy(SCREEN, enemies)
@@ -183,12 +200,18 @@ while RUNNING:
             else:
                 pause_text = pygame.font.Font(None, 48).render("PAUSED", True, "Black")
                 SCREEN.blit(pause_text, (WIDTH // 2 - pause_text.get_width() // 2, 10))
-            money_text = pygame.font.Font(None, 21).render(f"current gold : {gold}", True, "Black")
-            wave_text = pygame.font.Font(None, 21).render(f"current wave : {wave_number}", True, "Black")
-            tower_text = pygame.font.Font(None, 21).render(f"life : {hp_tower//100000000}", True, "Black")
-            SCREEN.blit(money_text, (WIDTH - (money_text.get_width()+5), 10))
-            SCREEN.blit(wave_text, (WIDTH - (wave_text.get_width() + 5), 25))
-            SCREEN.blit(tower_text, (WIDTH - (wave_text.get_width() + 5), 40))
+
+            SCREEN.blit(money_text, (WIDTH - (money_text.get_width()+5), 5))
+            SCREEN.blit(upgrade_cadence_text, (WIDTH - (upgrade_cadence_text.get_width()+5), 25))
+            SCREEN.blit(upgrade_bullet_text, (WIDTH - (upgrade_bullet_text.get_width()+5), 45))
+            SCREEN.blit(upgrade_special_text, (WIDTH - (upgrade_special_text.get_width()+5), 65))
+
+            SCREEN.blit(upgrade_arrow_cadence_text, (5, 80))
+            SCREEN.blit(upgrade_arrow_dispersion_text, (5, 100))
+            SCREEN.blit(upgrade_arrow_salve_text, (5, 120))
+
+            SCREEN.blit(wave_text, (5, 25))
+            SCREEN.blit(tower_text, (5, 40))
             dead_fleche(enemies, Ensemble_fleche)
             draw(SCREEN, time, Ensemble_fleche)
 
