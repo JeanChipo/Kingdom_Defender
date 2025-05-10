@@ -3,7 +3,7 @@ import random
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, name, size, health, speed, power, pos, valeur,WIDTH, HEIGHT):
+    def __init__(self, name, size, health, speed, power, pos, valeur ,WIDTH, HEIGHT):
         super().__init__()
         # parametre
 
@@ -13,7 +13,7 @@ class Enemy(pygame.sprite.Sprite):
         self.speed = speed                      # vitesse de déplacement
         self.power = power                      # nombre de déga
         self.ratio = 10000 + (pos*50+600)       # ratio pour calcule du déplacement
-        self.valeur = val                       # valeur de l'ennemi pour le calcul de l'argent 
+        self.valeur = valeur                       # valeur de l'ennemi pour le calcul de l'argent 
 
 
         # position initiale
