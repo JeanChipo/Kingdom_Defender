@@ -63,13 +63,13 @@ class Turret_Gestion:
         if self.selected_turret is None:
             return 0
         else:
-            if path != self.selected_turret.path:
-                return 0
+            if self.selected_turret.path is None or path != self.selected_turret.path:
+                return self.selected_turret.upgrades[path][1]["price"]
             else:
-                if self.selected_turret.level <= 4:
+                if self.selected_turret.level < 4:
                     return self.selected_turret.upgrades[path][self.selected_turret.level + 1]["price"]
                 else:
-                    return self.selected_turret.upgrades[path][4]["price"] * ((self.level-3) ** 2)
+                    return self.selected_turret.upgrades[path][4]["price"] * ((self.selected_turret.level-3) ** 2)
 
 
 class Turret:
