@@ -5,15 +5,13 @@ from libs.models import*
 import math
 from libs.ui import TimedTextManager
 
-def height_ratio (screen) :
-    ratio= screen.get_height() /600
-    return ratio
+
 
 class Turret_Gestion:
     def __init__(self, gain_gold):
         self.turrets = []
         self.nb_turret=-1
-        self.pos = [(40,300),(40,260),(40,360)]
+        self.pos = [(20*width_ratio()+22*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+165*height_ratio()),(20*width_ratio()+22*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+100*height_ratio()),(20*width_ratio()+22*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+35*height_ratio())]
         self.gain_gold = gain_gold
         self.add_turret()
         self.selected_turret = None
@@ -57,7 +55,7 @@ class Turret_Gestion:
 
     def update_positions(self, WIDTH, HEIGHT):
         for turret in self.turrets:
-            turret.x = turret.x_stable * WIDTH / 800
+            turret.x = 20*width_ratio()+22*height_ratio()
             turret.y = turret.y_stable * HEIGHT / 600
             turret.turret = pygame.Rect(turret.x, turret.y, turret.width, turret.height)
     
@@ -80,8 +78,8 @@ class Turret:
         self.gain_gold = gain_gold
         self.x_stable, self.y_stable = pos[0], pos[1]
         self.name = "Unupgraded"
-        self.width = 100
-        self.height = 100
+        self.width = 100*height_ratio()
+        self.height = 100*height_ratio()
         self.turret = pygame.Rect(self.x, self.y, self.width, self.height)
         self.bullets = []
         self.damage = 1000
@@ -205,8 +203,8 @@ class Turret:
             speedx = dir_x / frames
             speedy = dir_y / frames
             self.bullets.append(Bullet(
-                self.x + self.width/2,
-                self.y + self.height/2,
+                self.x  + 45*height_ratio(),
+                self.y  + 50*height_ratio(),
                 speedx, speedy,
                 self.damage, self.bullet_penetration,
                 self.bullet_size_x, self.bullet_size_y, self.bullet_lifetime,
@@ -216,12 +214,12 @@ class Turret:
 
     def draw(self, screen, X, Y, enemys):
         x, y = self.get_first_enemy_pos(enemys, self.width)
-        minigun_rect = minigun.get_rect(center=(self.x+90, self.y+70))
+        opp = self.y+70 - y
+        adj = x - self.x+90
+        minigun_rect = minigun.get_rect(center=(self.x+70 * height_ratio(), self.y+65 * height_ratio()))
         if enemys:
-            """rotated_baliste= pygame.transform.rotate(baliste,math.degrees(math.atan(x/y)-135))
-            screen.blit(pygame.transform.scale(rotated_baliste,(100*height_ratio(screen),100*height_ratio(screen))),(self.x, self.y))"""
-            resized_minigun = pygame.transform.scale(minigun, (100 * height_ratio(screen), 100 * height_ratio(screen)))
-            rotated_minigun = pygame.transform.rotate(resized_minigun, math.degrees(math.atan(x / y))-65)
+            resized_minigun = pygame.transform.scale(minigun, (81 * height_ratio(), 41 * height_ratio()))
+            rotated_minigun = pygame.transform.rotate(resized_minigun,math.degrees(math.atan(opp / adj)))
             rotated_rect = rotated_minigun.get_rect(center=minigun_rect.center)
 
             screen.blit((rotated_minigun),(rotated_rect))
