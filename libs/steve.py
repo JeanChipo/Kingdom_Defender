@@ -5,16 +5,19 @@ pygame.init()
 pygame.mixer.init()
 
 def back_button_func(main_menu):
+    ''' gestion du bouton de retour. '''
     setattr(main_menu, "game_state", "menu")
     if pygame.mixer.music.get_busy():
         pygame.mixer.music.stop()
 
 def press_steve(main_menu):
+    ''' gestion de l'appui pour le bouton easter egg. '''
     setattr(main_menu, "game_state", "steve")
     if pygame.mixer.music.get_busy():
         pygame.mixer.music.pause()
 
 def steve_game_loop(screen, main_menu):
+    ''' boucle de jeu pour le menu easter egg. '''
     setattr(main_menu, "game_state", "steve")
     clock = pygame.time.Clock()
     back_button = Button((230, 230, 230), (175, 175, 175), (150, 150, 150), (0, 0, 0), "<-- Back", None, 28, (120, 50), (20, 20),
@@ -40,6 +43,6 @@ def steve_game_loop(screen, main_menu):
         steve_img = pygame.transform.scale(steve_img, (screen.get_width(), screen.get_height()))
         screen.blit(steve_img, (0, 0))
 
-        back_button.render(pygame.mouse.get_pos(), border_radius=8)
+        back_button.render(pygame.mouse.get_pos())
         pygame.display.flip()
         clock.tick(60)
