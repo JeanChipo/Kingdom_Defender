@@ -164,10 +164,16 @@ class Button:
             self.is_being_pressed = False
 
     def update_colors_based_on_gold(self, gold:int, cost:int):
-        if gold >= cost:    # enough gold to buy
+        if cost == 0:
+            self.normal_color = pygame.Color((0, 60, 255))
+            self.hover_color = pygame.Color((0, 60, 255))
+            self.pressed_color = pygame.Color((0, 60, 255))
+
+        elif gold >= cost:    # enough gold to buy
             self.normal_color = pygame.Color((157, 205, 128))
             self.hover_color = pygame.Color((101, 191, 77))
             self.pressed_color = pygame.Color((55, 105, 42))
+            
         else:
             self.normal_color = pygame.Color((205, 128, 128))
             self.hover_color = pygame.Color((191, 77, 77))

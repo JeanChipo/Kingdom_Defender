@@ -178,7 +178,7 @@ while RUNNING:
 
             menu_but(SCREEN, (0,0,0, 128), (640, 100, 147.5, 375), (RATIO_W, RATIO_H))
             for but in BUTTON_LIST:
-                but.update_colors_based_on_gold(gold, cost=10000)
+                #but.update_colors_based_on_gold(gold, cost=10000)
                 but.render(pygame.mouse.get_pos(),border_radius=6)
             turrets.draw(SCREEN, SCREEN.get_width(), SCREEN.get_width(), enemies)
             #draw_enemy(SCREEN, enemies)
@@ -204,6 +204,10 @@ while RUNNING:
                 upgrade_arrow_dispersion_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's salvo : {...} gold", True, "Black")
                 upgrade_arrow_salve_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's dispersion : {...} gold", True, "Black")
                 LAST_TEXT_UPDATE_TIME = current_time
+
+            B_upg_turret.update_colors_based_on_gold(gold, turrets.get_next_price("speed"))
+            B_upg_turret1.update_colors_based_on_gold(gold, turrets.get_next_price("bullet"))
+            B_upg_turret2.update_colors_based_on_gold(gold, turrets.get_next_price("special"))
 
             SCREEN.blit(money_text, (WIDTH - (money_text.get_width()+5), 5))
             SCREEN.blit(upgrade_cadence_text, (WIDTH - (upgrade_cadence_text.get_width()+5), 25))
