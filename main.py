@@ -72,12 +72,6 @@ B_steve = Button("white", "black", "gray", "black", "steve", "kristenitc", 16,
 
 BUTTON_LIST = [B_upg_tower, B_upg_turret, B_upg_turret1, B_upg_turret2, B_upg_cadence, B_upg_salve, B_upg_dispersion]
 
-def upg_turret_text():
-    return turrets.selected_turret.name if turrets.selected_turret else '[No turret selected]'
-def upg_turret_price(upg_name:str):
-    if upg_name not in ["bullet", "special", "speed"]: return 0
-    return turrets.get_next_price(upg_name) if turrets.get_next_price(upg_name) != 0 else '...'
-
 main_menu.buttons.append(B_steve)
 
 shuffle_playlist()
@@ -136,12 +130,12 @@ while RUNNING:
             elif event.key == pygame.K_4:
                 turrets.change_priorities("grand")
 
-    main_menu.game_state = "running"    # A SUPPRIMER APRES DEBUGUAGE
+    # main_menu.game_state = "running"    # A SUPPRIMER APRES DEBUGUAGE
 
     match main_menu.game_state:
         case "menu":
             SCREEN.fill((230, 230, 230))
-            B_steve.render(pygame.mouse.get_pos(), border_radius=8)
+            B_steve.render(pygame.mouse.get_pos())
             main_menu.render(pygame.mouse.get_pos(), ratio=(1, 1))
             play_main_menu(["./assets/musics/TheInfiniteHole.mp3", "./assets/musics/ChansonDAutomne.mp3"])
 
@@ -157,18 +151,18 @@ while RUNNING:
             if tower_level == 1 :
                 SCREEN.blit(resize_tower_lvl_1(tower_1), (50*width_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()))
 
-                pygame.draw.circle(screen,0,(50*width_ratio()+55*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+225*height_ratio()),10)
+                pygame.draw.circle(SCREEN,0,(50*width_ratio()+55*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+225*height_ratio()),10)
 
             elif tower_level == 2:
                 SCREEN.blit(resize_tower_lvl_2(tower_2), (50*width_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()))
-                pygame.draw.circle(screen,0,(50*width_ratio()+55*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+225*height_ratio()),10)
-                pygame.draw.circle(screen,0,(50*width_ratio()+55*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+295*height_ratio()),10)
+                pygame.draw.circle(SCREEN,0,(50*width_ratio()+55*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+225*height_ratio()),10)
+                pygame.draw.circle(SCREEN,0,(50*width_ratio()+55*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+295*height_ratio()),10)
 
             else :
                 SCREEN.blit(resize_tower_lvl_3(tower_3), (50*width_ratio()-3,SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()))
-                pygame.draw.circle(screen, 0, (50 * width_ratio() + 55 * height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio() + 225 * height_ratio()), 10)
-                pygame.draw.circle(screen, 0, (50 * width_ratio() + 55 * height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio() + 295 * height_ratio()), 10)
-                pygame.draw.circle(screen, 0, (50 * width_ratio() + 55 * height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio() + 362 * height_ratio()), 10)
+                pygame.draw.circle(SCREEN, 0, (50 * width_ratio() + 55 * height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio() + 225 * height_ratio()), 10)
+                pygame.draw.circle(SCREEN, 0, (50 * width_ratio() + 55 * height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio() + 295 * height_ratio()), 10)
+                pygame.draw.circle(SCREEN, 0, (50 * width_ratio() + 55 * height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio() + 362 * height_ratio()), 10)
 
             current_time = pygame.time.get_ticks()
             if not enemies:
@@ -178,8 +172,8 @@ while RUNNING:
 
             menu_but(SCREEN, (0,0,0, 128), (640, 100, 147.5, 375), (RATIO_W, RATIO_H))
             for but in BUTTON_LIST:
-                #but.update_colors_based_on_gold(gold, cost=10000)
-                but.render(pygame.mouse.get_pos(),border_radius=6)
+                but.update_colors_based_on_gold(gold, cost=10000)
+                but.render(pygame.mouse.get_pos())
             turrets.draw(SCREEN, SCREEN.get_width(), SCREEN.get_width(), enemies)
             #draw_enemy(SCREEN, enemies)
 
@@ -194,13 +188,24 @@ while RUNNING:
                 SCREEN.blit(pause_text, (WIDTH // 2 - pause_text.get_width() // 2, 10))
 
             if current_time - LAST_TEXT_UPDATE_TIME > 100:  # Update text every 100ms to prevent lagging
+                def upg_turret_text():
+                    return turrets.selected_turret.name if turrets.selected_turret else '[No turret selected]'
+                def upg_turret_price(upg_name:str):
+                    if upg_name not in ["bullet", "special", "speed"]: return 0
+                    return turrets.get_next_price(upg_name) if turrets.get_next_price(upg_name) != 0 else '...'
+
                 money_text = pygame.font.SysFont("Lucida Sans", 18).render(f"current gold : {gold}", True, "Black")
                 wave_text = pygame.font.SysFont("Lucida Sans", 18).render(f"current wave : {wave_number}", True, "Black")
                 tower_text = pygame.font.SysFont("Lucida Sans", 18).render(f"life : {hp_tower//100000000}", True, "Black")
-                upgrade_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s speed : {upg_turret_price('speed')} gold", True, "Black")
-                upgrade_bullet_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s bullet : {upg_turret_price('bullet')} gold", True, "Black")
-                upgrade_special_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s special : {upg_turret_price('special')} gold", True, "Black")
-                upgrade_arrow_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's fire rate {...} : gold", True, "Black")
+                if turrets.selected_turret: 
+                    upgrade_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s speed : {upg_turret_price('speed')} gold", True, "Black")
+                    upgrade_bullet_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s bullet : {upg_turret_price('bullet')} gold", True, "Black")
+                    upgrade_special_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s special : {upg_turret_price('special')} gold", True, "Black")
+                else: 
+                    upgrade_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render('', True, "Black")
+                    upgrade_bullet_text = pygame.font.SysFont("Lucida Sans", 18).render('', True, "Black")
+                    upgrade_special_text = pygame.font.SysFont("Lucida Sans", 18).render('', True, "Black")                    
+                upgrade_arrow_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's fire rate : {...} gold", True, "Black")
                 upgrade_arrow_dispersion_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's salvo : {...} gold", True, "Black")
                 upgrade_arrow_salve_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's dispersion : {...} gold", True, "Black")
                 LAST_TEXT_UPDATE_TIME = current_time
