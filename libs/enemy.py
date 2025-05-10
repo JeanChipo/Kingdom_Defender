@@ -1,5 +1,6 @@
 import pygame
 import random
+from libs.display import *
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -13,7 +14,7 @@ class Enemy(pygame.sprite.Sprite):
         self.speed = speed                      # vitesse de déplacement
         self.power = power                      # nombre de déga
         self.ratio = 10000 + (pos*50+600)       # ratio pour calcule du déplacement
-        self.valeur = val                       # valeur de l'ennemi pour le calcul de l'argent 
+        self.valeur = valeur                       # valeur de l'ennemi pour le calcul de l'argent
 
 
         # position initiale
@@ -29,7 +30,7 @@ class Enemy(pygame.sprite.Sprite):
 
         # déplacement en y (permet de faire apparaitre les ennemies tout le temps en bas de l'écran meme si la taille de l'écran change)
         if self.name == "volant":
-            self.rect.y = HEIGHT - 300 - self.size[1]
+            self.rect.y = (HEIGHT - 300 - self.size[1]) * (1/height_ratio())
         else:
             self.rect.y = HEIGHT - 100 - self.size[1]
 
@@ -104,16 +105,16 @@ def create_wave(wave_number, WIDTH, HEIGHT): # créateur d'ennemies
 
     # création de tout les ennemie et implémentation dans la liste des ennemies
     for i in range(type[0][0]):
-        enemy_petit = Enemy("petit", (15,40), 2000 + 500*type[0][1], 20, 5,i*10, 500, WIDTH, HEIGHT)
+        enemy_petit = Enemy("petit", (30,40), 2000 + 500*type[0][1], 20, 5,i*10, 500, WIDTH, HEIGHT)
         enemies.append(enemy_petit)
     for i in range(type[3][0]):
-        enemy_volant = Enemy("volant", (50,30), 1000 + 500 * type[3][1], 20, 20,i*20, 100,WIDTH, HEIGHT)
+        enemy_volant = Enemy("volant", (30,30), 1000 + 500 * type[3][1], 20, 20,i*20, 100,WIDTH, HEIGHT)
         enemies.append(enemy_volant)
     for i in range(type[1][0]):
-        enemy_moyen = Enemy("moyen", (30,50), 6000+2000*type[1][1], 15, 10,i*20, 1000,WIDTH, HEIGHT)
+        enemy_moyen = Enemy("moyen", (30,90), 6000+2000*type[1][1], 15, 10,i*20, 1000,WIDTH, HEIGHT)
         enemies.append(enemy_moyen)
     for i in range(type[2][0]):
-        enemy_grand = Enemy("grand", (50,70), 15000+6000*type[2][1], 10, 20,i*50, 5000,WIDTH, HEIGHT)
+        enemy_grand = Enemy("grand", (100,140), 15000+6000*type[2][1], 10, 20,i*50, 5000,WIDTH, HEIGHT)
         enemies.append(enemy_grand)
     
         

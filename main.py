@@ -47,11 +47,11 @@ TextManager = TimedTextManager(SCREEN, 25)
 # buttons to upgrade the tower and turret
 B_upg_tower = Button("white", "black", "gray", "black", "upgrade tower", "kristenitc", 16,
                  (132.5, 40), (647.5, 112.5 + 0*50), SCREEN.get_size(), lambda : [turrets.add_turret(), upgrade_tower()], SCREEN)
-B_upg_turret = Button("white", "black", "gray", "black", f"turret - speed - cost={turrets.get_next_price("speed")}", "kristenitc", 16,
+B_upg_turret = Button("white", "black", "gray", "black", f"turret - speed - cost={turrets.get_next_price('speed')}", "kristenitc", 16,
                  (132.5, 40), (647.5, 112.5 + 1*50), SCREEN.get_size(), lambda: turrets.upgrade_turrets("speed", gold, TextManager), SCREEN)
-B_upg_turret1 = Button("white", "black", "gray", "black", f"turret - bullet - cost={turrets.get_next_price("bullet")}", "kristenitc", 16,
+B_upg_turret1 = Button("white", "black", "gray", "black", f"turret - bullet - cost={turrets.get_next_price('bullet')}", "kristenitc", 16,
                  (132.5, 40), (647.5, 112.5 + 2*50), SCREEN.get_size(), lambda: turrets.upgrade_turrets("bullet", gold, TextManager), SCREEN)
-B_upg_turret2 = Button("white", "black", "gray", "black", f"turret - special - cost={turrets.get_next_price("special")}", "kristenitc", 16,
+B_upg_turret2 = Button("white", "black", "gray", "black", f"turret - special - cost={turrets.get_next_price('special')}", "kristenitc", 16,
                  (132.5, 40), (647.5, 112.5 + 3*50), SCREEN.get_size(), lambda: turrets.upgrade_turrets("special", gold, TextManager), SCREEN)
 
 def update_gold_bow(upg_function: callable):

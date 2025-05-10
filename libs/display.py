@@ -49,6 +49,14 @@ def resize_baliste(image):
     resize = pygame.transform.scale(image, (100*height_ratio(), 100*height_ratio()))
     return resize
 
+
+def resize_monster(image,x,y):
+    new_height = y * height_ratio()
+    new_width = x * height_ratio()
+    resized_monster= (pygame.transform.scale(image,(new_width,new_height)))
+    resized_monster.set_colorkey(0,0)
+    return resized_monster
+
 def tower_height_position(tower_level):
     if tower_level == 1:
         return 333
@@ -68,7 +76,7 @@ def tower_height_position(tower_level):
 big_monster = pygame.image.load("assets/batedor_walk.png")
 litlle_monster = pygame.image.load("assets/slime.jiggle.png")
 medium_monster = pygame.image.load("assets/goblinsword.png")
-
+flying_monster = pygame.image.load("assets/flying_monster_8_frames.png")
 black = (0,0,0)
 
 
@@ -89,23 +97,29 @@ class Spritesheet() :
 big_monster_sprite_sheet = Spritesheet(big_monster)
 litlle_monster_sprite_sheet = Spritesheet(litlle_monster)
 medium_monster_sprite_sheet = Spritesheet(medium_monster)
+flying_monster_sprite_sheet = Spritesheet(flying_monster)
+
 
 run_animation=[]
 sprint_animation=[]
 big_monster_run = []
 litlle_monster_run = []
 medium_monster_run = []
+flying_monster_run = []
 
 run_animation_steps = 7
 sprint_animation_steps = 7
 big_monster_run_steps = 8
 litlle_monster_run_steps = 8
-medium_monster_run_steps =8
+medium_monster_run_steps = 8
+flying_monster_run_steps = 8
 
 for j in range (0, run_animation_steps):
-    big_monster_run.append((big_monster_sprite_sheet.get_sprite_image(j,320,320,0.2,black)))
+    big_monster_run.append((big_monster_sprite_sheet.get_sprite_image(j,320,320,0.5,black)))
     litlle_monster_run.append((litlle_monster_sprite_sheet.get_sprite_image(j, 64, 64, 1, black)))
     medium_monster_run.append((medium_monster_sprite_sheet.get_sprite_image(j, 65, 64, 2, black)))
+    flying_monster_run.append((flying_monster_sprite_sheet.get_sprite_image(j,81,71,0.7,black)))
+
 
 medium_monster_run.reverse()
 last_update = pygame.time.get_ticks()
@@ -123,13 +137,14 @@ def animation_big_monster_running(frame,time,last_update,animation_cooldown,run_
         new_update = last_update
     for i in range (len(enemies)):
         if enemies[i].name == "grand":
-            SCREEN.blit(big_monster_run[frame], (enemies[i].rect.x - 50, enemies[i].rect.y - 15))
+            SCREEN.blit(resize_monster(big_monster_run[frame],320*0.5,320*0.5), (enemies[i].rect.x - 50, enemies[i].rect.y - 15))
         elif enemies[i].name == "petit":
-            SCREEN.blit(litlle_monster_run[frame], (enemies[i].rect.x - 10, enemies[i].rect.y - 15))
+            SCREEN.blit(resize_monster(litlle_monster_run[frame],64,64), (enemies[i].rect.x - 10, enemies[i].rect.y - 15))
         elif enemies[i].name == "moyen":
-            SCREEN.blit(medium_monster_run[frame], (enemies[i].rect.x - 10, enemies[i].rect.y - 15))
-        else:
-            SCREEN.blit(big_monster_run[frame], (enemies[i].rect.x - 10, enemies[i].rect.y - 15))
+            SCREEN.blit(resize_monster(medium_monster_run[frame],65*2,64*2), (enemies[i].rect.x - 65, enemies[i].rect.y - 15))
+        elif enemies[i].name == "volant":
+            SCREEN.blit(resize_monster(flying_monster_run[frame],81*0.7,71*0.7), (enemies[i].rect.x - 10, enemies[i].rect.y - 5))
+
     return new_update,frame
 
 
