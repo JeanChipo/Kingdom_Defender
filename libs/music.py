@@ -6,10 +6,7 @@ pygame.init()
 pygame.font.init()
 pygame.mixer.init()
 
-WIDTH, HEIGHT = 500, 300
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-
-playlist = [
+playlist = [        # playlist containing every
     "./assets/musics/Breakout.mp3",
     "./assets/musics/Celtic Dream.mp3",
     "./assets/musics/Cry Of The Celts.mp3",
@@ -27,10 +24,10 @@ playlist = [
 
 current_track = 0
 pygame.mixer.music.load(playlist[current_track])
-# pygame.mixer.music.play()
 pygame.mixer.music.set_volume(0.5)
 
 def shuffle_playlist():
+    ''' fonction pour jouer une musique aléatoire dans le jeu pricipal depuis la playlist. '''
     global playlist
     music_index_list = [i for i in range(len(playlist))]
     shuffled_playlist = []
@@ -40,28 +37,32 @@ def shuffle_playlist():
         music_index_list.remove(random_index)
     playlist = shuffled_playlist
 
-def play_main_menu(playlist:list[str, str]):
+def play_main_menu(playlist:list[str]):
+    ''' fonction pour jouer une musique aléatoire dans le menu principal. '''
     song_path = choice(playlist)
     if not pygame.mixer.music.get_busy():
         pygame.mixer.music.load(song_path)
         pygame.mixer.music.play()
 
 def play_next_music():
+    ''' fonction pour jouer la prochaine musique dans la playlist. '''
     global current_track
     song_id = (current_track+1) % len(playlist)
     pygame.mixer.music.load(playlist[song_id])
     pygame.mixer.music.play()
     current_track += 1
 
-def play_last_music():
-    global current_track
-    song_id = (current_track-1) % len(playlist)
-    pygame.mixer.music.load(playlist[song_id])
-    pygame.mixer.music.play()   
-    current_track -= 1
+# def play_last_music():
+    # ''' fonction permettant de  '''
+    # global current_track
+    # song_id = (current_track-1) % len(playlist)
+    # pygame.mixer.music.load(playlist[song_id])
+    # pygame.mixer.music.play()   
+    # current_track -= 1
 
 class VolumeSlider:
     def __init__(self, x, y, width, height, initial_volume=0.5):
+        ''' classe permettant de créer un slider de volume dans le menu des paramètres. '''
         self.rect = pygame.Rect(x, y, width, height)  # track area
         self.knob_radius = 10  # knob size
         self.knob_x = x + int(0.5 * width)  # start at 50% volume
@@ -69,16 +70,19 @@ class VolumeSlider:
         self.volume = initial_volume # 0.0 -> 1.0
 
     def draw(self, surface):
+        ''' afficher le slider de volume. '''
         pygame.draw.rect(surface, "gray", self.rect)  # Slider track
         pygame.draw.circle(surface, "blue", (self.knob_x, self.rect.centery), self.knob_radius)  # Knob
 
     def update(self, mouse_x):
+        ''' met à jour la position du slider de volume. '''
         self.knob_x = max(self.rect.left, min(mouse_x, self.rect.right))  # clamp the knob in the slider area
         pos_x = self.knob_x - self.rect.left
         self.volume = pos_x / self.rect.width
         pygame.mixer.music.set_volume(self.volume)
 
     def handle_event(self, event):
+        ''' permet de faire glisser le bouton de slider de volume. '''
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Left click
             if pygame.Rect(self.knob_x - self.knob_radius, self.rect.centery - self.knob_radius, self.knob_radius * 2, self.knob_radius * 2).collidepoint(event.pos):
                 self.dragging = True
@@ -91,6 +95,7 @@ volume_slider = VolumeSlider(100, 200, 300, 10, initial_volume=0.5)
 
 
 def option_game_loop(screen, main_menu):
+    ''' boucle de jeu pour le menu des options. '''
     clock = pygame.time.Clock()
     back_button = Button((230,230,230), (175,175,175), (150,150,150), (0, 0, 0), "<-- Back", None, 28, (120, 50), (20, 20),
                           screen.get_size(), lambda: setattr(main_menu, "game_state", "menu"), screen_to_print_on=screen)
@@ -130,7 +135,7 @@ def option_game_loop(screen, main_menu):
         screen.blit(texte_volume_control, ((screen.get_width() // 2 - texte_volume_control.get_width() // 2,
                                             volume_slider.rect.bottom + 20)))
         volume_slider.draw(screen)
-        back_button.render(pygame.mouse.get_pos(), border_radius=8)
+        back_button.render(pygame.mouse.get_pos())
 
         pygame.display.flip()
         clock.tick(60)
