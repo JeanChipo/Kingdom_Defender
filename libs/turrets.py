@@ -3,7 +3,7 @@ from libs.display import height_ratio
 from libs.display import *
 from libs.models import*
 import math
-
+from libs.ui import TimedTextManager
 
 def height_ratio (screen) :
     ratio= screen.get_height() /600
@@ -18,26 +18,25 @@ class Turret_Gestion:
         self.add_turret()
         self.selected_turret = None
 
-
-
     def add_turret(self):
         self.nb_turret += 1
         if self.nb_turret >= 3:
             return
         self.turrets.append(Turret(self.pos[self.nb_turret], self.gain_gold))
 
-    def select_turret(self, mouse_pos):
+    def select_turret(self, mouse_pos, manager):
         for turret in self.turrets:
             if turret.turret.collidepoint(mouse_pos):
                 self.selected_turret = turret
-                print(f"Tourelle sélectionnée : {turret.name}")
+                manager.show_text(f"Selected Turret : {self.selected_turret.name}", 2)
                 return
         self.selected_turret = None
 
-    def upgrade_turrets(self, path, gold):
+    def upgrade_turrets(self, path, gold, manager):
         if self.selected_turret is None:
+            manager.show_text(f"No Turret Selected", 2)
             return
-        self.selected_turret.upgrade(path, gold)
+        self.selected_turret.upgrade(path, gold, manager)
 
     def change_priorities(self, priorities):
         if self.selected_turret is None:
@@ -61,6 +60,18 @@ class Turret_Gestion:
             turret.x = turret.x_stable * WIDTH / 800
             turret.y = turret.y_stable * HEIGHT / 600
             turret.turret = pygame.Rect(turret.x, turret.y, turret.width, turret.height)
+    
+    def get_next_price(self, path):
+        if self.selected_turret is None:
+            return 0
+        else:
+            if path != self.selected_turret.path:
+                return 0
+            else:
+                if self.selected_turret.level <= 4:
+                    return self.selected_turret.upgrades[path][self.selected_turret.level + 1]["price"]
+                else:
+                    return self.selected_turret.upgrades[path][4]["price"] * ((self.level-3) ** 2)
 
 
 class Turret:
@@ -126,14 +137,13 @@ class Turret:
         return
 
 
-    def upgrade(self, path, gold):
+    def upgrade(self, path, gold, manager):
         self.choose_path(path)
         if self.level <= 4:
             if self.upgrades[self.path][self.level + 1]["price"] > gold:
-                print("Not enough gold.")
+                manager.show_text(f"Not enough Money", 2)
                 return
             self.gain_gold(-self.upgrades[self.path][self.level + 1]["price"])
-            print(gold)
             self.level += 1
             self.name = self.upgrades[self.path][self.level]["name"]
             self.bullet_penetration = self.upgrades[self.path][self.level]["bullet_penetration"]
@@ -148,20 +158,18 @@ class Turret:
                 self.bounces = self.upgrades[self.path][self.level]["bounces"]
         elif self.path == "speed":
             if self.upgrades[self.path][4]["price"] * self.level ** 2 > gold:
-                print("Not enough gold.")
+                manager.show_text(f"Not enough Money", 2)
                 return
             self.gain_gold(-(self.upgrades[self.path][4]["price"] * self.level ** 2))
-            print(gold)
             self.level += 1
             self.bullet_penetration *= 2
             self.fire_rate /= 2
             self.damage *= 2
         elif self.path == "bullet":
             if self.upgrades[self.path][4]["price"] * self.level ** 2 > gold:
-                print("Not enough gold.")
+                manager.show_text(f"Not enough Money", 2)
                 return
             self.gain_gold(-(self.upgrades[self.path][4]["price"] * self.level ** 2))
-            print(gold)
             self.level += 1
             self.bullet_penetration *= 2
             self.damage *= 2
@@ -169,10 +177,9 @@ class Turret:
             self.bullet_size_y += 10
         elif self.path == "special":
             if self.upgrades[self.path][4]["price"] * self.level ** 2 > gold:
-                print("Not enough gold.")
+                manager.show_text(f"Not enough Money", 2)
                 return
             self.gain_gold(-(self.upgrades[self.path][4]["price"] * self.level ** 2))
-            print(gold)
             self.level += 1
             self.damage *= 2
             self.bullet_lifetime *= 2
