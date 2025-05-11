@@ -126,7 +126,7 @@ while RUNNING:
                         hovering = True
                         break
                 if not hovering:
-                    cadence(Ensemble_fleche,RATIO_W, RATIO_H, mouse_pos, time, WIDTH, HEIGHT, SCREEN, Upgrade_arc)
+                    cadence(tower_level,Ensemble_fleche,RATIO_W, RATIO_H, mouse_pos, time, SCREEN, Upgrade_arc)
                     turrets.select_turret(pygame.mouse.get_pos(),TextManager)
 
         elif event.type == pygame.VIDEORESIZE:
