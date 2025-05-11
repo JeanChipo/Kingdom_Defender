@@ -13,7 +13,6 @@ pygame.init()
 WIDTH, HEIGHT = 800,600
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
 pygame.display.set_caption("Kingdom defender ⊹ ࣪ ﹏𓊝﹏𓂁﹏⊹ ࣪ ˖")
-tower_level=1
 
 def upgrade_tower():
     global tower_level, gold
@@ -55,7 +54,7 @@ Upgrade_arc = {"cadence" : 0, "salve" : 1, "dispersion" : [0],
 upgrade = 1000
 wave_number = 1
 enemies, all_sprites = create_wave(wave_number,SCREEN.get_width(),420)
-gold = 0    # Argent de début
+gold = 100000    # Argent de début
 fader = ScreenFader(SCREEN, color=(0,0,0), duration=2000, steps=60)
 main_menu = MainMenu(SCREEN, fader)
 hp_tower = 10000000000 # vie de la tour
@@ -180,16 +179,18 @@ while RUNNING:
             SCREEN.blit(resize_background(background), (0, 0))
             if tower_level == 1 :
                 SCREEN.blit(resize_tower_lvl_1(tower_1), (50*width_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()))
-
                 #pygame.draw.circle(screen,0,(50*width_ratio()+55*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+225*height_ratio()),10)
 
             elif tower_level == 2:
                 SCREEN.blit(resize_tower_lvl_2(tower_2), (50*width_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()))
+
                 #pygame.draw.circle(screen,0,(50*width_ratio()+55*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+225*height_ratio()),10)
                 #pygame.draw.circle(screen,0,(50*width_ratio()+55*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+295*height_ratio()),10)
 
             else :
                 SCREEN.blit(resize_tower_lvl_3(tower_3), (50*width_ratio()-3,SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()))
+
+
                 #pygame.draw.circle(screen, 0, (50 * width_ratio() + 55 * height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio() + 225 * height_ratio()), 10)
                 #pygame.draw.circle(screen, 0, (50 * width_ratio() + 55 * height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio() + 295 * height_ratio()), 10)
                 #pygame.draw.circle(screen, 0, (50 * width_ratio() + 55 * height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio() + 362 * height_ratio()), 10)
@@ -248,20 +249,20 @@ while RUNNING:
                     upgrade_bullet_text = pygame.font.SysFont("Lucida Sans", 18).render('', True, "Black")
                     upgrade_special_text = pygame.font.SysFont("Lucida Sans", 18).render('', True, "Black")                    
 
-                if int(Upgrade_arc["prices_upgrade"][0]) == 1:
+                if int(Upgrade_arc['prices_upgrade'][0]) == 1:
                     upgrade_arrow_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render("upgrade bow's fire rate : out of stock", True, "Black")
                 else:
-                    upgrade_arrow_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's fire rate : {int(Upgrade_arc["prices_upgrade"][0])} gold", True, "Black")
+                    upgrade_arrow_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's fire rate : {int(Upgrade_arc['prices_upgrade'][0])} gold", True, "Black")
 
-                if int(Upgrade_arc["prices_upgrade"][1]) == 1:
+                if int(Upgrade_arc['prices_upgrade'][1]) == 1:
                     upgrade_arrow_dispersion_text = pygame.font.SysFont("Lucida Sans", 18).render("upgrade bow's salvo : out of stock", True, "Black")
                 else:
-                    upgrade_arrow_dispersion_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's salvo : {int(Upgrade_arc["prices_upgrade"][1])} gold", True, "Black")
+                    upgrade_arrow_dispersion_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's salvo : {int(Upgrade_arc['prices_upgrade'][1])} gold", True, "Black")
 
-                if int(Upgrade_arc["prices_upgrade"][2]) == 1:
+                if int(Upgrade_arc['prices_upgrade'][2]) == 1:
                     upgrade_arrow_salve_text = pygame.font.SysFont("Lucida Sans", 18).render("upgrade bow's dispersion : out of stock", True, "Black")
                 else:
-                    upgrade_arrow_salve_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's dispersion : {int(Upgrade_arc["prices_upgrade"][2])} gold", True, "Black")
+                    upgrade_arrow_salve_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's dispersion : {int(Upgrade_arc['prices_upgrade'][2])} gold", True, "Black")
                 LAST_TEXT_UPDATE_TIME = current_time
 
             B_upg_turret.update_colors_based_on_gold(gold, turrets.get_next_price("speed"))
@@ -286,7 +287,7 @@ while RUNNING:
             SCREEN.blit(wave_text, (5, 25))
             SCREEN.blit(tower_text, (5, 40))
             dead_fleche(enemies, Ensemble_fleche)
-            draw(SCREEN, time, Ensemble_fleche)
+            draw(SCREEN, time, Ensemble_fleche,tower_level)
 
             hp_tower -= damage
             if hp_tower <= 0:

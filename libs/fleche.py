@@ -89,8 +89,21 @@ def dead_fleche(enemys,Ensemble_fleche):
 old_x = 0
 old_y = 0
 
+switch_1=0
+switch_2=0
+
+def update_previous(tower_level):
+    global switch_1
+    global switch_2
+    if tower_level == 1:
+        return 0
+    if tower_level == 2:
+        switch_1=1
+    if tower_level == 3:
+        switch_2 =1
+
 """ Fonction qui permet l'affichage des fleches """
-def draw(SCREEN,time,Ensemble_fleche):
+def draw(SCREEN,time,Ensemble_fleche,tower_level):
 
     # Parcours les flèches existantes
     for fleche in Ensemble_fleche:
@@ -99,8 +112,15 @@ def draw(SCREEN,time,Ensemble_fleche):
             # Dessiner les flèches de la liste
             global old_x
             global old_y
-            temp_arrow = resize_fleche(arrow)
-            arrow_rect = arrow.get_rect(center=((int(fleche.x), int(fleche.y))))
+            global switch_1
+            global switch_2
+            if tower_level > 1 :
+                bigger_level_arrow = pygame.transform.rotate(new_arrow,0)
+
+            else:
+                bigger_level_arrow = new_arrow
+            temp_arrow = resize_fleche(bigger_level_arrow)
+            arrow_rect = bigger_level_arrow.get_rect(center=((int(fleche.x), int(fleche.y))))
             if old_x==0:
                 SCREEN.blit(temp_arrow,arrow_rect)
                 old_x = fleche.x
@@ -112,6 +132,14 @@ def draw(SCREEN,time,Ensemble_fleche):
                 rotated_rect = rotated_arrow.get_rect(center=arrow_rect.center)
                 SCREEN.blit((rotated_arrow), (rotated_rect))
 
+                if tower_level == 2 and switch_1 == 0 :
+                    update_previous(tower_level)
+                    old_x=fleche.x
+                    old_y=fleche.y
+                if tower_level == 3 and switch_2 == 0:
+                    update_previous(tower_level)
+                    old_x = fleche.x
+                    old_y = fleche.y
         else:
             # Supprimer la flèche qui sort de l'écran
             Ensemble_fleche.remove(fleche)
