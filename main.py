@@ -1,6 +1,6 @@
 import pygame
 from libs.transitions import ScreenFader
-from libs.ui import MainMenu, Button, menu_but, TimedTextManager
+from libs.ui import MainMenu, Button, menu_but, TimedTextManager, pause
 from libs.turrets import Turret_Gestion
 from libs.models import *
 from libs.enemy import update_enemy, create_wave, draw_enemy
@@ -60,6 +60,9 @@ main_menu = MainMenu(SCREEN, fader)
 hp_tower = 10000000000 # vie de la tour
 TextManager = TimedTextManager(SCREEN, 25)
 
+PAUSE_START_TIME = 0
+PAUSE_DURATION = 0 
+
 # buttons to upgrade the tower and turret
 B_upg_tower = Button("white", "black", "gray", "black", "upgrade tower", "kristenitc", 16,
                  (132.5, 40), (647.5, 112.5 + 0*50), SCREEN.get_size(), lambda : [upgrade_tower()], SCREEN)
@@ -105,7 +108,7 @@ LAST_TEXT_UPDATE_TIME = 0
 money_text = wave_text = tower_text = upgrade_cadence_text = upgrade_bullet_text = upgrade_special_text = upgrade_arrow_cadence_text = upgrade_arrow_dispersion_text = upgrade_arrow_salve_text = None
 
 while RUNNING:
-    time = pygame.time.get_ticks()
+    time = pygame.time.get_ticks() - PAUSE_DURATION  # get the correct time by subtracting the duration of the pause
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             RUNNING = False
@@ -136,13 +139,19 @@ while RUNNING:
 
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
-                PAUSE = not PAUSE
-                if PAUSE:
+                if not PAUSE:
+                    PAUSE = True
+                    PAUSE_START_TIME = pygame.time.get_ticks()
                     pygame.mixer.music.pause()
-                else:
+                    pause_text = pygame.font.Font(None, 48).render("PAUSED", True, "Black")
+                    SCREEN.blit(pause_text, (WIDTH // 2 - pause_text.get_width() // 2, 10))
+                    pygame.display.flip()
+                    pause()
+                    PAUSE = False
+                    PAUSE_DURATION += pygame.time.get_ticks() - PAUSE_START_TIME
                     pygame.mixer.music.unpause()
             elif event.key == pygame.K_0:
-                    play_next_music()
+                play_next_music()
             elif event.key == pygame.K_1:
                 turrets.change_priorities("petit")
             elif event.key == pygame.K_2:
@@ -151,8 +160,6 @@ while RUNNING:
                 turrets.change_priorities("moyen")
             elif event.key == pygame.K_4:
                 turrets.change_priorities("grand")
-
-    # main_menu.game_state = "running"    # A SUPPRIMER APRES DEBUGUAGE
 
     match main_menu.game_state:
         case "menu":
@@ -198,15 +205,11 @@ while RUNNING:
             turrets.draw(SCREEN, SCREEN.get_width(), SCREEN.get_width(), enemies)
             #draw_enemy(SCREEN, enemies)
 
-            if not PAUSE:
-                turrets.update(enemies, SCREEN.get_width(), SCREEN.get_height())
-                TextManager.update()
-                enemies, all_sprites, wave_number,damage = update_enemy(SCREEN, all_sprites, enemies, wave_number)
-                if not pygame.mixer.music.get_busy():
-                    play_next_music()
-            else:
-                pause_text = pygame.font.Font(None, 48).render("PAUSED", True, "Black")
-                SCREEN.blit(pause_text, (WIDTH // 2 - pause_text.get_width() // 2, 10))
+            turrets.update(enemies, SCREEN.get_width(), SCREEN.get_height())
+            TextManager.update()
+            enemies, all_sprites, wave_number,damage = update_enemy(SCREEN, all_sprites, enemies, wave_number)
+            if not pygame.mixer.music.get_busy():
+                play_next_music()
 
             if current_time - LAST_TEXT_UPDATE_TIME > 100:  # Update text every 100ms to prevent lagging
                 def upg_turret_text():
