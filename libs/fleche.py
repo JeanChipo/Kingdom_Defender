@@ -72,7 +72,7 @@ def dead_fleche(enemys,Ensemble_fleche):
             if fleche.rect.colliderect(ennemy.rect):
                 # Supprime la fléche si collision (axe amélioration, fléche perforante)
                 Ensemble_fleche.remove(fleche)
-                ennemy.hitbox(Ensemble_fleche.damage)
+                ennemy.hitbox(fleche.damage)
                 #Verifie si l'ennemi est mort et réagie en conséquence
                 if ennemy.est_mort():
                     if ennemy in enemys:
