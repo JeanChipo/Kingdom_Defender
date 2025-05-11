@@ -44,7 +44,8 @@ def dead_fleche(enemys,Ensemble_fleche):
                 Ensemble_fleche.remove(fleche)
                 ennemy.hitbox(1000)
                 if ennemy.est_mort():
-                    enemys.remove(ennemy)
+                    if ennemy in enemys:
+                        enemys.remove(ennemy)
 
 def draw(SCREEN,time,Ensemble_fleche):
     # Gérer les flèches existantes
