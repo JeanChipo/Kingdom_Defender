@@ -54,7 +54,7 @@ Upgrade_arc = {"cadence" : 0, "salve" : 1, "dispersion" : [0],
 upgrade = 1000
 wave_number = 1
 enemies, all_sprites = create_wave(wave_number,SCREEN.get_width(),420)
-gold = 100000    # Argent de début
+gold = 0    # Argent de début
 fader = ScreenFader(SCREEN, color=(0,0,0), duration=2000, steps=60)
 main_menu = MainMenu(SCREEN, fader)
 hp_tower = 10000000000 # vie de la tour
@@ -179,21 +179,12 @@ while RUNNING:
             SCREEN.blit(resize_background(background), (0, 0))
             if tower_level == 1 :
                 SCREEN.blit(resize_tower_lvl_1(tower_1), (50*width_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()))
-                #pygame.draw.circle(screen,0,(50*width_ratio()+55*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+225*height_ratio()),10)
 
             elif tower_level == 2:
                 SCREEN.blit(resize_tower_lvl_2(tower_2), (50*width_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()))
 
-                #pygame.draw.circle(screen,0,(50*width_ratio()+55*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+225*height_ratio()),10)
-                #pygame.draw.circle(screen,0,(50*width_ratio()+55*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+295*height_ratio()),10)
-
             else :
                 SCREEN.blit(resize_tower_lvl_3(tower_3), (50*width_ratio()-3,SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()))
-
-
-                #pygame.draw.circle(screen, 0, (50 * width_ratio() + 55 * height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio() + 225 * height_ratio()), 10)
-                #pygame.draw.circle(screen, 0, (50 * width_ratio() + 55 * height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio() + 295 * height_ratio()), 10)
-                #pygame.draw.circle(screen, 0, (50 * width_ratio() + 55 * height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio() + 362 * height_ratio()), 10)
 
             current_time = pygame.time.get_ticks()
             if enemies:
@@ -203,7 +194,6 @@ while RUNNING:
             for but in BUTTON_LIST:
                 but.render(pygame.mouse.get_pos())
             turrets.draw(SCREEN, SCREEN.get_width(), SCREEN.get_width(), enemies)
-            #draw_enemy(SCREEN, enemies)
 
             turrets.update(enemies, SCREEN.get_width(), SCREEN.get_height())
             TextManager.update()

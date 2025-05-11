@@ -6,7 +6,7 @@ pygame.init()
 pygame.font.init()
 pygame.mixer.init()
 
-playlist = [        # playlist containing every
+playlist = [
     "./assets/musics/Breakout.mp3",
     "./assets/musics/Celtic Dream.mp3",
     "./assets/musics/Cry Of The Celts.mp3",
