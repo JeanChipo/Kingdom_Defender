@@ -113,7 +113,7 @@ def cadence(Ensemble_fleche,RATIO_W, RATIO_H, mouse_pos, time, WIDTH, HEIGHT, SC
 
     # Vérifie le temps écoulé depuis la dernière flèche
     last_fleche = len(Ensemble_fleche) - 1  # Index de la dernière flèche
-    if time - Ensemble_fleche[last_fleche].time_start >= (1 - Upgrade_arc["cadence"])*1000: # *1000 pour la conversion du des milliseconde en seconde
+    if time - Ensemble_fleche[last_fleche].time_start >= (1 - 0.25*Upgrade_arc["cadence"])*1000: # *1000 pour la conversion du des milliseconde en seconde
         creation(WIDTH, HEIGHT, RATIO_W, RATIO_H, SCREEN, mouse_pos, time, Ensemble_fleche, Upgrade_arc)
     return False
 
@@ -124,16 +124,17 @@ def cadence(Ensemble_fleche,RATIO_W, RATIO_H, mouse_pos, time, WIDTH, HEIGHT, SC
 #                            - Si amélioration possible, amélioration de la compétence et soustraction de l'économie par le prix
 #                            - Mise à jour du prix d'amélioration de la compétence
 #                            - Renvoie si possible le signal qui rend impossible l'amélioration de la compétence
+
 def upgrade_cadence(gold, Upgrade_arc, manager):
-    if Upgrade_arc["cadence"] < 3 and gold >= 5000 + Upgrade_arc["cadence"] * 5000: # Permet d'avoir une préogressioon linéaire du coût des améliorations
-        Upgrade_arc["cadence"] += 0.25
+    if Upgrade_arc["cadence"] < 3  and gold >= 5000 + Upgrade_arc["cadence"] * 5000: # Permet d'avoir une préogressioon linéaire du coût des améliorations
+        Upgrade_arc["cadence"] += 1
         gold -= 5000 + Upgrade_arc["cadence"] * 5000
 
         if (Upgrade_arc["cadence"]) < 3:
             Upgrade_arc["prices_upgrades"][0] = 5000 + Upgrade_arc["cadence"] * 5000
-        elif (Upgrade_arc["cadence"]) == 3:
+        else :
             Upgrade_arc["prices_upgrades"][0] = 1
-
+    print(Upgrade_arc["prices_upgrades"][0])
     return gold, Upgrade_arc
 
 def upgrade_salve(gold, Upgrade_arc, manager):
@@ -145,7 +146,7 @@ def upgrade_salve(gold, Upgrade_arc, manager):
             Upgrade_arc["prices_upgrades"][1] = 5000 + Upgrade_arc["salve"] * 5000
         elif (Upgrade_arc["salve"]) == 3:
             Upgrade_arc["prices_upgrades"][1] = 1
-
+    print(Upgrade_arc["prices_upgrades"][1])
     return gold, Upgrade_arc
 
 def upgrade_dispersion(gold, Upgrade_arc, manager):
@@ -166,5 +167,5 @@ def upgrade_dispersion(gold, Upgrade_arc, manager):
             Upgrade_arc["prices_upgrades"][2] = 5000 + len(Upgrade_arc["dispersion"]) * 5000
         elif len(Upgrade_arc["dispersion"]) == 7:
             Upgrade_arc["prices_upgrades"][2] = 1
-
+    print(Upgrade_arc["prices_upgrades"][0])
     return gold, Upgrade_arc

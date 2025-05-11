@@ -41,7 +41,7 @@ Upgrade_arc =       {"cadence" : 0, "salve" : 1, "dispersion" : [0],
 upgrade = 1000
 wave_number = 1
 enemies, all_sprites = create_wave(wave_number,SCREEN.get_width(),420)
-gold = 0    # Argent de début
+gold = 1000000    # Argent de début
 fader = ScreenFader(SCREEN, color=(0,0,0), duration=2000, steps=60)
 main_menu = MainMenu(SCREEN, fader)
 hp_tower = 10000000000 # vie de la tour
@@ -61,13 +61,13 @@ def update_gold_bow(upg_function: callable):
     global gold, Upgrade_arc, TextManager
     gold, Upgrade_arc = upg_function(gold, Upgrade_arc, TextManager)
 
-# buttons to upgrade the archer
+#buttons to upgrade the archer
 B_upg_cadence = Button("white", "black", "gray", "black", "bow - fire rate", "kristenitc", 16,
                  (132.5, 40), (647.5, 112.5 + 4*50 + 10), SCREEN.get_size(), lambda : update_gold_bow(upgrade_cadence), SCREEN)
 B_upg_salve = Button("white", "black", "gray", "black", "bow - salvo", "kristenitc", 16,
                  (132.5, 40), (647.5, 112.5 + 5*50 + 10), SCREEN.get_size(), lambda : update_gold_bow(upgrade_salve), SCREEN)
 B_upg_dispersion = Button("white", "black", "gray", "black", "bow - dispersion", "kristenitc", 16,
-                 (132.5, 40), (647.5, 112.5 + 6*50 + 10), SCREEN.get_size(), lambda : update_gold_bow(upgrade_dispersion), SCREEN)
+                 (132.5, 40), (647.5, 112.5 + 6*50 + 10), SCREEN.get_size(), lambda : update_gold_bow(upgrade_dispersion), SCREEN)#
 
 B_steve = Button("white", "black", "gray", "black", "steve", "kristenitc", 16,
                  (100, 100), (0, 0), SCREEN.get_size(),
