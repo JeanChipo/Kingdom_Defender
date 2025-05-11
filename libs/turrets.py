@@ -12,7 +12,9 @@ class Turret_Gestion:
         """module permettant de gerer les tourelles en cours d'activité"""
         self.turrets = []
         self.nb_turret=-1
-        self.pos = [(20*width_ratio()+22*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+165*height_ratio()),(20*width_ratio()+22*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+100*height_ratio()),(20*width_ratio()+22*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+35*height_ratio())]
+        self.pos = [(20*width_ratio()+22*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+165*height_ratio()),
+                    (20*width_ratio()+22*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+100*height_ratio()),
+                    (20*width_ratio()+22*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+35*height_ratio())]
         self.gain_gold = gain_gold
         self.add_turret()
         self.selected_turret = None
@@ -226,24 +228,27 @@ class Turret:
 
     def draw(self, screen: pygame.Surface, X: float, Y: float, enemys: list[Enemy]):
         """affiche la tourelle"""
-
+        #mise a jour de la hitbox
+        canon_center_x = self.x + 70 * height_ratio()
+        canon_center_y = self.y + 65 * height_ratio()
+        canon_width = 81 * height_ratio()
+        canon_height = 41 * height_ratio()
+        #mise a jour position
+        self.turret = pygame.Rect(0, 0, canon_width, canon_height)
+        self.turret.center = (canon_center_x, canon_center_y)
         for elm in self.bullets:
             elm.draw(screen)
-        self.bullets = [elm for elm in self.bullets if (elm.x <= X and elm.y <= Y-300 and not elm.dead_bullet(enemys) and elm.time < elm.lifetime)]
-
-        x, y = self.get_first_enemy_pos(enemys, self.width)
-        baliste_rect = baliste.get_rect(center=(self.x, self.y))
+        self.bullets = [elm for elm in self.bullets if
+                        (elm.x <= X and elm.y <= Y - 300 and not elm.dead_bullet(enemys) and elm.time < elm.lifetime)]
         if enemys:
             x, y = self.get_first_enemy_pos(enemys, self.width)
             opp = self.y + 70 - y
             adj = x - self.x + 90
-        minigun_rect = minigun.get_rect(center=(self.x + 70 * height_ratio(), self.y + 65 * height_ratio()))
-        if enemys:
-            resized_minigun = pygame.transform.scale(minigun, (81 * height_ratio(), 41 * height_ratio()))
-            rotated_minigun = pygame.transform.rotate(resized_minigun, math.degrees(math.atan(opp / adj)))
-            rotated_rect = rotated_minigun.get_rect(center=minigun_rect.center)
-
-            screen.blit((rotated_minigun), (rotated_rect))
+            resized_minigun = pygame.transform.scale(minigun, (int(canon_width), int(canon_height)))
+            angle = math.degrees(math.atan(opp / adj))
+            rotated_minigun = pygame.transform.rotate(resized_minigun, angle)
+            rotated_rect = rotated_minigun.get_rect(center=(canon_center_x, canon_center_y))
+            screen.blit(rotated_minigun, rotated_rect)
 
 
 
