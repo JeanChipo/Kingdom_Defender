@@ -195,9 +195,7 @@ while RUNNING:
                 #pygame.draw.circle(screen, 0, (50 * width_ratio() + 55 * height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio() + 362 * height_ratio()), 10)
 
             current_time = pygame.time.get_ticks()
-            if not enemies:
-                print("pause")
-            else:
+            if enemies:
                 last_update,frame = animation_big_monster_running(frame,current_time, last_update, animation_cooldown,enemies)
 
             menu_but(SCREEN, (0,0,0, 128), (640, 100, 147.5, 375), (RATIO_W, RATIO_H))
