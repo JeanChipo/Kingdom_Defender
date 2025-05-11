@@ -23,10 +23,14 @@ def width_ratio ():
     return ratio
 #renvoie le ratio d'aggrandissement de la largeur fenêtre actuelle par rapport à la largeur initiale (800 pixels)
 
+def  middle_tower(tower_level):
+    middle_x = 50 * width_ratio() + 55 * height_ratio()
+    middle_y = SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+125*height_ratio()
+    return middle_x,middle_y
 
 def resize_tower_lvl_1(image):
     new_height = 365 * height_ratio()
-    new_width = 123 * height_ratio()
+    new_width = 121 * height_ratio()
     resized_image = (pygame.transform.scale(image,(new_width,new_height)))
     return resized_image
 #modifie la largeure et la hauteure de l'image d'entrée avec les paramêtre initiaux de tower_1 en fonction de la hauteur de la fenêtre actuelle
