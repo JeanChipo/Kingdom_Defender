@@ -1,8 +1,6 @@
 import math
 import pygame
 
-from main import price_upgrade
-
 """ Classe qui regroupe les informations d'une fléche tirée """
 class Fleche:
     def __init__(self, WIDTH, HEIGHT,RATIO_W, RATIO_H,vitesse_plus, mouse_pos, time, SCREEN):
@@ -74,7 +72,7 @@ def dead_fleche(enemys,Ensemble_fleche):
             if fleche.rect.colliderect(ennemy.rect):
                 # Supprime la fléche si collision (axe amélioration, fléche perforante)
                 Ensemble_fleche.remove(fleche)
-                ennemy.hitbox(Ensemble_fleche.damage)
+                ennemy.hitbox(fleche.damage)
                 #Verifie si l'ennemi est mort et réagie en conséquence
                 if ennemy.est_mort():
                     enemys.remove(ennemy)
@@ -131,9 +129,9 @@ def upgrade_cadence(gold, Upgrade_arc, manager):
         Upgrade_arc["cadence"] += 0.25
         gold -= 5000 + Upgrade_arc["cadence"] * 5000
 
-        if len(Upgrade_arc["cadence"]) < 3:
+        if (Upgrade_arc["cadence"]) < 3:
             Upgrade_arc["prices_upgrades"][0] = 5000 + Upgrade_arc["cadence"] * 5000
-        elif len(Upgrade_arc["cadence"]) == 3:
+        elif (Upgrade_arc["cadence"]) == 3:
             Upgrade_arc["prices_upgrades"][0] = 1
 
     return gold, Upgrade_arc
@@ -143,9 +141,9 @@ def upgrade_salve(gold, Upgrade_arc, manager):
         gold -= 5000 + Upgrade_arc["salve"] * 5000
         Upgrade_arc["salve"] += 1
 
-        if len(Upgrade_arc["salve"]) < 3:
+        if (Upgrade_arc["salve"]) < 3:
             Upgrade_arc["prices_upgrades"][1] = 5000 + Upgrade_arc["salve"] * 5000
-        elif len(Upgrade_arc["salve"]) == 3:
+        elif (Upgrade_arc["salve"]) == 3:
             Upgrade_arc["prices_upgrades"][1] = 1
 
     return gold, Upgrade_arc

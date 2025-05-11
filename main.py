@@ -35,8 +35,9 @@ turrets = Turret_Gestion(gain_gold)
 
 Ensemble_fleche =  []
 price_upgrade = []
-Upgrade_arc = {"cadence" : 0, "salve" : 1, "dispersion" : [0],
-               "prices_upgrade" : [10000,10000,10000]}
+# Upgrade_arc["prices_upgrade"][0] = prix de la cadence ; Upgrade_arc["prices_upgrade"][1] = prix de la salve ; Upgrade_arc["prices_upgrade"][2] = prix de la dispersion
+Upgrade_arc =       {"cadence" : 0, "salve" : 1, "dispersion" : [0],
+"prices_upgrade" :   [10000,         10000,       10000]}
 upgrade = 1000
 wave_number = 1
 enemies, all_sprites = create_wave(wave_number,SCREEN.get_width(),420)
