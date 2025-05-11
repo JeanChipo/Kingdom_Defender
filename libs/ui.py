@@ -20,15 +20,15 @@ class MainMenu:
     def render(self, mouse: tuple[int, int], ratio:tuple[int,int]=(1,1)):
         ''' affiche les boutons et leur arrière plan. '''
         self.menu = menu_but(self.screen, "white", (0, 300, 140+2*self.band_size, 240+2*self.band_size), ratio)
-        for button in self.buttons:
+        for button in self.buttons:     # on affiche chaque bouton du menu principal
             button.render(mouse)
         self.menu
 
     def start_new_game(self):
         ''' méthode de lancement d'une nouvelle partie. '''
-        def switch_to_game():
+        def switch_to_game():   # il faut une fonction en paramètre de fader.start
             self.game_state = "running"
-        self.fader.start(func_on_mid=switch_to_game) # switch state at mid-fade
+        self.fader.start(func_on_mid=switch_to_game) # on change l'état du jeu à la moitié de la transition
 
     def quit_game(self):
         ''' méthode changeant l'état du jeu en "ended". '''
@@ -41,7 +41,7 @@ class MainMenu:
     def open_credits(self):
         ''' méthode changant l'état du jeu en "credits". '''
         self.game_state = "credits"
-        self.credits_game_loop()
+        self.credits_game_loop()    # on lance la boucle de jeu pour les crédits
 
     def credits_game_loop(self):
         ''' boucle de jeu pour les crédits. '''
@@ -49,6 +49,7 @@ class MainMenu:
         back_button = Button((255,255,255), (175,175,175), (150,150,150), (0, 0, 0), "<-- Back", None, 28, (120, 50), (20, 20),
                               self.screen.get_size(), lambda: setattr(self, "game_state", "menu"), screen_to_print_on=self.screen)
 
+        # On initialise le texte des crédits, la police, l'espacement entre les lignes et la position de départ
         credits_text = "-- Kingdom defender --\n"                                                               \
                        "\n"                                                                                     \
                        "Game by @JeanChipo, @WarennOne, @QuentinDegouge, @Dragbnx, @Kosinix-17 on github\n"     \
@@ -176,10 +177,16 @@ class Button:
     def update_colors_based_on_gold(self, gold:int, cost:int):
         ''' mise à jour de la couleur du bouton selon la quantité d'or 
         et le prix de l'amélioration associée. '''
-        if gold >= cost:    # enough gold to buy
+        if cost == 0:
+            self.normal_color = pygame.Color((0, 60, 255))
+            self.hover_color = pygame.Color((0, 60, 255))
+            self.pressed_color = pygame.Color((0, 60, 255))
+
+        elif gold >= cost:    # enough gold to buy
             self.normal_color = pygame.Color((157, 205, 128))
             self.hover_color = pygame.Color((101, 191, 77))
             self.pressed_color = pygame.Color((55, 105, 42))
+            
         else:
             self.normal_color = pygame.Color((205, 128, 128))
             self.hover_color = pygame.Color((191, 77, 77))
