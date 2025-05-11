@@ -68,6 +68,11 @@ def resize_baliste(image):
 
 new_arrow = pygame.transform.rotate(arrow,-90)
 #initialise l'angle initial de la variable contenant la version de arrow adaptée à la taille de la fenêtre
+def rotate_arrow(angle):
+    global new_arrow
+    rotated=pygame.transform.rotate(new_arrow,angle)
+    return rotated
+
 
 def resize_fleche(image):
     resize = pygame.transform.scale(image, ((368/10) * height_ratio(), (368/10) * height_ratio()))

@@ -114,11 +114,7 @@ def draw(SCREEN,time,Ensemble_fleche,tower_level):
             global old_y
             global switch_1
             global switch_2
-            if tower_level > 1 :
-                bigger_level_arrow = pygame.transform.rotate(new_arrow,0)
-
-            else:
-                bigger_level_arrow = new_arrow
+            bigger_level_arrow = new_arrow
             temp_arrow = resize_fleche(bigger_level_arrow)
             arrow_rect = bigger_level_arrow.get_rect(center=((int(fleche.x), int(fleche.y))))
             if old_x==0:
