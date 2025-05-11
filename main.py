@@ -34,7 +34,7 @@ RATIO_W, RATIO_H = 1, 1
 turrets = Turret_Gestion(gain_gold)
 
 Ensemble_fleche =  []
-Upgrade_arc = {"cadence" : 0, "dispersion" : [45], "salve" : 1}
+Upgrade_arc = {"cadence" : 0, "dispersion" : [0], "salve" : 1}
 upgrade = 1000
 wave_number = 1
 enemies, all_sprites = create_wave(wave_number,SCREEN.get_width(),420)
@@ -100,7 +100,7 @@ while RUNNING:
                         hovering = True
                         break
                 if not hovering:
-                    cadence(Ensemble_fleche, Upgrade_arc, mouse_pos, time, WIDTH, HEIGHT, SCREEN, Upgrade_arc)
+                    cadence(Ensemble_fleche,RATIO_W, RATIO_H, Upgrade_arc, mouse_pos, time, WIDTH, HEIGHT, SCREEN, Upgrade_arc)
                     turrets.select_turret(pygame.mouse.get_pos(),TextManager)
 
         elif event.type == pygame.VIDEORESIZE:
@@ -172,7 +172,6 @@ while RUNNING:
 
             menu_but(SCREEN, (0,0,0, 128), (640, 100, 147.5, 375), (RATIO_W, RATIO_H))
             for but in BUTTON_LIST:
-                but.update_colors_based_on_gold(gold, cost=10000)
                 but.render(pygame.mouse.get_pos())
             turrets.draw(SCREEN, SCREEN.get_width(), SCREEN.get_width(), enemies)
             #draw_enemy(SCREEN, enemies)
@@ -212,10 +211,19 @@ while RUNNING:
                     upgrade_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render('', True, "Black")
                     upgrade_bullet_text = pygame.font.SysFont("Lucida Sans", 18).render('', True, "Black")
                     upgrade_special_text = pygame.font.SysFont("Lucida Sans", 18).render('', True, "Black")                    
-                upgrade_arrow_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's fire rate : {...} gold", True, "Black")
-                upgrade_arrow_dispersion_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's salvo : {...} gold", True, "Black")
-                upgrade_arrow_salve_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's dispersion : {...} gold", True, "Black")
+                upgrade_arrow_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's fire rate : {10000} gold", True, "Black")
+                upgrade_arrow_dispersion_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's salvo : {10000} gold", True, "Black")
+                upgrade_arrow_salve_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's dispersion : {10000} gold", True, "Black")
                 LAST_TEXT_UPDATE_TIME = current_time
+
+            B_upg_turret.update_colors_based_on_gold(gold, turrets.get_next_price("speed"))
+            B_upg_turret1.update_colors_based_on_gold(gold, turrets.get_next_price("bullet"))
+            B_upg_turret2.update_colors_based_on_gold(gold, turrets.get_next_price("special"))
+            B_upg_cadence.update_colors_based_on_gold(gold, 10000)
+            B_upg_salve.update_colors_based_on_gold(gold, 10000)
+            B_upg_dispersion.update_colors_based_on_gold(gold, 10000)
+            B_upg_tower.update_colors_based_on_gold(gold, 10000)
+
 
             SCREEN.blit(money_text, (WIDTH - (money_text.get_width()+5), 5))
             SCREEN.blit(upgrade_cadence_text, (WIDTH - (upgrade_cadence_text.get_width()+5), 25))

@@ -1,16 +1,19 @@
-from pygame.examples.moveit import HEIGHT
-from libs.display import height_ratio
-from libs.display import *
-from libs.models import*
 import math
+
+from libs.display import *
+from libs.enemy import Enemy
+from libs.models import *
 from libs.ui import TimedTextManager
 
-def height_ratio (screen) :
+
+def height_ratio(screen: pygame.Surface) -> float:
+    """retourne le ratio de l'écran"""
     ratio= screen.get_height() /600
     return ratio
 
 class Turret_Gestion:
     def __init__(self, gain_gold):
+        """module permettant de gerer les tourrelles en court d'activité"""
         self.turrets = []
         self.nb_turret=-1
         self.pos = [(40,300),(40,260),(40,360)]
@@ -19,63 +22,70 @@ class Turret_Gestion:
         self.selected_turret = None
 
     def add_turret(self):
+        """ajoute une tourelle"""
         self.nb_turret += 1
-        if self.nb_turret >= 3:
+        if self.nb_turret >= 3: #empêche plus de 3 tourelle
             return
         self.turrets.append(Turret(self.pos[self.nb_turret], self.gain_gold))
 
-    def select_turret(self, mouse_pos, manager):
+    def select_turret(self, mouse_pos: (float, float), manager: TimedTextManager):
+        """selectionne une tourelle en cliquant dessus"""
         for turret in self.turrets:
-            if turret.turret.collidepoint(mouse_pos):
+            if turret.turret.collidepoint(mouse_pos): # vérification de hitbox
                 self.selected_turret = turret
                 manager.show_text(f"Selected Turret : {self.selected_turret.name}", 2)
                 return
-        self.selected_turret = None
+        self.selected_turret = None #aucune tourelle selectioné
 
-    def upgrade_turrets(self, path, gold, manager):
-        if self.selected_turret is None:
+    def upgrade_turrets(self, path: str, gold: int, manager: TimedTextManager):
+        """améliore la tourelle selectioné"""
+        if self.selected_turret is None: #si pas de tourelle choisi
             manager.show_text(f"No Turret Selected", 2)
             return
         self.selected_turret.upgrade(path, gold, manager)
 
-    def change_priorities(self, priorities):
-        if self.selected_turret is None:
+    def change_priorities(self, priorities: str):
+        """"change l'option de ciblage de la tourelle"""
+        if self.selected_turret is None: #si pas de tourelle choisi
             return
         self.selected_turret.priority = priorities
 
-    def update(self, enemys, WIDTH, HEIGHT):
+    def update(self, enemys: list[Enemy], WIDTH: int, HEIGHT: int):
+        """met a jours les tourelles"""
         for turret in self.turrets:
             turret.update(enemys, WIDTH, HEIGHT)
 
-    def draw(self, window, WIDTH, HEIGHT,enemys):
+    def draw(self, window: pygame.Surface, WIDTH: int, HEIGHT: int, enemys: list[Enemy]):
+        """affiche les tourelles"""
         for turret in self.turrets:
             turret.draw(window, WIDTH, HEIGHT,enemys)
 
-    def run(self, window, WIDTH):
-        self.update()
-        self.draw(window, WIDTH)
-
-    def update_positions(self, WIDTH, HEIGHT):
+    def update_positions(self, WIDTH: int, HEIGHT : int):
+        """permet de repositioner les tourelles en cas de repositionnement"""
         for turret in self.turrets:
-            turret.x = turret.x_stable * WIDTH / 800
-            turret.y = turret.y_stable * HEIGHT / 600
+            turret.x = turret.x_stable * WIDTH / 800 #calcul de la nouvelle position
+            turret.y = turret.y_stable * HEIGHT / 600 #calcul de la nouvelle position
             turret.turret = pygame.Rect(turret.x, turret.y, turret.width, turret.height)
-    
-    def get_next_price(self, path):
-        if self.selected_turret is None:
+
+    def get_next_price(self, path: str) -> int:
+        """donne le prix du prochain niveau de la tourelle selectionnée"""
+        if self.selected_turret is None: # si pas de tourelle choisi
             return 0
         else:
-            if self.selected_turret.path is None or path != self.selected_turret.path:
+            if self.selected_turret.path is None:
                 return self.selected_turret.upgrades[path][1]["price"]
+            elif path != self.selected_turret.path:
+                return 1
             else:
-                if self.selected_turret.level < 4:
+                if self.selected_turret.level < 4: # level inférieur a 4
                     return self.selected_turret.upgrades[path][self.selected_turret.level + 1]["price"]
-                else:
-                    return self.selected_turret.upgrades[path][4]["price"] * ((self.selected_turret.level-3) ** 2)
+                else: # jusqu'a infini
+                    return self.selected_turret.upgrades[path][1]["price"] * (2 ** self.selected_turret.level)
 
 
 class Turret:
-    def __init__(self, pos, gain_gold):
+    def __init__(self, pos: tuple[float, float], gain_gold):
+        """gere un tourelle"""
         self.x, self.y = pos
         self.gain_gold = gain_gold
         self.x_stable, self.y_stable = pos[0], pos[1]
@@ -112,35 +122,37 @@ class Turret:
         self.path = None
         self.time = 0
 
-    def update(self, enemys, WIDTH, HEIGHT):
+    def update(self, enemys: list[Enemy], WIDTH: int, HEIGHT: int):
+        """met a jours la tourelle"""
         self.time += 1
         self.firing(self.get_first_enemy_pos(enemys, WIDTH), WIDTH)
         for elm in self.bullets:
             elm.update(WIDTH, HEIGHT)
 
-    def select_type(self, enemys):
-        for elm in enemys:
+    def select_type(self, enemys: list[Enemy]) -> Enemy:
+        """permet de selectionner le premier du type choisi"""
+        for elm in enemys: #renvoie le premier ennemi du type choisi
             if elm.name == self.priority: return elm
-        return enemys[0]
+        return enemys[0] #renvoie le premier ennemi
 
-
-    def get_first_enemy_pos(self, enemys, WIDTH):
-        if not enemys:
+    def get_first_enemy_pos(self, enemys: list[Enemy], WIDTH: int) -> tuple[float, float]:
+        """recupere la position de l'ennemi choisi"""
+        if not enemys: #renvoie (0,0) si pas d'ennemi
             return (0, 0)
         ennemi = self.select_type(enemys)
         return ennemi.futur(60, WIDTH)
-        #à vérifier si ça fonction avec l'affichage de la rotation des tourrelles
 
-    def choose_path(self, path):
+    def choose_path(self, path: str):
+        """choisi un path a la tourelle"""
         if self.path is None:
             self.path = path
         return
 
-
-    def upgrade(self, path, gold, manager):
+    def upgrade(self, path: str, gold, manager: TimedTextManager):
+        """permet d'améliorer la tourelle"""
         self.choose_path(path)
-        if self.level <= 4:
-            if self.upgrades[self.path][self.level + 1]["price"] > gold:
+        if self.level < 4: # level inférieur a 4
+            if self.upgrades[self.path][self.level + 1]["price"] > gold: #vérification or
                 manager.show_text(f"Not enough Money", 2)
                 return
             self.gain_gold(-self.upgrades[self.path][self.level + 1]["price"])
@@ -157,29 +169,29 @@ class Turret:
             if "bounces" in self.upgrades[self.path][self.level]:
                 self.bounces = self.upgrades[self.path][self.level]["bounces"]
         elif self.path == "speed":
-            if self.upgrades[self.path][4]["price"] * self.level ** 2 > gold:
+            if self.upgrades[self.path][1]["price"] * (2 ** self.level - 1) > gold:
                 manager.show_text(f"Not enough Money", 2)
                 return
-            self.gain_gold(-(self.upgrades[self.path][4]["price"] * self.level ** 2))
+            self.gain_gold(-(self.upgrades[self.path][1]["price"] * (2 ** self.level - 1)))
             self.level += 1
             self.bullet_penetration *= 2
             self.fire_rate /= 2
             self.damage *= 2
         elif self.path == "bullet":
-            if self.upgrades[self.path][4]["price"] * self.level ** 2 > gold:
+            if self.upgrades[self.path][1]["price"] * (2 ** self.level - 1) > gold:
                 manager.show_text(f"Not enough Money", 2)
                 return
-            self.gain_gold(-(self.upgrades[self.path][4]["price"] * self.level ** 2))
+            self.gain_gold(-(self.upgrades[self.path][1]["price"] * (2 ** self.level - 1)))
             self.level += 1
             self.bullet_penetration *= 2
             self.damage *= 2
             self.bullet_size_x += 10
             self.bullet_size_y += 10
         elif self.path == "special":
-            if self.upgrades[self.path][4]["price"] * self.level ** 2 > gold:
+            if self.upgrades[self.path][1]["price"] * (2 ** self.level - 1) > gold:
                 manager.show_text(f"Not enough Money", 2)
                 return
-            self.gain_gold(-(self.upgrades[self.path][4]["price"] * self.level ** 2))
+            self.gain_gold(-(self.upgrades[self.path][1]["price"] * (2 ** self.level - 1)))
             self.level += 1
             self.damage *= 2
             self.bullet_lifetime *= 2
@@ -188,22 +200,24 @@ class Turret:
 
 
     def get_bullet(self):
+        """renvoie la liste des bullets actuel"""
         return [elm.bullet for elm in self.bullets]
 
-    def firing(self, pos, WIDTH):
-        if pos == (0,0): return
+    def firing(self, pos: tuple[float, float], WIDTH: float):
+        """permet a la tourelle de tirer"""
+        if pos == (0,0): return # ne tire pas si pas d'ennemi
         X, Y = pos
-        if self.time % self.fire_rate == 0:
-            dir_x = X - (self.x + self.width/2)
-            dir_y = Y - (self.y + self.height/2)
+        if self.time % self.fire_rate == 0: # verification de quand tirer
+            dir_x = X - (self.x + self.width/2) #distance en X a parcourir
+            dir_y = Y - (self.y + self.height/2) #distance en Y a parcourir
             if dir_y < 50 and dir_x < 50:
                 time_to_target = 0.5
             else:
-                time_to_target = 1.0  # secondes
+                time_to_target = 1.0
             fps = 60
             frames = time_to_target * fps
-            speedx = dir_x / frames
-            speedy = dir_y / frames
+            speedx = dir_x / frames #vitesse de la balle
+            speedy = dir_y / frames #vitesse de la balle
             self.bullets.append(Bullet(
                 self.x + self.width/2,
                 self.y + self.height/2,
@@ -214,7 +228,8 @@ class Turret:
                 self.gain_gold
             ))
 
-    def draw(self, screen, X, Y, enemys):
+    def draw(self, screen: pygame.Surface, X: float, Y: float, enemys: list[Enemy]):
+        """affiche la tourelle"""
         x, y = self.get_first_enemy_pos(enemys, self.width)
         baliste_rect = baliste.get_rect(center=(self.x, self.y))
         if enemys:
@@ -233,7 +248,9 @@ class Turret:
 
 
 class Bullet:
-    def __init__(self, x, y, speedx, speedy, damage, penetration, size_x, size_y, lifetime, explosive, bounces, gain_gold):
+    def __init__(self, x: float, y: float, speedx: float, speedy: float, damage: int, penetration: int,
+                 size_x: int, size_y: int, lifetime: int, explosive: bool, bounces: int, gain_gold):
+        """gére les boulets"""
         self.x = x
         self.y = y
         self.gain_gold = gain_gold
@@ -249,26 +266,28 @@ class Bullet:
         self.explosive = explosive
         self.bounces = bounces
 
-    def update(self, WIDTH, HEIGHT):
+    def update(self, WIDTH: int, HEIGHT: int):
+        """met a jours la tourelle"""
         self.time += 1
         self.x += self.speedx
         self.y += self.speedy
         self.bullet.x = int(self.x)
         self.bullet.y = int(self.y)
         screen_width, screen_height = WIDTH, HEIGHT
-        if self.bounces > 0:
+        if self.bounces > 0: # vérification des rebonds
             if self.bullet.bottom >= screen_height -100:
                 self.speedy *= -1
                 self.bounces -= 1
                 if self.bullet.bottom >= screen_height - 100:
                     self.bullet.bottom = screen_height - 110
 
-    def dead_bullet(self, enemys):
+    def dead_bullet(self, enemys: list[Enemy]) -> bool:
+        """gérent les collisions boulets ennemis"""
         hits = 0
         for ennemy in enemys[:]:
             if self.bullet.colliderect(ennemy.rect):
-                if self.explosive:
-                    radius = 50
+                if self.explosive: # module "explosif"
+                    radius = 100
                     for target in enemys[:]:
                         dx = target.rect.centerx - self.bullet.centerx
                         dy = target.rect.centery - self.bullet.centery
@@ -276,6 +295,7 @@ class Bullet:
                             target.hitbox(self.damage)
                             if target.est_mort():
                                 enemys.remove(target)
+                                self.gain_gold(ennemy.money())
                 else:
                     ennemy.hitbox(self.damage)
                     if ennemy.est_mort():
@@ -286,7 +306,8 @@ class Bullet:
                     return True
         return False
 
-    def draw(self, screen):
+    def draw(self, screen: pygame.Surface):
+        """affiche les boulets"""
         #pygame.draw.rect(screen, (255,0,0), self.bullet)
         screen.blit(resize_cannonball(resized_cannonball),(self.x,self.y))
 
