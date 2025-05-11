@@ -213,6 +213,11 @@ class Turret:
             ))
 
     def draw(self, screen, X, Y, enemys):
+
+        for elm in self.bullets:
+            elm.draw(screen)
+        self.bullets = [elm for elm in self.bullets if (elm.x <= X and elm.y <= Y-300 and not elm.dead_bullet(enemys) and elm.time < elm.lifetime)]
+
         x, y = self.get_first_enemy_pos(enemys, self.width)
         opp = self.y+70 - y
         adj = x - self.x+90
@@ -225,9 +230,6 @@ class Turret:
             screen.blit((rotated_minigun),(rotated_rect))
             #à remplacer quand get_first_enemy_pos sera fix
             
-        for elm in self.bullets:
-            elm.draw(screen)
-        self.bullets = [elm for elm in self.bullets if (elm.x <= X and elm.y <= Y-300 and not elm.dead_bullet(enemys) and elm.time < elm.lifetime)]
 
 
 class Bullet:
