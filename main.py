@@ -32,6 +32,7 @@ def upgrade_tower_price():
         return 40000
     elif tower_level == 2:
         return 80000
+    return 1
 
 
 def gain_gold(amount):
