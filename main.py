@@ -189,10 +189,17 @@ while RUNNING:
 
             if current_time - LAST_TEXT_UPDATE_TIME > 100:  # Update text every 100ms to prevent lagging
                 def upg_turret_text():
-                    return turrets.selected_turret.name if turrets.selected_turret else '[No turret selected]'
+                    if turrets.selected_turret:
+                        return turrets.selected_turret.name  
+                    else: 
+                        return '[No turret selected]'
                 def upg_turret_price(upg_name:str):
-                    if upg_name not in ["bullet", "special", "speed"]: return 0
-                    return turrets.get_next_price(upg_name) if turrets.get_next_price(upg_name) != 0 else '...'
+                    if upg_name not in ["bullet", "special", "speed"]: 
+                        return 0
+                    if turrets.get_next_price(upg_name) != 0:
+                        return turrets.get_next_price(upg_name)  
+                    else :
+                        return '...'
 
                 money_text = pygame.font.SysFont("Lucida Sans", 18).render(f"current gold : {gold}", True, "Black")
                 wave_text = pygame.font.SysFont("Lucida Sans", 18).render(f"current wave : {wave_number}", True, "Black")
