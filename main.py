@@ -174,7 +174,7 @@ while RUNNING:
             if not enemies:
                 print("pause")
             else:
-                last_update,frame = animation_big_monster_running(frame,current_time, last_update, animation_cooldown,run_animation,enemies)
+                last_update,frame = animation_big_monster_running(frame,current_time, last_update, animation_cooldown,enemies)
 
             menu_but(SCREEN, (0,0,0, 128), (640, 100, 147.5, 375), (RATIO_W, RATIO_H))
             for but in BUTTON_LIST:
