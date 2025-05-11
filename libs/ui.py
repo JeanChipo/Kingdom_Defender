@@ -182,7 +182,7 @@ class Button:
             self.hover_color = pygame.Color((0, 60, 255))
             self.pressed_color = pygame.Color((0, 60, 255))
 
-        if cost == 1:
+        elif cost == 1:
             self.normal_color = pygame.Color((140, 140, 140))
             self.hover_color = pygame.Color((140, 140, 140))
             self.pressed_color = pygame.Color((140, 140, 140))
