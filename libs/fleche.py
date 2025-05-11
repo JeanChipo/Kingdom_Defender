@@ -91,7 +91,6 @@ def draw(SCREEN,time,Ensemble_fleche):
 
         if not fleche.position(time):
             # Dessiner les flèches de la liste
-            pygame.draw.rect(SCREEN, (0, 0, 255), (int(fleche.x), int(fleche.y), 10, 10))
             global old_x
             global old_y
             temp_arrow = resize_fleche(arrow)
