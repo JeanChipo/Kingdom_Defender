@@ -178,7 +178,7 @@ class Turret:
             self.fire_rate /= 2
             self.damage *= 2
         elif self.path == "bullet":
-            if self.upgrades[self.path][4]["price"] * (2 ** self.level - 1) > gold:
+            if self.upgrades[self.path][1]["price"] * (2 ** self.level - 1) > gold:
                 manager.show_text(f"Not enough Money", 2)
                 return
             self.gain_gold(-(self.upgrades[self.path][1]["price"] * (2 ** self.level - 1)))
@@ -188,7 +188,7 @@ class Turret:
             self.bullet_size_x += 10
             self.bullet_size_y += 10
         elif self.path == "special":
-            if self.upgrades[self.path][4]["price"] * (2 ** self.level - 1) > gold:
+            if self.upgrades[self.path][1]["price"] * (2 ** self.level - 1) > gold:
                 manager.show_text(f"Not enough Money", 2)
                 return
             self.gain_gold(-(self.upgrades[self.path][1]["price"] * (2 ** self.level - 1)))
