@@ -86,9 +86,9 @@ B_upg_salve = Button("white", "black", "gray", "black", "bow - salvo", "kristeni
 B_upg_dispersion = Button("white", "black", "gray", "black", "bow - dispersion", "kristenitc", 16,
                  (132.5, 40), (647.5, 112.5 + 6*50 + 10), SCREEN.get_size(), lambda : update_gold_bow(upgrade_dispersion), SCREEN)
 
-B_steve = Button("white", "black", "gray", "black", "steve", "kristenitc", 16,
-                 (100, 100), (0, 0), SCREEN.get_size(),
-                 lambda: press_steve(main_menu), SCREEN)
+B_steve = Button("orange", (214,139,0), "gray", "black", "<º))))><", "kristenitc", 16,
+                 (50, 20), (250, 515), SCREEN.get_size(), lambda: press_steve(main_menu), SCREEN)
+main_menu.buttons.append(B_steve)
 
 BUTTON_LIST = [B_upg_tower, B_upg_turret, B_upg_turret1, B_upg_turret2, B_upg_cadence, B_upg_salve, B_upg_dispersion]
 
@@ -98,7 +98,6 @@ def upg_turret_price(upg_name:str):
     if upg_name not in ["bullet", "special", "speed"]: return 0
     return turrets.get_next_price(upg_name) if turrets.get_next_price(upg_name) != 0 else '...'
 
-main_menu.buttons.append(B_steve)
 
 shuffle_playlist()
 
@@ -135,6 +134,7 @@ while RUNNING:
             RATIO_H = HEIGHT / 600
             for but in BUTTON_LIST:
                 but.update_pos((WIDTH, HEIGHT))
+                B_steve.update_pos((WIDTH, HEIGHT))
             turrets.update_positions(WIDTH, HEIGHT)
             fader.update_overlay_size()
 
