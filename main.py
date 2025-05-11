@@ -34,7 +34,7 @@ RATIO_W, RATIO_H = 1, 1
 turrets = Turret_Gestion(gain_gold)
 
 Ensemble_fleche =  []
-Upgrade_arc = {"cadence" : 0, "dispersion" : [45], "salve" : 1}
+Upgrade_arc = {"cadence" : 0, "dispersion" : [0], "salve" : 1}
 upgrade = 1000
 wave_number = 1
 enemies, all_sprites = create_wave(wave_number,SCREEN.get_width(),420)
@@ -100,7 +100,7 @@ while RUNNING:
                         hovering = True
                         break
                 if not hovering:
-                    cadence(Ensemble_fleche, Upgrade_arc, mouse_pos, time, WIDTH, HEIGHT, SCREEN, Upgrade_arc)
+                    cadence(Ensemble_fleche,RATIO_W, RATIO_H, Upgrade_arc, mouse_pos, time, WIDTH, HEIGHT, SCREEN, Upgrade_arc)
                     turrets.select_turret(pygame.mouse.get_pos(),TextManager)
 
         elif event.type == pygame.VIDEORESIZE:
