@@ -227,6 +227,7 @@ while RUNNING:
                 money_text = pygame.font.SysFont("Lucida Sans", 18).render(f"current gold : {gold}", True, "Black")
                 wave_text = pygame.font.SysFont("Lucida Sans", 18).render(f"current wave : {wave_number}", True, "Black")
                 tower_text = pygame.font.SysFont("Lucida Sans", 18).render(f"life : {hp_tower//100000000}", True, "Black")
+                upg_tower_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade tower cost : {upgrade_tower_price()}", True, "Black")
                 if turrets.selected_turret: 
                     if upg_turret_price('speed') == 1:
                         upgrade_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s speed : out of stock", True, "Black")
@@ -280,6 +281,7 @@ while RUNNING:
             SCREEN.blit(upgrade_arrow_cadence_text, (5, 80))
             SCREEN.blit(upgrade_arrow_dispersion_text, (5, 100))
             SCREEN.blit(upgrade_arrow_salve_text, (5, 120))
+            SCREEN.blit(upg_tower_text, (5, 150))
 
             SCREEN.blit(wave_text, (5, 25))
             SCREEN.blit(tower_text, (5, 40))
