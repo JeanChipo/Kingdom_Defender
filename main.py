@@ -49,7 +49,7 @@ turrets = Turret_Gestion(gain_gold)
 Ensemble_fleche =  []
 price_upgrade = []
 Upgrade_arc = {"cadence" : 0, "salve" : 1, "dispersion" : [0],
-               "prices_upgrade" : [10000,10000,10000]}
+               "prices_upgrade" : [5000,5000,6000]}
 upgrade = 1000
 wave_number = 1
 enemies, all_sprites = create_wave(wave_number,SCREEN.get_width(),420)
@@ -219,25 +219,48 @@ while RUNNING:
                 wave_text = pygame.font.SysFont("Lucida Sans", 18).render(f"current wave : {wave_number}", True, "Black")
                 tower_text = pygame.font.SysFont("Lucida Sans", 18).render(f"life : {hp_tower//100000000}", True, "Black")
                 if turrets.selected_turret: 
-                    upgrade_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s speed : {upg_turret_price('speed')} gold", True, "Black")
-                    upgrade_bullet_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s bullet : {upg_turret_price('bullet')} gold", True, "Black")
-                    upgrade_special_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s special : {upg_turret_price('special')} gold", True, "Black")
+                    if upg_turret_price('speed') == 1:
+                        upgrade_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s speed : out of stock", True, "Black")
+                    else:
+                        upgrade_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s speed : {upg_turret_price('speed')} gold", True, "Black")
+
+                    if upg_turret_price('bullet') == 1:
+                        upgrade_bullet_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s bullet : out of stock", True, "Black")
+                    else:
+                        upgrade_bullet_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s bullet : {upg_turret_price('bullet')} gold", True, "Black")
+
+                    if upg_turret_price('special') == 1:
+                        upgrade_special_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s special : out of stock", True, "Black")
+                    else:
+                        upgrade_special_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s special : {upg_turret_price('special')} gold", True, "Black")
                 else: 
                     upgrade_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render('', True, "Black")
                     upgrade_bullet_text = pygame.font.SysFont("Lucida Sans", 18).render('', True, "Black")
                     upgrade_special_text = pygame.font.SysFont("Lucida Sans", 18).render('', True, "Black")                    
-                upgrade_arrow_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's fire rate : {10000} gold", True, "Black")
-                upgrade_arrow_dispersion_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's salvo : {10000} gold", True, "Black")
-                upgrade_arrow_salve_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's dispersion : {10000} gold", True, "Black")
+                
+                if int(Upgrade_arc["prices_upgrade"][0]) == 1:
+                    upgrade_arrow_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render("upgrade bow's fire rate : out of stock", True, "Black")
+                else:
+                    upgrade_arrow_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's fire rate : {int(Upgrade_arc["prices_upgrade"][0])} gold", True, "Black")
+                
+                if int(Upgrade_arc["prices_upgrade"][1]) == 1:
+                    upgrade_arrow_dispersion_text = pygame.font.SysFont("Lucida Sans", 18).render("upgrade bow's salvo : out of stock", True, "Black")
+                else:
+                    upgrade_arrow_dispersion_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's salvo : {int(Upgrade_arc["prices_upgrade"][1])} gold", True, "Black")
+
+                if int(Upgrade_arc["prices_upgrade"][2]) == 1:
+                    upgrade_arrow_salve_text = pygame.font.SysFont("Lucida Sans", 18).render("upgrade bow's dispersion : out of stock", True, "Black")
+                else:
+                    upgrade_arrow_salve_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's dispersion : {int(Upgrade_arc["prices_upgrade"][2])} gold", True, "Black")
                 LAST_TEXT_UPDATE_TIME = current_time
 
             B_upg_turret.update_colors_based_on_gold(gold, turrets.get_next_price("speed"))
             B_upg_turret1.update_colors_based_on_gold(gold, turrets.get_next_price("bullet"))
             B_upg_turret2.update_colors_based_on_gold(gold, turrets.get_next_price("special"))
-            B_upg_cadence.update_colors_based_on_gold(gold, 10000)
-            B_upg_salve.update_colors_based_on_gold(gold, 10000)
-            B_upg_dispersion.update_colors_based_on_gold(gold, 10000)
-            B_upg_tower.update_colors_based_on_gold(gold, 10000)
+            B_upg_cadence.update_colors_based_on_gold(gold, Upgrade_arc["prices_upgrade"][0])
+            B_upg_salve.update_colors_based_on_gold(gold, Upgrade_arc["prices_upgrade"][1])
+            B_upg_dispersion.update_colors_based_on_gold(gold, Upgrade_arc["prices_upgrade"][2])
+            B_upg_tower.update_colors_based_on_gold(gold, upgrade_tower_price())
 
 
             SCREEN.blit(money_text, (WIDTH - (money_text.get_width()+5), 5))
