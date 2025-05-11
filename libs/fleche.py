@@ -145,37 +145,41 @@ def cadence(Ensemble_fleche,RATIO_W, RATIO_H, mouse_pos, time, WIDTH, HEIGHT, SC
 #                            - Mise à jour du prix d'amélioration de la compétence
 #                            - Renvoie si possible le signal qui rend impossible l'amélioration de la compétence
 def upgrade_cadence(gold, Upgrade_arc, manager):
-    if Upgrade_arc["cadence"] < 3 and gold >= 5000 + Upgrade_arc["cadence"] * 5000: # Permet d'avoir une préogressioon linéaire du coût des améliorations
+    if Upgrade_arc["cadence"] < 3 and gold >= 5000 + Upgrade_arc["cadence"] * 1000: # Permet d'avoir une préogressioon linéaire du coût des améliorations
         Upgrade_arc["cadence"] += 0.25
-        gold -= 5000 + Upgrade_arc["cadence"] * 5000
+        gold -= 5000 + Upgrade_arc["cadence"] * 1000
 
-        if len(Upgrade_arc["cadence"]) < 3:
-            Upgrade_arc["prices_upgrades"][0] = 5000 + Upgrade_arc["cadence"] * 5000
-        elif len(Upgrade_arc["cadence"]) == 3:
-            Upgrade_arc["prices_upgrades"][0] = 1
 
-    return gold, Upgrade_arc
+        if Upgrade_arc["cadence"] < 3:
+            Upgrade_arc["prices_upgrade"][0] = 5000 + Upgrade_arc["cadence"] * 1000
+        else:
+            Upgrade_arc["prices_upgrade"][0] = 1
+
+
+    return int(gold), Upgrade_arc
 
 def upgrade_salve(gold, Upgrade_arc, manager):
-    if Upgrade_arc["salve"] < 3 and gold >= 5000 + Upgrade_arc["salve"] * 5000:
-        gold -= 5000 + Upgrade_arc["salve"] * 5000
+    if Upgrade_arc["salve"] < 3 and gold >= 5000 + Upgrade_arc["salve"] * 1000:
+        gold -= 5000 + Upgrade_arc["salve"] * 1000
         Upgrade_arc["salve"] += 1
 
-        if len(Upgrade_arc["salve"]) < 3:
-            Upgrade_arc["prices_upgrades"][1] = 5000 + Upgrade_arc["salve"] * 5000
-        elif len(Upgrade_arc["salve"]) == 3:
-            Upgrade_arc["prices_upgrades"][1] = 1
 
-    return gold, Upgrade_arc
+        if Upgrade_arc["salve"] < 3:
+            Upgrade_arc["prices_upgrade"][1] = 5000 + Upgrade_arc["salve"] * 1000
+        else:
+            Upgrade_arc["prices_upgrade"][1] = 1
+
+
+    return int(gold), Upgrade_arc
 
 def upgrade_dispersion(gold, Upgrade_arc, manager):
-    if len(Upgrade_arc["dispersion"]) < 7 and gold >= 5000 + len(Upgrade_arc["dispersion"]) * 5000:
+    if len(Upgrade_arc["dispersion"]) < 7 and gold >= 5000 + len(Upgrade_arc["dispersion"]) * 1000:
 
         # Prise de la plus petite valeur et de la plus grande
         min_vitesse = min(Upgrade_arc["dispersion"])
         max_vitesse = max(Upgrade_arc["dispersion"])
 
-        gold -= 5000 + len(Upgrade_arc["dispersion"]) * 5000
+        gold -= 5000 + len(Upgrade_arc["dispersion"]) * 1000
 
 
         # Ajout d'une valeur arbitraire au valeur extreme de la dispertion existante
@@ -183,8 +187,8 @@ def upgrade_dispersion(gold, Upgrade_arc, manager):
         Upgrade_arc["dispersion"].sort()  # Trie la liste
 
         if len(Upgrade_arc["dispersion"]) < 7 :
-            Upgrade_arc["prices_upgrades"][2] = 5000 + len(Upgrade_arc["dispersion"]) * 5000
-        elif len(Upgrade_arc["dispersion"]) == 7:
-            Upgrade_arc["prices_upgrades"][2] = 1
+            Upgrade_arc["prices_upgrade"][2] = 5000 + len(Upgrade_arc["dispersion"]) * 1000
+        else:
+            Upgrade_arc["prices_upgrade"][2] = 1
 
-    return gold, Upgrade_arc
+    return int(gold), Upgrade_arc
