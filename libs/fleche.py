@@ -2,10 +2,11 @@ import math
 import pygame
 from libs.display import *
 from libs.ui import TimedTextManager
+from libs.turrets import *
 
 """ Classe qui regroupe les informations d'une fléche tirée """
 class Fleche:
-    def __init__(self, WIDTH, HEIGHT,RATIO_W, RATIO_H,vitesse_plus, mouse_pos, time, SCREEN):
+    def __init__(self, middle_x, middle_y,RATIO_W, RATIO_H,vitesse_plus, mouse_pos, time, SCREEN):
 
         # Initilisation des variables
 
@@ -21,8 +22,8 @@ class Fleche:
         self.gravity = 300 #Equilibré pour le jeu (pas en proportion à la réalité/axe de progression
 
         # Positions initiales (ajustés par rapport aux améliorations de la tour)
-        self.x_init = WIDTH // 8
-        self.y_init = HEIGHT // 4
+        self.x_init = middle_x
+        self.y_init = middle_y
 
         # Mise à jour des coordonnées de la fléche
         self.x = self.x_init
@@ -61,6 +62,11 @@ class Fleche:
         self.rect.y = self.y
 
         return self.y >= self.screen.get_height() - 5  # Retourne si la flèche est hors de l'écran
+""" Calcule de la position inital de la flèche par rapport à la tour """
+def initial_position(tower_level):
+    middle_x = 50 * width_ratio() + 55 * height_ratio()
+    middle_y = SCREEN.get_height() - tower_height_position(tower_level) * height_ratio() + 125 * height_ratio()
+    return middle_x, middle_y
 
 """ Vérifie les collisions avec les ennemies et qui met à jour leur statue si besoins """
 def dead_fleche(enemys,Ensemble_fleche):
@@ -111,29 +117,30 @@ def draw(SCREEN,time,Ensemble_fleche):
             Ensemble_fleche.remove(fleche)
 
 """ Creation/initialisation des fleches"""
-def creation(WIDTH, HEIGHT,RATIO_W, RATIO_H, SCREEN, mouse_pos, time, Ensemble_fleche, Upgrade_arc):
+def creation(tower_level,RATIO_W, RATIO_H, SCREEN, mouse_pos, time, Ensemble_fleche, Upgrade_arc):
+    middle_x, middle_y = initial_position(tower_level)
     # Crée le nombre de fléche automatiquement selon les améliorations
     for i in range(Upgrade_arc["salve"]):
         for l in range(len(Upgrade_arc["dispersion"])):
             # Prend en compte des améliorations pour faire varier les caractéristique des fléches (ici la vitesse horizontal inial)
             vitesse_plus = Upgrade_arc["dispersion"][l]
             # Délai entre les fléches de la salve (0,2sec) grâce à i*200
-            fleche = Fleche(WIDTH, HEIGHT,RATIO_W, RATIO_H,vitesse_plus, mouse_pos, time + i*200, SCREEN)
+            fleche = Fleche(middle_x, middle_y,RATIO_W, RATIO_H,vitesse_plus, mouse_pos, time + i*200, SCREEN)
             # Ajoue de la fléche nouvellement crée dans un tableau
             Ensemble_fleche.append(fleche)
 
 """ Gére le delai entre la création de chaque fléche (propre à l'amélioration cadence) """
-def cadence(Ensemble_fleche,RATIO_W, RATIO_H, mouse_pos, time, WIDTH, HEIGHT, SCREEN, Upgrade_arc):
+def cadence(tower_level,Ensemble_fleche,RATIO_W, RATIO_H, mouse_pos, time, SCREEN, Upgrade_arc):
 
     # Si la liste est vide (cas particulier car sinon recherche d'une fléche précédente alors qu'elle n'existe pas)
     if len(Ensemble_fleche) == 0:
-        creation(WIDTH, HEIGHT,RATIO_W, RATIO_H, SCREEN, mouse_pos, time, Ensemble_fleche, Upgrade_arc)
+        creation(tower_level,RATIO_W, RATIO_H, SCREEN, mouse_pos, time, Ensemble_fleche, Upgrade_arc)
         return True
 
     # Vérifie le temps écoulé depuis la dernière flèche
     last_fleche = len(Ensemble_fleche) - 1  # Index de la dernière flèche
     if time - Ensemble_fleche[last_fleche].time_start >= (1 - Upgrade_arc["cadence"])*1000: # *1000 pour la conversion du des milliseconde en seconde
-        creation(WIDTH, HEIGHT, RATIO_W, RATIO_H, SCREEN, mouse_pos, time, Ensemble_fleche, Upgrade_arc)
+        creation(tower_level, RATIO_W, RATIO_H, SCREEN, mouse_pos, time, Ensemble_fleche, Upgrade_arc)
     return False
 
 """______________Fonctions qui gérent les améliorations des fléches______________"""
