@@ -1,8 +1,6 @@
 import math
 import pygame
 
-from main import price_upgrade
-
 """ Classe qui regroupe les informations d'une fléche tirée """
 class Fleche:
     def __init__(self, WIDTH, HEIGHT,RATIO_W, RATIO_H,vitesse_plus, mouse_pos, time, SCREEN):
