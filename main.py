@@ -16,10 +16,23 @@ pygame.display.set_caption("Kingdom defender ⊹ ࣪ ﹏𓊝﹏𓂁﹏⊹ ࣪ ˖
 tower_level=1
 
 def upgrade_tower():
-    global tower_level
+    global tower_level, gold
+    price = 40000
+    if gold < price * tower_level:
+        return
     if tower_level<3:
         tower_level+=1
+        turrets.add_turret()
+        gain_gold(-(price * tower_level))
     print(tower_level)
+
+def upgrade_tower_price():
+    global tower_level
+    if tower_level == 1:
+        return 40000
+    elif tower_level == 2:
+        return 80000
+
 
 def gain_gold(amount):
     global gold
@@ -48,7 +61,7 @@ TextManager = TimedTextManager(SCREEN, 25)
 
 # buttons to upgrade the tower and turret
 B_upg_tower = Button("white", "black", "gray", "black", "upgrade tower", "kristenitc", 16,
-                 (132.5, 40), (647.5, 112.5 + 0*50), SCREEN.get_size(), lambda : [turrets.add_turret(), upgrade_tower()], SCREEN)
+                 (132.5, 40), (647.5, 112.5 + 0*50), SCREEN.get_size(), lambda : [upgrade_tower()], SCREEN)
 B_upg_turret = Button("white", "black", "gray", "black", f"turret - speed", "kristenitc", 16,
                  (132.5, 40), (647.5, 112.5 + 1*50), SCREEN.get_size(), lambda: turrets.upgrade_turrets("speed", gold, TextManager), SCREEN)
 B_upg_turret1 = Button("white", "black", "gray", "black", f"turret - bullet", "kristenitc", 16,

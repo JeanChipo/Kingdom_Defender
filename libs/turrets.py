@@ -90,8 +90,8 @@ class Turret:
         self.gain_gold = gain_gold
         self.x_stable, self.y_stable = pos[0], pos[1]
         self.name = "Unupgraded"
-        self.width = 100
-        self.height = 100
+        self.width = 120
+        self.height = 120
         self.turret = pygame.Rect(self.x, self.y, self.width, self.height)
         self.bullets = []
         self.damage = 1000
