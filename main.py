@@ -48,6 +48,7 @@ turrets = Turret_Gestion(gain_gold)
 
 Ensemble_fleche =  []
 price_upgrade = []
+# Upgrade_arc["prices_upgrade"][0] = prix de la cadence ; Upgrade_arc["prices_upgrade"][1] = prix de la salve ; Upgrade_arc["prices_upgrade"][2] = prix de la dispersion
 Upgrade_arc = {"cadence" : 0, "salve" : 1, "dispersion" : [0],
                "prices_upgrade" : [5000,5000,6000]}
 upgrade = 1000

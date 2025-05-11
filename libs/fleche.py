@@ -130,10 +130,12 @@ def upgrade_cadence(gold, Upgrade_arc, manager):
         Upgrade_arc["cadence"] += 0.25
         gold -= 5000 + Upgrade_arc["cadence"] * 1000
 
+
         if Upgrade_arc["cadence"] < 3:
             Upgrade_arc["prices_upgrade"][0] = 5000 + Upgrade_arc["cadence"] * 1000
         else:
             Upgrade_arc["prices_upgrade"][0] = 1
+
 
     return int(gold), Upgrade_arc
 
@@ -142,10 +144,12 @@ def upgrade_salve(gold, Upgrade_arc, manager):
         gold -= 5000 + Upgrade_arc["salve"] * 1000
         Upgrade_arc["salve"] += 1
 
+
         if Upgrade_arc["salve"] < 3:
             Upgrade_arc["prices_upgrade"][1] = 5000 + Upgrade_arc["salve"] * 1000
         else:
             Upgrade_arc["prices_upgrade"][1] = 1
+
 
     return int(gold), Upgrade_arc
 
