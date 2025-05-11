@@ -1,5 +1,7 @@
 import math
 import pygame
+from libs.display import *
+from libs.ui import TimedTextManager
 
 """ Classe qui regroupe les informations d'une fléche tirée """
 class Fleche:
@@ -78,6 +80,9 @@ def dead_fleche(enemys,Ensemble_fleche):
                     if ennemy in enemys:
                         enemys.remove(ennemy)
 
+old_x = 0
+old_y = 0
+
 """ Fonction qui permet l'affichage des fleches """
 def draw(SCREEN,time,Ensemble_fleche):
 
@@ -87,6 +92,20 @@ def draw(SCREEN,time,Ensemble_fleche):
         if not fleche.position(time):
             # Dessiner les flèches de la liste
             pygame.draw.rect(SCREEN, (0, 0, 255), (int(fleche.x), int(fleche.y), 10, 10))
+            global old_x
+            global old_y
+            temp_arrow = resize_fleche(arrow)
+            arrow_rect = arrow.get_rect(center=((int(fleche.x), int(fleche.y))))
+            if old_x==0:
+                SCREEN.blit(temp_arrow,arrow_rect)
+                old_x = fleche.x
+                old_y = fleche.y
+            else :
+                opp = fleche.y - old_y+1
+                adj = old_x+1 - fleche.x
+                rotated_arrow = pygame.transform.rotate(temp_arrow, math.degrees(math.atan(opp / adj)))
+                rotated_rect = rotated_arrow.get_rect(center=arrow_rect.center)
+                SCREEN.blit((rotated_arrow), (rotated_rect))
 
         else:
             # Supprimer la flèche qui sort de l'écran

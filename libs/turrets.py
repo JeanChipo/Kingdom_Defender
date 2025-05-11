@@ -226,33 +226,24 @@ class Turret:
 
     def draw(self, screen: pygame.Surface, X: float, Y: float, enemys: list[Enemy]):
         """affiche la tourelle"""
-        x, y = self.get_first_enemy_pos(enemys, self.width)
-        baliste_rect = baliste.get_rect(center=(self.x, self.y))
-        if enemys:
-            rotated_baliste= pygame.transform.rotate(baliste,math.degrees(math.atan(x/y)-135))
-            screen.blit(pygame.transform.scale(rotated_baliste,(100*height_ratio(screen),100*height_ratio(screen))),(self.x, self.y))
-            """resized_baliste = pygame.transform.scale(baliste, (100 * height_ratio(screen), 100 * height_ratio(screen)))
-            rotated_baliste = pygame.transform.rotate(resized_baliste, math.degrees(math.atan(x / y) - 135))
-            rotated_rect = rotated_baliste.get_rect(center=baliste_rect.center)
 
-            screen.blit((rotated_baliste),(rotated_rect))"""
-            #à remplacer quand get_first_enemy_pos sera fix
-            
         for elm in self.bullets:
             elm.draw(screen)
         self.bullets = [elm for elm in self.bullets if (elm.x <= X and elm.y <= Y-300 and not elm.dead_bullet(enemys) and elm.time < elm.lifetime)]
 
         x, y = self.get_first_enemy_pos(enemys, self.width)
-        opp = self.y+70 - y
-        adj = x - self.x+90
-        minigun_rect = minigun.get_rect(center=(self.x+70 * height_ratio(), self.y+65 * height_ratio()))
+        baliste_rect = baliste.get_rect(center=(self.x, self.y))
+        if enemys:
+            x, y = self.get_first_enemy_pos(enemys, self.width)
+            opp = self.y + 70 - y
+            adj = x - self.x + 90
+        minigun_rect = minigun.get_rect(center=(self.x + 70 * height_ratio(), self.y + 65 * height_ratio()))
         if enemys:
             resized_minigun = pygame.transform.scale(minigun, (81 * height_ratio(), 41 * height_ratio()))
-            rotated_minigun = pygame.transform.rotate(resized_minigun,math.degrees(math.atan(opp / adj)))
+            rotated_minigun = pygame.transform.rotate(resized_minigun, math.degrees(math.atan(opp / adj)))
             rotated_rect = rotated_minigun.get_rect(center=minigun_rect.center)
 
-            screen.blit((rotated_minigun),(rotated_rect))
-            #à remplacer quand get_first_enemy_pos sera fix
+            screen.blit((rotated_minigun), (rotated_rect))
 
 
 

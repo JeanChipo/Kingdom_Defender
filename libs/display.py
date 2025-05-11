@@ -70,31 +70,6 @@ def resize_fleche(image):
     return resize
 #modifie la largeure et la hauteure de l'image d'entrée avec les paramêtre initiaux de la flèche tirée par le joueur en fonction de la hauteur de la fenêtre actuelle
 
-
-
-
-"""x, y = self.get_first_enemy_pos(enemys, self.width)
-        opp = self.y+70 - y
-        adj = x - self.x+90
-    minigun_rect = minigun.get_rect(center=(self.x+70 * height_ratio(), self.y+65 * height_ratio()))
-        if enemys:
-            resized_minigun = pygame.transform.scale(minigun, (81 * height_ratio(), 41 * height_ratio()))
-            rotated_minigun = pygame.transform.rotate(resized_minigun,math.degrees(math.atan(opp / adj)))
-            rotated_rect = rotated_minigun.get_rect(center=minigun_rect.center)
-
-            screen.blit((rotated_minigun),(rotated_rect))
-
-    opp= fleche.y - old_y
-    adj = old_x - fleche.x
-    arrow_rect = arrow.get_rect(center=((int(fleche.x), int(fleche.y)))
-    temp_arrow = arrow
-    rotated_arrow = pygame.transform.rotate(temp_arrow,math.degrees(math.atan(opp / adj)))
-    rotated_rect = rotated_arrow.get_rect(center=arrow_rect.center)
-    screen.blit((rotated_arrow), (rotated_rect))"""
-
-
-
-
 def resize_monster(image,x,y):
     new_height = y * height_ratio()
     new_width = x * height_ratio()
