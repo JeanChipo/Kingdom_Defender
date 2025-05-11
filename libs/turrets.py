@@ -72,8 +72,10 @@ class Turret_Gestion:
         if self.selected_turret is None: # si pas de tourelle choisi
             return 0
         else:
-            if self.selected_turret.path is None or path != self.selected_turret.path: # level 1
+            if self.selected_turret.path is None:
                 return self.selected_turret.upgrades[path][1]["price"]
+            elif path != self.selected_turret.path:
+                return 1
             else:
                 if self.selected_turret.level < 4: # level inférieur a 4
                     return self.selected_turret.upgrades[path][self.selected_turret.level + 1]["price"]
