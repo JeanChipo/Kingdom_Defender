@@ -9,7 +9,7 @@ from libs.ui import TimedTextManager
 
 class Turret_Gestion:
     def __init__(self, gain_gold):
-        """module permettant de gerer les tourrelles en court d'activité"""
+        """module permettant de gerer les tourelles en cours d'activité"""
         self.turrets = []
         self.nb_turret=-1
         self.pos = [(20*width_ratio()+22*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+165*height_ratio()),(20*width_ratio()+22*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+100*height_ratio()),(20*width_ratio()+22*height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+35*height_ratio())]

@@ -21,9 +21,9 @@ def upgrade_tower():
     if gold < price * tower_level:
         return
     if tower_level<3:
+        gain_gold(-(price * tower_level))
         tower_level+=1
         turrets.add_turret()
-        gain_gold(-(price * tower_level))
     print(tower_level)
 
 def upgrade_tower_price():
@@ -32,6 +32,7 @@ def upgrade_tower_price():
         return 40000
     elif tower_level == 2:
         return 80000
+    return 1
 
 
 def gain_gold(amount):
