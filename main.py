@@ -16,10 +16,23 @@ pygame.display.set_caption("Kingdom defender ⊹ ࣪ ﹏𓊝﹏𓂁﹏⊹ ࣪ ˖
 tower_level=1
 
 def upgrade_tower():
-    global tower_level
+    global tower_level, gold
+    price = 40000
+    if gold < price * tower_level:
+        return
     if tower_level<3:
         tower_level+=1
+        turrets.add_turret()
+        gain_gold(-(price * tower_level))
     print(tower_level)
+
+def upgrade_tower_price():
+    global tower_level
+    if tower_level == 1:
+        return 40000
+    elif tower_level == 2:
+        return 80000
+
 
 def gain_gold(amount):
     global gold
@@ -36,8 +49,8 @@ turrets = Turret_Gestion(gain_gold)
 Ensemble_fleche =  []
 price_upgrade = []
 # Upgrade_arc["prices_upgrade"][0] = prix de la cadence ; Upgrade_arc["prices_upgrade"][1] = prix de la salve ; Upgrade_arc["prices_upgrade"][2] = prix de la dispersion
-Upgrade_arc =       {"cadence" : 0, "salve" : 1, "dispersion" : [0],
-"prices_upgrade" :   [10000,         10000,       10000]}
+Upgrade_arc = {"cadence" : 0, "salve" : 1, "dispersion" : [0],
+               "prices_upgrade" : [5000,5000,6000]}
 upgrade = 1000
 wave_number = 1
 enemies, all_sprites = create_wave(wave_number,SCREEN.get_width(),420)
@@ -49,7 +62,7 @@ TextManager = TimedTextManager(SCREEN, 25)
 
 # buttons to upgrade the tower and turret
 B_upg_tower = Button("white", "black", "gray", "black", "upgrade tower", "kristenitc", 16,
-                 (132.5, 40), (647.5, 112.5 + 0*50), SCREEN.get_size(), lambda : [turrets.add_turret(), upgrade_tower()], SCREEN)
+                 (132.5, 40), (647.5, 112.5 + 0*50), SCREEN.get_size(), lambda : [upgrade_tower()], SCREEN)
 B_upg_turret = Button("white", "black", "gray", "black", f"turret - speed", "kristenitc", 16,
                  (132.5, 40), (647.5, 112.5 + 1*50), SCREEN.get_size(), lambda: turrets.upgrade_turrets("speed", gold, TextManager), SCREEN)
 B_upg_turret1 = Button("white", "black", "gray", "black", f"turret - bullet", "kristenitc", 16,
@@ -191,34 +204,64 @@ while RUNNING:
 
             if current_time - LAST_TEXT_UPDATE_TIME > 100:  # Update text every 100ms to prevent lagging
                 def upg_turret_text():
-                    return turrets.selected_turret.name if turrets.selected_turret else '[No turret selected]'
+                    if turrets.selected_turret:
+                        return turrets.selected_turret.name  
+                    else: 
+                        return '[No turret selected]'
                 def upg_turret_price(upg_name:str):
-                    if upg_name not in ["bullet", "special", "speed"]: return 0
-                    return turrets.get_next_price(upg_name) if turrets.get_next_price(upg_name) != 0 else '...'
+                    if upg_name not in ["bullet", "special", "speed"]: 
+                        return 0
+                    if turrets.get_next_price(upg_name) != 0:
+                        return turrets.get_next_price(upg_name)  
+                    else :
+                        return '...'
 
                 money_text = pygame.font.SysFont("Lucida Sans", 18).render(f"current gold : {gold}", True, "Black")
                 wave_text = pygame.font.SysFont("Lucida Sans", 18).render(f"current wave : {wave_number}", True, "Black")
                 tower_text = pygame.font.SysFont("Lucida Sans", 18).render(f"life : {hp_tower//100000000}", True, "Black")
                 if turrets.selected_turret: 
-                    upgrade_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s speed : {upg_turret_price('speed')} gold", True, "Black")
-                    upgrade_bullet_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s bullet : {upg_turret_price('bullet')} gold", True, "Black")
-                    upgrade_special_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s special : {upg_turret_price('special')} gold", True, "Black")
+                    if upg_turret_price('speed') == 1:
+                        upgrade_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s speed : out of stock", True, "Black")
+                    else:
+                        upgrade_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s speed : {upg_turret_price('speed')} gold", True, "Black")
+
+                    if upg_turret_price('bullet') == 1:
+                        upgrade_bullet_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s bullet : out of stock", True, "Black")
+                    else:
+                        upgrade_bullet_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s bullet : {upg_turret_price('bullet')} gold", True, "Black")
+
+                    if upg_turret_price('special') == 1:
+                        upgrade_special_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s special : out of stock", True, "Black")
+                    else:
+                        upgrade_special_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade {upg_turret_text()}'s special : {upg_turret_price('special')} gold", True, "Black")
                 else: 
                     upgrade_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render('', True, "Black")
                     upgrade_bullet_text = pygame.font.SysFont("Lucida Sans", 18).render('', True, "Black")
                     upgrade_special_text = pygame.font.SysFont("Lucida Sans", 18).render('', True, "Black")                    
-                upgrade_arrow_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's fire rate : {10000} gold", True, "Black")
-                upgrade_arrow_dispersion_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's salvo : {10000} gold", True, "Black")
-                upgrade_arrow_salve_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's dispersion : {10000} gold", True, "Black")
+                
+                if int(Upgrade_arc["prices_upgrade"][0]) == 1:
+                    upgrade_arrow_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render("upgrade bow's fire rate : out of stock", True, "Black")
+                else:
+                    upgrade_arrow_cadence_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's fire rate : {int(Upgrade_arc["prices_upgrade"][0])} gold", True, "Black")
+                
+                if int(Upgrade_arc["prices_upgrade"][1]) == 1:
+                    upgrade_arrow_dispersion_text = pygame.font.SysFont("Lucida Sans", 18).render("upgrade bow's salvo : out of stock", True, "Black")
+                else:
+                    upgrade_arrow_dispersion_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's salvo : {int(Upgrade_arc["prices_upgrade"][1])} gold", True, "Black")
+
+                if int(Upgrade_arc["prices_upgrade"][2]) == 1:
+                    upgrade_arrow_salve_text = pygame.font.SysFont("Lucida Sans", 18).render("upgrade bow's dispersion : out of stock", True, "Black")
+                else:
+                    upgrade_arrow_salve_text = pygame.font.SysFont("Lucida Sans", 18).render(f"upgrade bow's dispersion : {int(Upgrade_arc["prices_upgrade"][2])} gold", True, "Black")
                 LAST_TEXT_UPDATE_TIME = current_time
 
             B_upg_turret.update_colors_based_on_gold(gold, turrets.get_next_price("speed"))
             B_upg_turret1.update_colors_based_on_gold(gold, turrets.get_next_price("bullet"))
             B_upg_turret2.update_colors_based_on_gold(gold, turrets.get_next_price("special"))
-            B_upg_cadence.update_colors_based_on_gold(gold, 10000)
-            B_upg_salve.update_colors_based_on_gold(gold, 10000)
-            B_upg_dispersion.update_colors_based_on_gold(gold, 10000)
-            B_upg_tower.update_colors_based_on_gold(gold, 10000)
+            B_upg_cadence.update_colors_based_on_gold(gold, Upgrade_arc["prices_upgrade"][0])
+            B_upg_salve.update_colors_based_on_gold(gold, Upgrade_arc["prices_upgrade"][1])
+            B_upg_dispersion.update_colors_based_on_gold(gold, Upgrade_arc["prices_upgrade"][2])
+            B_upg_tower.update_colors_based_on_gold(gold, upgrade_tower_price())
 
 
             SCREEN.blit(money_text, (WIDTH - (money_text.get_width()+5), 5))
