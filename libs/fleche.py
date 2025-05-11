@@ -144,12 +144,12 @@ def cadence(Ensemble_fleche,RATIO_W, RATIO_H, mouse_pos, time, WIDTH, HEIGHT, SC
 #                            - Mise à jour du prix d'amélioration de la compétence
 #                            - Renvoie si possible le signal qui rend impossible l'amélioration de la compétence
 def upgrade_cadence(gold, Upgrade_arc, manager):
-    if Upgrade_arc["cadence"] < 3 and gold >= 5000 + Upgrade_arc["cadence"] * 1000: # Permet d'avoir une préogressioon linéaire du coût des améliorations
+    if Upgrade_arc["cadence"] <= 1 and gold >= 5000 + Upgrade_arc["cadence"] * 1000: # Permet d'avoir une préogressioon linéaire du coût des améliorations
         Upgrade_arc["cadence"] += 0.25
         gold -= 5000 + Upgrade_arc["cadence"] * 1000
 
 
-        if Upgrade_arc["cadence"] < 3:
+        if Upgrade_arc["cadence"] <= 1:
             Upgrade_arc["prices_upgrade"][0] = 5000 + Upgrade_arc["cadence"] * 1000
         else:
             Upgrade_arc["prices_upgrade"][0] = 1

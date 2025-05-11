@@ -234,3 +234,14 @@ class TimedTextManager:
         else:
             self.current_text = None
 
+def pause():
+    ''' fonction de pause du jeu. '''
+    paused = True
+    while paused:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    paused = False
