@@ -179,12 +179,15 @@ while RUNNING:
             SCREEN.blit(resize_background(background), (0, 0))
             if tower_level == 1 :
                 SCREEN.blit(resize_tower_lvl_1(tower_1), (50*width_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()))
+                SCREEN.blit(resize_baliste(new_baliste),(25 * width_ratio() + 28 * height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+75*height_ratio()))
 
             elif tower_level == 2:
                 SCREEN.blit(resize_tower_lvl_2(tower_2), (50*width_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()))
+                SCREEN.blit(resize_baliste(new_baliste),(25 * width_ratio() + 28 * height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+75*height_ratio()))
 
             else :
                 SCREEN.blit(resize_tower_lvl_3(tower_3), (50*width_ratio()-3,SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()))
+                SCREEN.blit(resize_baliste(new_baliste),(25 * width_ratio() + 28 * height_ratio(),SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+75*height_ratio()))
 
             current_time = pygame.time.get_ticks()
             if enemies:

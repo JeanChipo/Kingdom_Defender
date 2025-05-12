@@ -28,6 +28,8 @@ def  middle_tower(tower_level):
     middle_y = SCREEN.get_height() - tower_height_position(tower_level) * height_ratio()+125*height_ratio()
     return middle_x,middle_y
 
+
+
 def resize_tower_lvl_1(image):
     new_height = 365 * height_ratio()
     new_width = 121 * height_ratio()
@@ -59,7 +61,7 @@ def resize_cannonball(image):
     return resize
 #modifie la largeure et la hauteure de l'image d'entrée avec les paramêtre initiaux de cannonball en fonction de la hauteur de la fenêtre actuelle
 
-
+new_baliste = pygame.transform.rotate( baliste,-90)
 def resize_baliste(image):
     resize = pygame.transform.scale(image, (100*height_ratio(), 100*height_ratio()))
     return resize
